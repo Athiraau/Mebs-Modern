@@ -1,0 +1,901 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor httpContextAccessor
+@{
+    ViewData["Title"] = "TRAN_PROM_INCRE_RPT";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="~/css/index.css">
+    <script src="~/js/site.js"></script>
+
+
+    <style>
+        td, tfoot, th, thead, tr {
+          border-color: inherit;
+          border-style: solid;
+          border-width: 1px;
+        }
+
+        .containers {
+            margin-left: 30px;
+            /*   margin-top: 100px; */
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            /* border-radius: 8px; */
+            width: 100%;
+            border: 1px solid #d4faff;
+            background-color: white;
+            /* box-shadow: 2px 2px 1px 1px #F1F1F1; */
+        }
+
+        .text {
+            margin-left: 70px;
+        }
+
+
+        button {
+            margin-bottom: 15px;
+        }
+
+        th {
+            padding: 7px;
+        }
+
+        .btn_class {
+            height: 30px;
+            width: 75px;
+            display: inline-block;
+            padding: 6px 10px;
+            font-size: 10px;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            background-color: #538392;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+            .btn_class:hover {
+                background-color: pink;
+            }
+
+        .showbtn {
+            margin-left: 130px;
+            display: none;
+        }
+
+        .btn2_class {
+            height: 30px;
+            width: 150px;
+            display: inline-block;
+            padding: 6px 10px;
+            font-size: 10px;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            background-color: #538392;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            /* display:none; */
+        }
+
+            .btn2_class:hover {
+                background-color: pink;
+            }
+
+        .tablediv_class {
+            display: none;
+            margin: 10px;
+        }
+
+
+    </style>
+
+</head>
+
+
+
+<body>
+
+
+    <div class="pagecontiner">
+        <div class="d-flex justify-content-center align-items-center" style="background-color:#538392; font-weight: 500; color:white;height:50px">
+            <span class="text-center" style="font-size:medium">TRANSFER/PROMOTION/INCREMENT REPORT</span>
+        </div>
+
+
+        <div class="form-container  p-3" style="border-radius:7px; background-color:white; ">
+            <label for="empcode" class="col-sm-3 col-form-label form-label ml-5" style="font-size:small; padding:5px;">CATEGORY : </label>
+                
+
+                   <select id="drp_cat"  class="form-control form-label cls_test" style="height:35px;width: 23%;margin-left: 17%;margin-top: -3%;" onchange="hide_tbl();">
+                        <option value="-1" selected="selected">---Select---</option>
+                        <option value="1">TRANSFER</option>
+                        <option value="2">PROMOTION</option>
+                        <option value="3">INCREMENT</option>
+                    </select>
+                <br />
+            
+
+
+            <div class="form-group row">
+                <label for="fromdate" class="col-sm-2 col-form-label form-label ml-20" style="font-size:small;padding:5px;margin-left: 1%;">From Date:</label>
+                <div class="col-sm-3 ">
+
+                    <input type="date" class="form-control col-sm-4" id="from_date"  style="height:30px;padding:2px;font-size:small;margin-left: -4%;" name="datepicker">
+                </div> 
+
+                <label for="todate" class="col-sm-2 col-form-label form-label ml-20" style="font-size:small;padding:5px;margin-left: 12%;">To Date:</label>
+                <div class="col-sm-3 ">
+
+                    <input type="date" class="form-control" id="to_date" style="height:30px; padding:2px;font-size:small" name="datepicker">
+              
+            </div>
+       </div>
+
+            <div class="form-group row  mt-3 d-flex justify-content-center">
+                <div class="col-md-3">
+                    <div class="row">
+                        <div class="col-md-6 ml-5 text-center">
+                            <button type="button" class="btn_class" onclick="validation();submitReq();ftabledate();">CONFIRM</button>
+
+                        </div>
+                        <div class="col-md-6  text-center">
+
+                            <button type="button" class="btn_class" onclick="loadIndex()">EXIT</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+</div>
+
+<br>
+
+        @* export and print button *@
+        <div class="showbtn" id="btn_div">
+
+            <div class="row">
+                <div class="col-md-3 ml-5 text-center">
+                    <button type="button" class="btn2_class" onclick="printData()">PRINT</button>
+
+                </div>
+                <div class="col-md-3  text-center">
+
+                    <button type="button" class="btn2_class" onclick="ExportToExcel('xlsx');">EXPORT TO EXCEL</button>
+                </div>
+
+                <div class="col-md-3  text-center">
+
+                    <button type="button" class="btn2_class" onclick="unshow_btn();unshowTableDiv();">CLOSE</button>
+                </div>
+            </div>
+        </div>
+
+
+         @* table sarting *@
+  <center>
+      <div id="divcontainer2" class="tablediv_class">
+
+         @* first table showing heading and emp details *@
+          <table width="110%" style=" border: 1px solid #538392; text-align: center; background-color:white;" id="empDtlTable">
+
+
+              <thead>
+                  <tr>
+                      <td colspan="7" ><b>MANAPPURAM FINANCE LIMITED</b></td>
+                  </tr>
+                    <tr>
+                      <td colspan="7">
+                          
+                       <label style="font-size:small" > Branch Name: @httpContextAccessor.HttpContext.Session.GetString("BrName") -- Branch ID: @httpContextAccessor.HttpContext.Session.GetString("BrID")</label>  
+                          
+                      
+                      </td>
+                  </tr>
+                  <tr style="background-color:#538392;color:white;height:34px;padding:10px">
+                      <td>  <span id="currentDate" style="font-size:14px;"></span></td>
+                      <td colspan="5" style="font-size:14px;">TRANSFER/PROMOTION/INCREMENT REPORT FROM <span id="frm_date" style="font-size:14px;"></span> TO <span id="t_date"  style="font-size:14px;"></span></td>
+                      <td> <span id="currentTime"  style="font-size:14px;"></span></td>
+
+                  </tr>
+
+                  <tr>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                  </tr>
+                 
+
+               
+                  </thead>
+                   <tbody id="table-body" style="text-align:start; height:80px; padding:8px;"></tbody>
+
+          </TABLE> 
+         @*  <br> *@
+
+          @* second table showing Transfer report *@
+                 <TABLE width="110%" style=" border: 1px solid #538392; border-collapse: collapse; text-align: center; background-color:white;margin-bottom:30px;" id="leaveRptTable">
+                     <Thead>
+                 
+                 
+                     <tr style=" border: 1px solid #006769;font-size:14px; padding:10px;height:44px">
+                      <td>EMPLOYEE CODE</td>
+                      <td>EMPLOYEE NAME</td>
+                      <td>D.O.J (PRESENT)</td>
+                      <td>D.O.J (PAST)</td>
+                      <td>BRANCH_ID(PRESENT)</td>
+                      <td>BRANCH_NAME(PRESENT)</td>
+                      <td>ZONE(PRESENT)</td>
+                      <td>BRANCH_ID(PAST)</td>
+                      <td>BRANCH_NAME(PAST)</td>
+                      <td>ZONE(PAST)</td>
+                      <td>PAST BRANCH EXP</td>
+                      <td>DEPARTMENT(PRESENT)</td>
+                      <td>DEPARTMENT(PAST)</td>
+                      <td>POST(PRESENT)</td>
+                      <td>POST(PAST)</td>
+                      <td>DESIGNATION(PRSENT)</td>
+                      <td>DESIGNATION(PAST)</td>
+                      <td>ENTER DATE</td>
+                      <td>FIRM(PRESENT)</td>
+                      <td>FIRM(PAST)</td>
+                      <td>BRANCH TO BRANCH DISTANCE</td>
+                      <td>TRANSFER TYPE</td>
+                      <td>REMARKS</td>
+                      <td></td>
+                  </tr>
+                 
+              </thead>
+              <tbody id="table-body2"></tbody>
+
+
+          </table>
+
+          @* Third table showing Promotion/Increment Report *@
+
+           <TABLE width="110%" style=" border: 1px solid #538392; border-collapse: collapse; text-align: center; background-color:white;margin-bottom:30px;" id="prom_increRptTable">
+                     <Thead>
+                 
+                 
+                     <tr style=" border: 1px solid #006769;font-size:14px; padding:10px;height:44px">
+                      <td>EMPLOYEE CODE</td>
+                      <td>EMPLOYEE NAME</td>
+                      <td>D.O.J (PRESENT)</td>
+                      <td>D.O.J (PAST)</td>
+                      <td>DESIGNATION(PRSENT)</td>
+                      <td>DESIGNATION(PAST)</td>
+                      <td>BASICPAY(PRESENT)</td>
+                      <td>BASICPAY(PAST)</td>
+                      <td>POST(PRESENT)</td>
+                      <td>POST(PAST)</td>
+                      <td>ENTER DATE</td>
+                      <td></td>
+                  </tr>
+                 
+              </thead>
+              <tbody id="table-body3"></tbody>
+
+
+          </table>
+
+      </div>
+  </center>
+
+    </div>
+
+   
+
+<script> 
+
+
+
+
+             //disable future date
+             function disableFutureDates1(dateInputId) {
+             const dateInput = document.getElementById('to_date');
+           
+                const today = new Date(); 
+             dateInput.setAttribute('max', today.toISOString().split('T')[0]);
+             }
+                disableFutureDates1("to_date");
+
+              function disableFutureDates2(dateInputId) {
+             const dateInput = document.getElementById('from_date');
+             const today = new Date();
+             dateInput.setAttribute('max', today.toISOString().split('T')[0]);
+             }
+                disableFutureDates2("from_date");
+
+ //-----------------------------------------------------
+    function hide_tbl() {
+        $("#leaveRptTable").hide();
+        $("#prom_increRptTable").hide();
+        $("#divcontainer2").hide();
+        $("#btn_div").hide();
+    }
+//------------------------------------------------------
+         
+            //to fetch all the nb datas used for api call
+            var result = "";
+            var check = " ";
+            function submitReq()
+            {
+                //alert("submitReq");
+                var ecode = '@ViewData["EmpCode"]';
+                //var ecode = document.getElementById('emp_code').value;
+
+                var dt = document.getElementById("to_date").value;
+                var toDate = fetchDate(dt);
+
+                dt = document.getElementById("from_date").value;
+                                           
+                var fromDate = fetchDate(dt);
+                var category = document.getElementById("drp_cat").value;
+                //alert(category);
+
+                //var firm = '@ViewData["FirmID"]';
+                //Preparing indata
+                var indata = category + "~" + fromDate + "~" + toDate + "~" + ecode;
+                //alert(indata);
+                //PostDataAPICall(indata);
+                if (category == 1) {
+                    //alert("Cat 1");
+                    PostDataAPICall1(indata);
+                }
+                else {
+                   // alert("Cat 2/3");
+                    PostDataAPICall2(indata);
+                }
+                
+                
+
+            }
+
+       
+//-------------------------------------------------------------------------------------------
+
+            //to populate the first table with employee details
+ 
+            function populateTable2(data) {
+                 
+                 $("#leaveRptTable").hide();
+                 $("#prom_increRptTable").show();
+                // Get reference to the table body
+               const tableBody1 = document.getElementById('table-body3');
+                // tableBody1.style.textAlign = "start";
+                
+
+
+                // Clear existing table rows
+                tableBody1.innerHTML = '';
+
+                 data.forEach(item => {
+
+
+                      const row = tableBody1.insertRow();
+                     row.id = "dataRowID";
+
+                     document.getElementById('dataRowID').style.height='10px';
+
+
+                     
+                    // Insert cells into the row
+                    const cell1 = row.insertCell();
+                    const cell2 = row.insertCell();
+                    const cell3 = row.insertCell();
+                    const cell4 = row.insertCell();
+                    const cell5 = row.insertCell();
+                    const cell6 = row.insertCell();
+                    const cell7 = row.insertCell();
+                    const cell8 = row.insertCell();
+                    const cell9 = row.insertCell();
+                    const cell10 = row.insertCell();
+                    const cell11 = row.insertCell();
+                     
+
+                     // Populate cells with data
+                     cell1.textContent = item.EMP_CODE;
+                     cell1.style.fontSize = "12px";
+                 
+                     cell2.textContent = item.EMP_NAME;
+                      cell2.style.fontSize = "12px";
+
+                     cell3.textContent = item.PRESENT_DT;
+                     cell3.style.fontSize = "12px";
+
+                     cell4.textContent = item.PAST_DT;
+                     cell4.style.fontSize = "12px";
+
+                     cell5.textContent = item.PRESENT_DES;
+                     cell5.style.fontSize = "12px";
+
+                     cell6.textContent = item.PAST_DES;
+                     cell6.style.fontSize = "12px";
+
+                     cell7.textContent = item.PERSENT_PAY;
+                     cell7.style.fontSize = "12px";
+                 
+                     cell8.textContent = item.PAST_PAY;
+                      cell8.style.fontSize = "12px";
+
+                     cell9.textContent = item.PRESENT_POST;
+                     cell9.style.fontSize = "12px";
+
+                     cell10.textContent = item.PAST_POST;
+                     cell10.style.fontSize = "12px";
+
+                     cell11.textContent = item.ENTER_DT;
+                     cell11.style.fontSize = "12px";
+
+                     
+
+
+                     
+                  
+                 });
+
+             }
+//-------------------------------------------------------------------------------------------
+            
+            function PostDataAPICall2(indata) {
+                 var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/HRM/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/HRM/getAPIData"; }
+
+                
+                   var indata = 'PROC_HRMS_COMMON_MVC' + '^' + 4 + "~" + 1 + "~" + indata;
+
+                const a = "";
+                $.ajax({
+                    type: "GET",
+                    url: _link,
+                    data: { datas: indata },
+                    async: false,
+                    success: function (response) {
+                     
+                        const data3 = JSON.parse(response);
+                        populateTable2(data3)
+
+                    },
+                    error: function (response) {
+                        check = 0;
+                       
+                    }
+                });
+
+            }
+
+//-------------------------------------------------------------------------------------------
+             function populateTable1(data) {
+                 
+                 $("#prom_increRptTable").hide();
+                 $("#leaveRptTable").show();
+                // Get reference to the table body
+               const tableBody1 = document.getElementById('table-body2');
+                // tableBody1.style.textAlign = "start";
+                
+
+
+                // Clear existing table rows
+                tableBody1.innerHTML = '';
+
+                 data.forEach(item => {
+
+
+                      const row = tableBody1.insertRow();
+                     row.id = "dataRowID";
+
+                     document.getElementById('dataRowID').style.height='10px';
+
+
+                     
+                    // Insert cells into the row
+                    const cell1 = row.insertCell();
+                    const cell2 = row.insertCell();
+                    const cell3 = row.insertCell();
+                    const cell4 = row.insertCell();
+                    const cell5 = row.insertCell();
+                    const cell6 = row.insertCell();
+                    const cell7 = row.insertCell();
+                    const cell8 = row.insertCell();
+                    const cell9 = row.insertCell();
+                    const cell10 = row.insertCell();
+                    const cell11 = row.insertCell();
+                    const cell12 = row.insertCell();
+                    const cell13 = row.insertCell();
+                    const cell14 = row.insertCell();
+                    const cell15 = row.insertCell();
+                    const cell16 = row.insertCell();
+                    const cell17 = row.insertCell();
+                    const cell18 = row.insertCell();
+                    const cell19 = row.insertCell();
+                    const cell20 = row.insertCell();
+                    const cell21 = row.insertCell();
+                    const cell22 = row.insertCell();
+                    const cell23 = row.insertCell();
+                    
+                   
+
+                     // Populate cells with data
+                     cell1.textContent = item.EMP_CODE;
+                     cell1.style.fontSize = "12px";
+                 
+                     cell2.textContent = item.EMP_NAME;
+                      cell2.style.fontSize = "12px";
+
+                     cell3.textContent = item.PRESENT_DATE;
+                     cell3.style.fontSize = "12px";
+
+                     cell4.textContent = item.PAST_DATE;
+                     cell4.style.fontSize = "12px";
+
+                     cell5.textContent = item.PRESENT_BRANCH_ID;
+                     cell5.style.fontSize = "12px";
+
+                     cell6.textContent = item.PRESENT_BRANCH;
+                     cell6.style.fontSize = "12px";
+
+                     cell7.textContent = item.PRESENT_ZONE;
+                     cell7.style.fontSize = "12px";
+                 
+                     cell8.textContent = item.PAST_BRANCH_ID;
+                      cell8.style.fontSize = "12px";
+
+                     cell9.textContent = item.PAST_BRANCH;
+                     cell9.style.fontSize = "12px";
+
+                     cell10.textContent = item.PAST_ZONE;
+                     cell10.style.fontSize = "12px";
+
+                     cell11.textContent = item.PAST_BRANCH_EXP;
+                     cell11.style.fontSize = "12px";
+
+                     cell12.textContent = item.PRESENT_DEP;
+                     cell12.style.fontSize = "12px";
+
+                     cell13.textContent = item.PAST_DEP;
+                     cell13.style.fontSize = "12px";
+                 
+                     cell14.textContent = item.PRESENT_POST;
+                      cell14.style.fontSize = "12px";
+
+                     cell15.textContent = item.PAST_POST;
+                     cell15.style.fontSize = "12px";
+
+                     cell16.textContent = item.PRESENT_DESIGNATION;
+                     cell16.style.fontSize = "12px";
+
+                     cell17.textContent = item.PAST_DESIGNATION;
+                     cell17.style.fontSize = "12px";
+
+                     cell18.textContent = item.ENTER_DATE;
+                     cell18.style.fontSize = "12px";
+
+                     cell19.textContent = item.CURR_FIRM;
+                      cell19.style.fontSize = "12px";
+
+                     cell20.textContent = item.PAST_FIRM;
+                     cell20.style.fontSize = "12px";
+
+                     cell21.textContent = item.BRANCH_TO_BRANCH_DIST;
+                     cell21.style.fontSize = "12px";
+
+                     cell22.textContent = item.M_TYPE;
+                     cell22.style.fontSize = "12px";
+
+                     cell23.textContent = item.REMARK;
+                     cell23.style.fontSize = "12px";
+
+
+                     
+                  
+                 });
+
+             }
+
+  //-------------------------------------------------------------------------------------------
+            function PostDataAPICall1(indata) {
+                 var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/HRM/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/HRM/getAPIData"; }
+
+                
+                   var indata = 'PROC_HRMS_COMMON_MVC' + '^' + 4 + "~" + 1 + "~" + indata;
+
+                const a = "";
+                $.ajax({
+                    type: "GET",
+                    url: _link,
+                    data: { datas: indata },
+                    async: false,
+                    success: function (response) {
+                     
+                        const data3 = JSON.parse(response);
+                        populateTable1(data3)
+
+                    },
+                    error: function (response) {
+                        check = 0;
+                       
+                    }
+                });
+
+            }
+
+
+//-------------------------------------------------------------------------------------------
+
+            function fetchDate(dt) {
+                var getdate = dt;
+
+                const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+
+                const [year, month, day] = getdate.split("-");
+                const formattedMonth = months[parseInt(month, 10) - 1];
+                const formattedDate = `${day}-${formattedMonth}-${year}`;
+             //   document.getElementById("completionYear").innerHTML = formattedDate;
+                return formattedDate;
+            }
+
+        </script>
+
+
+        <script>
+           
+            //for assigning current date to a variable
+            // const formattedToday = todayformat();
+            // document.getElementById('to_date').defaultValue = formattedToday;
+//-------------------------------------------------------------------------------------------
+
+
+            //validating whether from date is greater than to date also checking whether selected dates are greater than current date
+            function validation() {
+                var fromdate = document.getElementById('from_date');
+                var todate = document.getElementById('to_date');
+                var category = document.getElementById("drp_cat").value;
+                
+                if (category == -1) {
+                    alert("Please select the Category");
+                    return false; // Prevent form submission
+                }
+
+                if (fromdate.value ==""){
+                    alert("Please select From Date");
+                    return false; // Prevent form submission
+                }
+
+                if (todate.value ==""){
+                    alert("Please select To Date");
+                    return false; // Prevent form submission
+                }
+                
+                if (fromdate.value > todate.value) {
+                    alert("From Date must be less than To Date");
+                    return false; // Prevent form submission
+                }
+                 const formattedToday = todayformat();
+
+                  if (fromdate.value > formattedToday || todate.value > formattedToday) {
+                    alert("Please Enter a Valid Date");
+                    return false; // Prevent form submission
+                }
+
+                return showTableDiv(),show_btn(); // Allow form submission
+            }
+
+
+//-------------------------------------------------------------------------------------------
+            
+
+            //to show the table div when clicking confirm button
+            function showTableDiv() {
+                var dcontainer2 = document.getElementById('divcontainer2');
+                dcontainer2.style.display = 'block';
+            }
+
+//-------------------------------------------------------------------------------------------
+            //to show print, export btn and close btn
+            function show_btn(){
+                var showBtn = document.getElementById('btn_div');
+                showBtn.style.display = 'block';
+            }
+
+//-------------------------------------------------------------------------------------------
+            // function that returns todays date
+             function todayformat()
+                {
+                     const today = new Date();
+                const yyyy = today.getFullYear();
+                let mm = today.getMonth() + 1; // Months start at 0!
+                let dd = today.getDate();
+
+                if (dd < 10) dd = '0' + dd;
+                if (mm < 10) mm = '0' + mm;
+
+                const formattedToday = yyyy + '-' + mm + '-' + dd;
+                    return formattedToday;
+                }
+ //-------------------------------------------------------------------------------------------           
+            //to unshow print, export btn and close btn
+             function unshow_btn(){
+                var showBtn = document.getElementById('btn_div');
+                showBtn.style.display = 'none';
+            }
+
+
+//--------------------------------------------------------------------------
+         //to unshow the table div when clicking exit button
+            function unshowMainTableDiv() {
+                var dcontainer2 = document.getElementById('maindiv');
+                dcontainer2.style.display = 'none';
+            }
+
+//--------------------------------------------------------------------------
+            //to unshow report table div when clicking close button
+             function unshowTableDiv() {
+                var dcontainer2 = document.getElementById('divcontainer2');
+                dcontainer2.style.display = 'none';
+            }
+
+
+
+
+//--------------------------------------------------------------------------
+            //to show current date inside the table
+            const today = new Date();
+            const day = String(today.getDate()).padStart(2, '0');
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const year = today.getFullYear();
+
+            document.getElementById("currentDate").textContent = day + '/' + month + '/' + year;
+
+
+//--------------------------------------------------------------------------
+            //to show current time inside the table
+           const  currentTime = () => {
+             
+          
+             var date = new Date();
+             var am_pm = "AM";
+             var hour = date.getHours();
+              if(hour>=12){
+               am_pm = "PM";
+               }
+              if (hour == 0) {
+                  hour = 12;
+                }
+              if(hour>12){
+             hour = hour - 12;
+             }
+             if(hour<10){
+              hour = "0"+hour;
+             }
+
+             var minute = date.getMinutes();
+             if (minute<10){
+              minute = "0"+minute;
+              }
+              var sec = date.getSeconds();
+             if(sec<10){
+               sec = "0"+sec;
+             }
+
+             document.getElementById("currentTime").textContent = hour+":"+minute+":"+sec+" "+am_pm;
+                };
+
+            setInterval(currentTime,500);
+
+//--------------------------------------------------------------------------
+      
+            //to give entered from date and to date as table heading
+            function ftabledate(){
+            var fdate = document.getElementById('from_date').value;
+            var dateParts = fdate.split('-');
+            var formattedDate = dateParts[2] + '-' + dateParts[1] + '-' + dateParts[0];
+            document.getElementById('frm_date').innerHTML = formattedDate;
+  
+            var tDate = document.getElementById('to_date').value;
+            var datePart = tDate.split('-');
+            var formatedDate = datePart[2] + '-' + datePart[1] + '-' + datePart[0];
+            document.getElementById('t_date').innerHTML = formatedDate;
+            }
+//--------------------------------------------------------------------------
+            
+               //to print the table data
+                function printData()
+                    {
+                  var divToPrint=document.getElementById("divcontainer2");
+                    newWin= window.open("");
+                     newWin.document.write(divToPrint.outerHTML);
+                    newWin.print();
+                    newWin.close();
+                    }
+
+
+ //---------------------------------------------------------------------------           
+             //export to excel code
+
+            //  function ExportToExcel(type, dl) {
+            //      alert(type);
+            //   alert(dl);
+            //   var category = document.getElementById("drp_cat").value;
+            //   alert(category);
+            //   if (category == 1) {
+            //       $("#leaveRptTable").show();
+            //      $("#prom_increRptTable").hide();
+            //        var elt = document.getElementById('leaveRptTable');/* empDtlTable */
+            //     var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
+              
+            //     XLSX.writeFile(wb, 'TRANSFER/PROMOTION/INCREMENT-REPORT.' + ('xlsx'));
+            //     }
+            //     else {
+            //         $("#leaveRptTable").hide();
+            //      $("#prom_increRptTable").show();
+            //        var elt = document.getElementById('prom_increRptTable');
+            //     var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
+              
+            //     XLSX.writeFile(wb, 'TRANSFER/PROMOTION/INCREMENT-REPORT.' + ('xlsx'));
+            //     }
+                
+            // }
+
+
+function ExportToExcel(type, dl) {
+    var category = document.getElementById("drp_cat").value;
+    var table = document.querySelector('#divcontainer2 table[data]');
+    
+    if (category == 1) {
+        var table = document.getElementById('leaveRptTable');
+    }
+    else {
+        var table = document.getElementById('prom_increRptTable');
+    }
+    var wb = XLSX.utils.table_to_book(table, { sheet: "sheet1" });
+    XLSX.writeFile(wb, 'TRANSFER/PROMOTION/INCREMENT-REPORT.' + (type || 'xlsx'));
+}
+
+
+
+//--------------------------------------------------------------------------------
+
+            //script for loading index page while clicking exit btn
+
+              function loadIndex() {
+
+                   var root = '';
+                   var baselink = '@ViewData["baseurl"]';
+                   var id = '@ViewData["HeadName"]';
+            
+                 if (document.location.hostname == 'localhost') {
+                      window.location.href = "/HRM/Index?datas=" + id;
+                 }
+                else {
+                     root = '@ViewData["root"]';
+                     domainurl = baselink + root;
+                      window.location.href = domainurl + "/HRM/Index?datas=" + id;
+                     }
+
+                    }
+        </script>
+        
+         <script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.8/xlsx.min.js"></script>
+
+
+</body>
+</html>
+

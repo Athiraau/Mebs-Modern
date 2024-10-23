@@ -1,0 +1,109 @@
+﻿
+@{
+    ViewData["Title"] = "MEBS LoginPage";
+    Layout = "~/Views/Shared/Dashboard_layout.cshtml";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js" integrity="sha256-/H4YS+7aYb9kJ5OKhFYPUjSJdrtV6AeyJOtTkw6X72o=" crossorigin="anonymous"></script>
+
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        /* Full-width input fields */
+        input[type=text], input[type=password] {
+            width: 40%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        /* Set a style for all buttons */
+        button {
+            background-color: #04AA6D;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            cursor: pointer;
+            width: 20%;
+        }
+
+            button:hover {
+                opacity: 0.8;
+            }
+
+        /* Extra styles for the cancel button */
+        .cancelbtn {
+            width: auto;
+            padding: 10px 18px;
+            background-color: #f44336;
+        }
+
+        /* Center the image and position the close button */
+        .imgcontainer {
+            text-align: center;
+            margin: 24px 0 12px 0;
+            position: relative;
+        }
+
+      
+        .lcontainer {
+            padding: 16px;
+        }
+
+        span.psw {
+            float: right;
+            padding-top: 16px;
+        }
+        </style>
+
+        </head>>
+
+
+<body>
+    <br></br>
+    <br></br>
+                       <div class="lcontainer">
+                        <div class="row">
+                        <label for="uname"><b>Employee Code</b></label>
+                        <input type="text" id="employeecode"  name="uname" required>
+
+                        <br>
+                        <div>
+                         <button type="submit" style="width:40%" onclick="loadDashBoard()" >Submit</button>
+                    </div>
+                        </div>
+                        </div>
+                     <script>
+            function loadDashBoard() {
+            var baselink = '@ViewData["baseurl"]';
+            var root = '@ViewData["root"]';
+            var domainurl = baselink + root;
+            var id = document.getElementById("employeecode").value;
+            //var ecode ='';
+            var ecode = encrypt(id);
+           // var ecode = "33394d4233433277614d65557131644c4b3046486b37734f494a2b54544e362f377534337a30484b6f6c594a413047674633354e33446c336d4a7166466d6c5638466651484e52742f457853447362455159764b416f43684c4e76422b6c6d4e30667a3337736c65552b723138515449746f3835323972685864513737323239%26token=36696e3247414f6a7a624577375531484b61546958574468736637384f31657638526b4b4365616263734c72617a70694751756c63444f5652677469547a32714d4f7967497667755166744b4151365242663634774852345444415873734135324b6d6b73432b314e796b7348764b51723245354b354c584d557a53326e654b3759307676332b376d6a316e5169506f3871576b786959784973774c3171746f56596b4a624137766c43372b706d424b616c652b3446636e4d6338576e6d3579327a4774476353735a474d7561627446664f6f797865744b33494a5058734845644a3039416d74434b6e4a6775504738357471452f3147477956494e586a73386f5436555745544e2b7169584c4d374f334445435435526578795653686735675349472f7a6439306e503137543854494e4b334c38454f3241654763574d6f393276313674454855743653394658384238612f476274566f5350687570574b4f47572f7a4e59632f7533354a58474d376831672b79357562305937585a7367504d5878586244515a6c5647492f485a7464476d75617075754e59796966745234523978767a7a576b732b6f673838345a2f6247434d446937376a73514f55784c5652693841787948494d6d594c452b35784b4e696f7157725965504170345a30377a4f314b382b623761453d";
+          //  var ecode = '6CFE524D731914A59B8061C843CB34A833555A1A4157429ACF489B2482447701E83D1FAC777B448769F3A1AE12E3934C936E905F0688E1E59472BF4712198A2E049AF72A08A3EADEBB9D90A9325C62B2';
+          // var ecode = "894B0F4E0736F6BC40576D741A8BB08839ED34CAD25996234E4A04ACADD8B87E9A9290DD39C466F18743239C549C142118D4B01DA5D333E68839DBF30A99BB4E";
+             window.location.href = domainurl + "/Home/Dashboard?processid=" + ecode;    //FOR UAT/PRODUCTION
+            //window.location.href = "/Home/Dashboard?processid=" + ecode;  //FOR LOCAL
+            ViewData["empcodeData"]=id;
+
+            }
+
+      
+
+</script>
+
+ 
+
+    <script src="~/js/ProjectScript.js"></script>
+</body>
+</html>

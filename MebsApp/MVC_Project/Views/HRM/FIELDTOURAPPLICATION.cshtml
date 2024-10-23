@@ -1,0 +1,840 @@
+﻿@{
+    ViewData["Title"] = "FIELDTOURAPPLICATION";
+    Layout = "~/Views/Shared/_layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    @*<meta http-equiv="refresh" content="8" />*@
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="~/css/index.css">
+    <style>
+
+        .container-sm {
+            max-width: 550px;
+            box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+            height: auto;
+            border-radius: 7px;
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: #EEEEEE;
+        }
+
+        select {
+            width: 80%;
+            font-size: x-small;
+        }
+
+        textarea {
+            width: 80%;
+            font-size: x-small;
+        }
+
+        input {
+            width: 80%;
+            font-size: x-small;
+        }
+
+        .heading {
+            font-size: smaller;
+        }
+
+        .btn {
+            height: 30px;
+            width: 75px;
+            display: inline-block;
+            padding: 6px 10px;
+            font-size: 10px;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            background-color: #538392;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin: inherit;
+           /* margin-left: 150px;
+            border-radius: 20px;
+            width: 14%;
+            height: 28px;
+            background-color: black;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: smaller;
+            text-align: center;*/
+        }
+        .buttonclass
+        {
+           padding: 5px;
+          display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-left:10px;
+            margin:3px;
+        }
+
+            .btn:hover {
+                background-color: black; /* Darker green background on hover */
+                color: white;
+            }
+    </style>
+</head>
+<body>
+    <div class="pagecontiner">
+        <div class="container-sm ">
+
+            <table class="table table-bordered table-striped">
+                <th colspan="2"
+                    style=" text-align: center; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: smaller;">
+                    TOUR APPLICATION
+                </th>
+                <tr>
+                    <td class="text-center heading">Department:</td>
+                    <td>
+                        <select name="select" id="selectDep" style="font-size: smaller;" onchange="disableDes()">
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-center heading">Designation:</td>
+                    <td>
+                        <select name="select" id="selectDes" style="font-size: smaller;">
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-center heading">Emp Name:</td>
+                    <td>
+                        <select name="select" id="selectEmp" style="font-size: smaller;">
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-center heading">From Date:</td>
+                    <td>
+                        <input type="date" size="26" id="selectfrom" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-center heading">To Date:</td>
+                    <td>
+                        <input type="date" size="20" id="selectto" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-center heading">From Time(HH:MM):</td>
+                    <td>
+                        <select name="select" id="selectftime" style="font-size: smaller;">
+
+                            <option value="option2">---------SELECT----------</option>
+                            <option value="option2">00::00 am</option>
+                            <option value="option2">1:00 am</option>
+                            <option value="option3">2:00 am</option>
+                            <option value="option1">3:00 am</option>
+                            <option value="option2">4:00 am</option>
+                            <option value="option3">5:00 am</option>
+                            <option value="option2">6:00 am</option>
+                            <option value="option3">7:00 am</option>
+                            <option value="option2">8:00 am</option>
+                            <option value="option3">9:00 am</option>
+                            <option value="option2">10:00 am</option>
+                            <option value="option3">11:00 am</option>
+                            <option value="option2">12:00 am</option>
+                            <option value="option2">1:00 pm</option>
+                            <option value="option3">2:00 pm</option>
+                            <option value="option1">3:00 pm</option>
+                            <option value="option2">4:00 pm</option>
+                            <option value="option3">5:00 pm</option>
+                            <option value="option2">6:00 pm</option>
+                            <option value="option3">7:00 pm</option>
+                            <option value="option2">8:00 pm</option>
+                            <option value="option3">9:00 pm</option>
+                            <option value="option2">10:00 pm</option>
+                            <option value="option3">11:00 pm</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-center heading">To Time(HH:MM):</td>
+                    <td>
+                        <select name="select" id="selecttotime" style="font-size: smaller;">
+                            <option value="option2">---------SELECT----------</option>
+                            <option value="option2">00::00 am</option>
+                            <option value="option2">1:00 am</option>
+                            <option value="option3">2:00 am</option>
+                            <option value="option1">3:00 am</option>
+                            <option value="option2">4:00 am</option>
+                            <option value="option3">5:00 am</option>
+                            <option value="option2">6:00 am</option>
+                            <option value="option3">7:00 am</option>
+                            <option value="option2">8:00 am</option>
+                            <option value="option3">9:00 am</option>
+                            <option value="option2">10:00 am</option>
+                            <option value="option3">11:00 am</option>
+                            <option value="option2">12:00 am</option>
+                            <option value="option2">1:00 pm</option>
+                            <option value="option3">2:00 pm</option>
+                            <option value="option1">3:00 pm</option>
+                            <option value="option2">4:00 pm</option>
+                            <option value="option3">5:00 pm</option>
+                            <option value="option2">6:00 pm</option>
+                            <option value="option3">7:00 pm</option>
+                            <option value="option2">8:00 pm</option>
+                            <option value="option3">9:00 pm</option>
+                            <option value="option2">10:00 pm</option>
+                            <option value="option3">11:00 pm</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-center heading">Tour Branch:</td>
+                    <td>
+                        <select name="select" id="selectbranch" style="font-size: smaller;">
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-center heading">Tour Place:</td>
+                    <td>
+                        <input type="text" size="14" id="selectplace" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-center heading">Tour Purpose:</td>
+                    <td>
+                        <textarea rows="2" cols="17" id="selectpurpose"></textarea>
+                    </td>
+                </tr>
+
+            </table>
+            <div class="buttonclass">
+                <button onclick="submitfunction();" class="btn">
+                    Confirm
+                </button>
+                <button class="btn" onclick="loadIndex();">
+                    Exit
+                </button>
+
+            </div>
+        </div>
+    </div>
+    
+    <script>
+       
+        function logout() {
+
+            var root = '';
+            var baselink = '@ViewData["baseurl"]';
+
+            if (document.location.hostname == 'localhost') {
+                window.location.href = "/home/Logout";
+            }
+            else {
+                root = '@ViewData["root"]';
+                domainurl = baselink + root;
+                window.location.href = domainurl + "/Home/Logout";
+            }
+        }
+
+
+
+    </script>
+    <script>
+        window.onload = function OnloadFunction() {
+            var user = '@ViewData["EmpCode"]';
+            if (user == null || user == '') {
+               alert('INACTIVE SESSION');
+                logout();
+            }
+        
+//ActiveLoginCheck(user);
+
+            callAPIResponse1();
+            callAPIResponse();
+
+
+        }
+
+
+        var DesSelect = document.getElementById("selectDep");
+
+        var a = "";
+        DesSelect.onchange = function () {
+
+            a = document.getElementById("selectDep").value;
+
+
+            if (a == "-1") {
+
+                $("#selectDes").empty();
+                $("#selectEmp").empty();
+
+
+
+            } else {
+                callAPIResponse2();
+
+            }
+
+
+
+        }
+
+        var DesSelect = document.getElementById("selectDes");
+
+
+
+        DesSelect.onchange = function () {
+
+            callAPIResponse3();
+        }
+
+
+
+        var result;
+
+
+
+
+        function callAPIResponse() {
+
+            const EmpCode = '@ViewData["EmpCode"]';
+            var brid = '@ViewData["BrID"]';
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/HRM/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/HRM/getAPIData"; }
+
+            indata = "load_branch" + "^" + EmpCode + "~" + brid;
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    const data2 = JSON.parse(response);
+                    LoadDropDown(data2);
+                },
+                error: function (response) {
+                    alert("failed");
+                }
+            });
+        }
+
+        function LoadDropDown(data) {
+            var BranchDrop = document.getElementById('selectbranch');
+
+            const options = formatDataAsArray(data);
+            BranchDrop.innerHTML = '';
+            options.forEach(option => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option.value;
+                optionElement.text = option.label;
+                BranchDrop.add(optionElement);
+            });
+        }
+
+        function formatDataAsArray(data) {
+            if (Array.isArray(data) && data.length > 0) {
+                return data.map(item => ({
+                    value: item["BRANCH_ID"],
+                    label: item["BRANCH_NAME"]
+                }));
+            } else {
+                return [];
+            }
+        }
+
+
+        function callAPIResponse1() {
+
+            const EmpCode = '@ViewData["EmpCode"]';
+            var brid = '@ViewData["BrID"]';
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/HRM/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/HRM/getAPIData"; }
+
+            indata = "load_department" + "^" + EmpCode;
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    const data2 = JSON.parse(response);
+                    LoadDropDown1(data2);
+                },
+                error: function (response) {
+                    alert("failed");
+                }
+            });
+        }
+
+        function LoadDropDown1(data) {
+            var DepDrop = document.getElementById('selectDep');
+
+            const options = formatDataAsArray1(data);
+            DepDrop.innerHTML = '';
+            options.forEach(option => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option.value;
+                optionElement.text = option.label;
+                DepDrop.add(optionElement);
+            });
+
+        }
+
+        function formatDataAsArray1(data) {
+            if (Array.isArray(data) && data.length > 0) {
+                return data.map(item => ({
+                    value: item["DEP_ID"],
+                    label: item["DEP_NAME"]
+                }));
+            } else {
+                return [];
+            }
+
+
+        }
+
+        function fetchDate() {
+            var frommdate = document.getElementById('selectfrom').value;
+
+            //var todate = document.getElementById('selectto').value;
+            // alert(getdate);
+
+            const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+
+            const [year, month, day] = frommdate.split("-");
+            const formattedMonth = months[parseInt(month, 10) - 1];
+            const fromdate = `${day}-${formattedMonth}-${year}`;
+            document.getElementById("selectfrom").innerHTML = fromdate;
+            // alert(fromdate);
+            return fromdate;
+        }
+
+        function fetchDate1() {
+            //var fromdate = document.getElementById('selectfrom').value;
+            var toodate = document.getElementById('selectto').value;
+            // alert(getdate);
+
+            const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+
+            const [year, month, day] = toodate.split("-");
+            const formattedMonth = months[parseInt(month, 10) - 1];
+            const todate = `${day}-${formattedMonth}-${year}`;
+            document.getElementById("selectto").innerHTML = todate;
+            return todate;
+        }
+
+        function disableFutureDates(dateInputId) {
+            const dateInput = document.getElementById(dateInputId);
+            const today = new Date();
+            dateInput.setAttribute('min', today.toISOString().split('T')[0]);
+        }
+        disableFutureDates("selectfrom");
+
+        function disableFutureDates1(dateInputId) {
+            const dateInput = document.getElementById(dateInputId);
+            const today = new Date();
+            dateInput.setAttribute('min', today.toISOString().split('T')[0]);
+        }
+        disableFutureDates("selectto");
+
+
+
+        function submitfunction() {
+
+
+            if (!validates()) {
+                return false;
+            }
+
+
+            const EMPselectedIndex = document.getElementById('selectEmp').selectedIndex;
+            const EMPselectedName = document.getElementById('selectEmp').options[EMPselectedIndex];
+            var EmpName = EMPselectedName.text;
+
+            const tobrIndex = document.getElementById('selectbranch').selectedIndex;
+            const tobranch = document.getElementById('selectbranch').options[tobrIndex];
+            var tobrname = tobranch.text;
+
+            const desIndex = document.getElementById('selectDes').selectedIndex;
+            const Des = document.getElementById('selectDes').options[desIndex];
+            var DesName = Des.text;
+
+            const E = document.getElementById('selectDep').selectedIndex;
+            const Ee = document.getElementById('selectDep').options[E];
+            //   var EmpName = EMPselectedName.text;
+            //    selectDep
+            var DepartmentName = Ee.text;
+
+
+            const frtime = document.getElementById('selectftime').selectedIndex;
+            const ftime = document.getElementById('selectftime').options[frtime];
+            var FromeTime = ftime.text;
+
+            const totime = document.getElementById('selecttotime').selectedIndex;
+            const ttime = document.getElementById('selecttotime').options[totime];
+            var ToTimes = ttime.text;
+
+
+
+            var toplace = document.getElementById('selectplace').value;
+            var tpurpose = document.getElementById('selectpurpose').value;
+
+
+
+
+
+
+
+            const EmpCode = '@ViewData["EmpCode"]';
+            var brid = '@ViewData["BrID"]';
+            var departmentid = document.getElementById('selectDep').value;
+
+
+
+
+            //var ftime = document.getElementById('selectftime').value;
+            // var totime = document.getElementById('selecttotime').value;
+
+            var tbranchid = document.getElementById('selectbranch').value;
+
+            const frt = fetchDate();
+            const tot = fetchDate1();
+
+            var indata = brid + "~" + EmpCode + "~" + EmpName + "~" + "" + "~" + frt + "~" + tot + "~" + tobrname + "~" + tpurpose + "~" + toplace + "~" + DesName + "~" + FromeTime + "~" + ToTimes + "~" + "18906" + "~" + tbranchid + "~" + "1" + "~" + DepartmentName + "~" + departmentid;
+            PostDataAPICall(indata);
+            resetForm();
+
+        }
+
+        function PostDataAPICall(indata) {
+
+
+            indata = 'post_tourapplication' + '^' + indata;
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/HRM/postAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/HRM/postAPIData"; }
+
+            const a = "";
+            $.ajax({
+                type: "POST",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+                   
+                    result = response;
+
+                },
+                error: function (response) {
+                    check = 0;
+                    //   alert("failed");
+                }
+            });
+
+            var access_code = '';
+            var res1 = '';
+            res1 = result;
+            access_code = JSON.parse(res1);
+            res1 = access_code[0].RESPONSE;
+            if (res1 == 1)
+                alert("application submitted");
+            else
+                alert("submited failed");
+
+        }
+        function callAPIResponse2() {
+
+            const EmpCode = '@ViewData["EmpCode"]';
+            var brid = '@ViewData["BrID"]';
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/HRM/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/HRM/getAPIData"; }
+
+            indata = "load_desg" + "^" + EmpCode + "~" + brid;
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    const data2 = JSON.parse(response);
+                    LoadDropDown2(data2);
+                },
+                error: function (response) {
+                    alert("failed");
+                }
+            });
+        }
+
+        function resetForm() {
+            var root = '';
+            var baselink = '@ViewData["baseurl"]';
+            var id = '@ViewData["HeadName"]';
+
+            if (document.location.hostname == 'localhost') {
+                window.location.href = "/HRM/FIELDTOURAPPLICATION?datas=" + id;
+            }
+            else {
+                root = '@ViewData["root"]';
+                domainurl = baselink + root;
+                window.location.href = domainurl + "/HRM/FIELDTOURAPPLICATION?datas=" + id;
+            }
+
+
+        }
+
+        function LoadDropDown2(data) {
+            var DesDrop = document.getElementById('selectDes');
+
+            const options = formatDataAsArray2(data);
+            DesDrop.innerHTML = '';
+            options.forEach(option => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option.value;
+                optionElement.text = option.label;
+                DesDrop.add(optionElement);
+            });
+            var designation = document.getElementById('selectDes').value;
+
+        }
+
+        function formatDataAsArray2(data) {
+            if (Array.isArray(data) && data.length > 0) {
+                return data.map(item => ({
+                    value: item["POST_ID"],
+                    label: item["POST_NAME"]
+                }));
+            } else {
+                return [];
+            }
+        }
+
+
+
+
+        function callAPIResponse3() {
+
+            var EmpCode = '@ViewData["EmpCode"]';
+            // var brid = '@ViewData["BrID"]';
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/HRM/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/HRM/getAPIData"; }
+
+
+            var dep = document.getElementById('selectDep').value;
+            var des = document.getElementById('selectDes').value;
+
+            //ndata = "IND_DEVICE_UPDATION_LOAD" + "^" + "400456";
+            const indata = "load_emplist" + "^" + EmpCode + "~" + dep + "~" + des;
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    const data2 = JSON.parse(response);
+                    LoadDropDown3(data2);
+                },
+                error: function (response) {
+                    alert("failed");
+                }
+            });
+
+        }
+
+        function LoadDropDown3(data) {
+            var EmpDrop = document.getElementById('selectEmp');
+
+            const options = formatDataAsArray3(data);
+            EmpDrop.innerHTML = '';
+            options.forEach(option => {
+                const optionElement = document.createElement('option');
+
+                optionElement.value = option.value;
+                optionElement.text = option.label;
+                EmpDrop.add(optionElement);
+            });
+        }
+
+        function formatDataAsArray3(data) {
+            if (Array.isArray(data) && data.length > 0) {
+                return data.map(item => ({
+                    value: item["EMP_CODE"],
+                    label: item["EMP_NAME"]
+                }));
+            } else {
+                return [];
+            }
+        }
+
+
+
+
+
+        //---------VALIDATION----------------------//
+
+
+        function validates() {
+            //  DTValidation();
+            var selectDep = document.getElementById("selectDep");
+            var selectDes = document.getElementById("selectDes");
+            var selectEmp = document.getElementById("selectEmp");
+            var selectfrom = document.getElementById("selectfrom");
+            var selectto = document.getElementById("selectto");
+            var selectftime = document.getElementById("selectftime");
+            var selecttotime = document.getElementById("selecttotime");
+            var selectbranch = document.getElementById("selectbranch");
+            var selectplace = document.getElementById("selectplace");
+            var selectpurpose = document.getElementById("selectpurpose");
+
+            if (!validateSelect(selectDep)) {
+                alert("Please select a department.");
+                return false;
+            }
+
+
+
+            if (!validateSelect(selectDes)) {
+                alert("Please select a designation.");
+                return false;
+            }
+
+            if (!validateSelect(selectEmp)) {
+                alert("Please select an employee.");
+                return false;
+            }
+
+            if (!validateDate(selectfrom)) {
+                alert("Please enter a valid from date.");
+                return false;
+            }
+
+            if (!validateDate(selectto)) {
+                alert("Please enter a valid to date.");
+                return false;
+            }
+
+            if (selectfrom.value > selectto.value) {
+                alert("From Date must be less than To Date");
+                return false; // Prevent form submission
+            }
+
+            if (!validateTime(selectftime)) {
+                alert("Please enter a valid from time.");
+                return false;
+            }
+
+            if (!validateTime(selecttotime)) {
+                alert("Please enter a valid to time.");
+                return false;
+            }
+
+            if (!validateSelect(selectbranch)) {
+                alert("Please select a tour branch.");
+                return false;
+            }
+
+            if (!validateText(selectplace)) {
+                alert("Please enter a valid tour place.");
+                return false;
+            }
+
+            if (!validateText(selectpurpose)) {
+                alert("Please enter a valid tour purpose.");
+                return false;
+            }
+
+            return true;
+        }
+
+        function validateSelect(select) {
+            if (select.selectedIndex === 0) {
+                return false;
+            }
+            return true;
+        }
+
+        function validateDate(input) {
+            var date = new Date(input.value);
+            if (isNaN(date.getTime())) {
+                return false;
+            }
+            return true;
+        }
+
+        function validateTime(input) {
+            var time = input.value;
+            if (time === "") {
+                return false;
+            }
+            return true;
+        }
+
+        function validateText(input) {
+            if (input.value === "") {
+                return false;
+            }
+            return true;
+        }
+
+        //--------------------Exit--------------------//
+
+        function loadIndex() {
+
+            var root = '';
+            var baselink = '@ViewData["baseurl"]';
+            var id = '@ViewData["HeadName"]';
+
+            if (document.location.hostname == 'localhost') {
+                window.location.href = "/HRM/Index?datas=" + id;
+            }
+            else {
+                root = '@ViewData["root"]';
+                domainurl = baselink + root;
+                window.location.href = domainurl + "/HRM/Index?datas=" + id;
+            }
+
+        }
+    </script>
+    <script>
+        function DTValidation() {
+            var fromdate = document.getElementById('selectfrom');
+            var todate = document.getElementById('selectto');
+
+            if (fromdate.value > todate.value) {
+                alert("From Date must be less than To Date");
+                return false; // Prevent form submission
+            }
+        }
+    </script>
+
+
+</body>
+
+</html>
+

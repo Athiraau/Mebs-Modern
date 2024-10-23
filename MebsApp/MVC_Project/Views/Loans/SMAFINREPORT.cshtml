@@ -1,0 +1,624 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor httpContextAccessor
+@{
+    ViewData["Title"] = "SMAFINREPORT";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    @*<meta http-equiv="refresh" content="8" />*@
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="~/css/index.css">
+    <link rel="stylesheet" href="~/css/sma_fin.css">
+
+    <style>
+
+
+
+    </style>
+
+</head>
+<body>
+    <div class="pagecontiner">
+
+        <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+
+        <div class="d-flex justify-content-center">
+@*             <a id="showfloat" href="#downarea"><button style="width:50px; border-radius:50px;"><i class="fa fa-arrow-circle-down" style="font-size:24px"></i></button></a>
+ *@            <div id="first" class="first-div">
+                <center>
+                    <div class="secondcontainer">
+                        <p class="m-auto fw-bolder "style="font-size:small">SMA FINN REPORT</p>
+                    </div>
+                </center>
+                
+                <div class="d-flex justify-content-center align-items-center mt-4">
+                    <div style="align-items:center">
+                        <p class="" style="font-size:x-small">Process Date:</p>
+                    </div>
+                    
+                    <div style="font-size:smaller">
+                        <input type="date" id="firstdate" name="firstdate" value="" />
+                    </div>
+                   
+                </div>
+
+                <div class="thirdcontainer mb-2">
+                    <button onclick="validate(); showContainer();fetchData();showexcel();" class="btn btn-primary me-2 border-0 btn-grad" style=" background-color: #132136; "> Generate </button>
+                    <button onclick="loadIndex1()" class="btn btn-primary border-0 btn-grad" style=" background-color: #132136; ">Exit</button>
+                    <button type="button" id="excel" class="btn btn-primary ms-2 border-0" style="font-size:smaller;  background-color: #4070b8; display:none; width:inherit;" onclick="ExportToExcel('xlsx')">
+                        Export to Excel
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="maindiv" style="display:none" id="dcontainer2">
+            <table class="table table-bordered table-striped" style="border:2px solid black" id="table1">
+                <thead class="c1">
+                    <tr>
+                        <th colspan="100%" style="background-color:#f0de36; border:3px solid darkred ;color:darkred; font-size:18px" class="platypi">
+                            MANAPURAM FINANCE LIMITED
+                        </th>
+                    </tr>
+                    <tr>
+                        <th colspan="100%" style="font-weight:500">
+                        <label style="font-size:x-small">BRANCH NAME : @httpContextAccessor.HttpContext.Session.GetString("BrName")</label><label style="font-size:x-small"> --- BRANCH ID : @httpContextAccessor.HttpContext.Session.GetString("BrID")</label>
+                        </th>
+                    </tr>
+
+
+                    <tr class="text1">
+                        <td colspan="3"><span id="currentDate"></span></td>
+                        <td colspan="14">FIN SMA REPORT AS ON<span id="processDate"></span></td>
+                        <td colspan="10"><span id="currentTime"></span></td>
+                    </tr>
+                    <tr class="text1">
+                        <td colspan="3">SMA CLASSIFICATION REPORT</td>
+                        <td colspan="3">NO DUES ACCOUNTS</td>
+                        <td colspan="3">DUES ACCOUNTS</td>
+                        <td colspan="16">BUCKETWISE DUE ACCOUNTS</td>
+                    </tr>
+                    <tr class="text1">
+
+                        <td>PRODUCT NAME </td>
+                        <td>LOAN COUNT </td>
+                        <td>LOAN O/S</td>
+                        <td>LOAN COUNT</td>
+                        <td colspan="2">LOAN O/S</td>
+                        <td>LOAN COUNT</td>
+                        <td colspan="2">LOAN O/S</td>
+                        <td colspan="2">SMA-0</td>
+                        <td colspan="2">SMA-1</td>
+                        <td colspan="2">SMA-2</td>
+                        <td colspan="3">NPA</td>
+                        <td colspan="2"> NON-NPA</td>
+                        <td colspan="2">NON-NPA CROSS</td>
+                        <td> NON-NPA TOTAL</td>
+                        <td colspan="2">TOTAL</td>
+
+                    </tr>
+                    <tr class="text1">
+                        <td></td>
+                        <td>Number</td>
+                        <td>Crore</td>
+                        <td>Number</td>
+                        <td>Crore</td>
+                        <td>%</td>
+                        <td>Number</td>
+                        <td>Crore</td>
+                        <td>%</td>
+                        <td>Count</td>
+                        <td>Amt-cr</td>
+                        <td>Count</td>
+                        <td>Amt-cr</td>
+                        <td>Count</td>
+                        <td>Amt-cr</td>
+                        <td>Count</td>
+                        <td>Amt-cr</td>
+                        <td>%</td>
+                        <td>Count</td>
+                        <td>Amt-cr</td>
+                        <td>Count</td>
+                        <td>Amt-cr</td>
+                        <td>Amt-cr</td>
+                        <td>Amt-cr</td>
+                        <td>%</td>
+
+                    </tr>
+
+                </thead>
+                <tbody id="table-body">
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <div id="downarea"></div>
+
+        <script>
+
+
+            function ExportToExcel(type, dl) {
+                var elt = document.getElementById('table1');
+                var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
+                // return dl ?
+                // XLSX.write(wb, { bookType: type, bookSST: true, type: 'base64' }) :
+                XLSX.writeFile(wb, 'SMA_FIN_report.' + ('xlsx'));
+            }
+
+        </script>
+        <script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.8/xlsx.min.js"></script>
+
+
+
+        <script>
+        
+            function disableFutureDates(dateInputId) {
+                const dateInput = document.getElementById(dateInputId);
+                const today = new Date();
+                dateInput.setAttribute('max', today.toISOString().split('T')[0]);
+            }
+            disableFutureDates("firstdate");
+
+            function validate() {
+
+                var from = document.getElementById("firstdate").value;
+
+                if (from == "") {
+                    alert("please select  date");
+                    return false;
+                }
+                else {
+                    return true
+                }
+            }
+            function showContainer() {
+                var dcontainer2 = document.getElementById('dcontainer2');
+                dcontainer2.style.display = 'block';
+            }
+            function showexcel() {
+
+                var excelcontainer = document.getElementById('excel');
+                excelcontainer.style.display = 'block';
+            }
+
+            function unshowContainer() {
+                var dcontainer2 = document.getElementById('dcontainer2');
+                dcontainer2.style.display = 'none';
+
+                var img2 = document.getElementById("img");
+                img2.style.display = "none";
+
+                var expButton = document.getElementById("excel");
+                expButton.style.display = "none";
+
+                document.getElementById("fromDate").value = '';
+                document.getElementById("toDate").value = '';
+                document.getElementById("dropdown").selectedIndex = 0;
+
+
+            }
+
+            function callAPIResponse() {
+
+                var _link = '';
+                if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+                else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+
+
+               const dt= fetchDate();
+                var dataz;
+                indata = "SMACLASSFINRPT"+"^"+dt;
+                var response = '';
+                $.ajax({
+                    type: "GET",
+                    url: _link,
+                    data: { datas: indata },
+                    async: false,
+                    success: function (response) {
+
+                        const data3 = JSON.parse(response);
+                        populateTable(data3)
+                    }
+                });
+            }
+            function fetchDate()
+            {
+                var getdate = document.getElementById('firstdate').value;
+                // alert(getdate);
+
+                const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+
+                const [year, month, day] = getdate.split("-");
+                const formattedMonth = months[parseInt(month, 10) - 1];
+                const formattedDate = `${day}-${formattedMonth}-${year}`;
+                document.getElementById("processDate").innerHTML = formattedDate;
+                return formattedDate;
+            }
+
+            function fetchData() {
+            var baselink = '@ViewData["baseurl"]';
+               callAPIResponse();
+              
+            }
+
+
+            // Function to create and populate table with data
+            function populateTable(data) {
+                 
+                // Get reference to the table body
+                const tableBody = document.getElementById('table-body');
+
+                // Clear existing table rows
+                tableBody.innerHTML = '';
+
+                let total_pledgecount = 0;
+                let total_pledgeamount = 0;
+                let total_noduecount = 0;
+                let total_nodueamount = 0;
+                let total_noduepercentage = 0;
+                let total_duescount = 0;
+                let total_duesamount = 0;
+
+                let total_duespercentage = 0;
+                let total_sma0count = 0;
+                let total_sma0amount = 0;
+                let total_sma1count = 0;
+                let total_sma1amount = 0;
+                let total_sma2count = 0;
+                let total_sma2amount = 0;
+                let total_sma3count = 0;
+                let total_sma3amount = 0;
+                let total_npapercentage = 0;
+                let total_nonnpacount = 0;
+                let total_nonnpabalancce = 0;
+
+
+
+                let total_nonnpaconscount = 0;
+                let total_nonnpaconsbalance = 0;
+                let total_totalnonnpa = 0;
+                let total_total = 0;
+                let total_totalpercentage = 0;
+                let total1 = {
+                    TOTAL_PER: 0, TOTAL_PER1: 0, TOTAL_PER2: 0, TOTAL_PER3: 0
+                };
+
+
+
+
+                // Iterate over the data and create table rows
+                data.forEach(item => {
+
+                    const cellvalue = parseFloat(item.PLEDGE_COUNT);
+                    const cellvalue2 = parseFloat(item.PLEDGE_AMOUNT);
+                    const cellvalue3 = parseFloat(item.NO_DUE_COUNT);
+                    const cellvalue4 = parseFloat(item.NO_DUE_AMOUNT);
+                    const cellvalue5 = parseFloat(item.NO_DUE_PERCENTAGE);
+                    const cellvalue6 = parseFloat(item.DUES_COUNT);
+                    const cellvalue7 = parseFloat(item.DUES_AMOUNT);
+                    const cellvalue8 = parseFloat(item.DUES_PERCENTAGE);
+                    const cellvalue9 = parseFloat(item.SMA0_COUNT);
+                    const cellvalue10 = parseFloat(item.SMA0_AMOUNT);
+                    const cellvalue11 = parseFloat(item.SMA1_COUNT);
+                    const cellvalue12 = parseFloat(item.SMA1_AMOUNT);
+                    const cellvalue13 = parseFloat(item.SMA2_COUNT);
+                    const cellvalue14 = parseFloat(item.SMA2_AMOUNT);
+                    const cellvalue15 = parseFloat(item.SMA3_COUNT);
+                    const cellvalue16 = parseFloat(item.SMA3_AMOUNT);
+                    const cellvalue17 = parseFloat(item.NPA_PERCENTAGE);
+                    const cellvalue18 = parseFloat(item.NONNPA_COUNT);
+                    const cellvalue19 = parseFloat(item.NONNPA_BALANCE);
+                    const cellvalue20 = parseFloat(item.NONNPA_CONS_COUNT);
+                    const cellvalue21 = parseFloat(item.NONNPA_CONS_BALANCE);
+                    const cellvalue22 = parseFloat(item.TOTAL_NONNPA);
+                    const cellvalue23 = parseFloat(item.TOTAL);
+                    const cellvalue24 = parseFloat(item.TOTAL_PERCENTAGE);
+
+
+
+
+
+
+
+                    // Create a new row
+                    const row = tableBody.insertRow();
+
+                    // Insert cells into the row
+                    const cell1 = row.insertCell();
+                    const cell2 = row.insertCell();
+                    const cell3 = row.insertCell();
+                    const cell4 = row.insertCell();
+                    const cell5 = row.insertCell();
+                    const cell6 = row.insertCell();
+                    const cell7 = row.insertCell();
+                    const cell8 = row.insertCell();
+                    const cell9 = row.insertCell();
+                    const cell10 = row.insertCell();
+                    const cell11 = row.insertCell();
+                    const cell12 = row.insertCell();
+                    const cell13 = row.insertCell();
+                    const cell14 = row.insertCell();
+                    const cell15 = row.insertCell();
+                    const cell16 = row.insertCell();
+                    const cell17 = row.insertCell();
+                    const cell18 = row.insertCell();
+                    const cell19 = row.insertCell();
+                    const cell20 = row.insertCell();
+                    const cell21 = row.insertCell();
+                    const cell22 = row.insertCell();
+                    const cell23 = row.insertCell();
+                    const cell24 = row.insertCell();
+
+
+                    const cell25 = row.insertCell();
+
+
+                    // Add more cells if needed
+
+                    // Populate cells with data
+                    cell1.textContent = item.PRODUCT_NAME;
+                    cell2.textContent = item.PLEDGE_COUNT;
+                    cell3.textContent = item.PLEDGE_AMOUNT;
+                    cell4.textContent = item.NO_DUE_COUNT;
+                    cell5.textContent = item.NO_DUE_AMOUNT;
+                    cell6.textContent = item.NO_DUE_PERCENTAGE;
+                    cell7.textContent = item.DUES_COUNT;
+                    cell8.textContent = item.DUES_AMOUNT;
+                    cell9.textContent = item.DUES_PERCENTAGE;
+                    cell10.textContent = item.SMA0_COUNT;
+                    cell11.textContent = item.SMA0_AMOUNT;
+                    cell12.textContent = item.SMA1_COUNT;
+                    cell13.textContent = item.SMA1_AMOUNT;
+                    cell14.textContent = item.SMA2_COUNT;
+                    cell15.textContent = item.SMA2_AMOUNT;
+                    cell16.textContent = item.SMA3_COUNT;
+                    cell17.textContent = item.SMA3_AMOUNT;
+                    cell18.textContent = item.NPA_PERCENTAGE;
+                    cell19.textContent = item.NONNPA_COUNT;
+                    cell20.textContent = item.NONNPA_BALANCE;
+                    cell21.textContent = item.NONNPA_CONS_COUNT;
+                    cell22.textContent = item.NONNPA_CONS_BALANCE;
+                    cell23.textContent = item.TOTAL_NONNPA;
+                    cell24.textContent = item.TOTAL;
+                    cell25.textContent = item.TOTAL_PERCENTAGE;
+
+
+                    total_pledgecount += cellvalue;
+                    total_pledgeamount += cellvalue2;
+                    total_noduecount += cellvalue3;
+                    total_nodueamount += cellvalue4;
+                    total_noduepercentage += cellvalue5;
+                    total_duescount += cellvalue6;
+                    total_duesamount += cellvalue7;
+                    total_duespercentage += cellvalue8;
+                    total_sma0count += cellvalue9;
+                    total_sma0amount += cellvalue10;
+                    total_sma1count += cellvalue11;
+                    total_sma1amount += cellvalue12;
+                    total_sma2count += cellvalue13;
+                    total_sma2amount += cellvalue14;
+                    total_sma3count += cellvalue15;
+                    total_sma3amount += cellvalue16;
+                    total_npapercentage += cellvalue17;
+                    total_nonnpabalancce += cellvalue18;
+                    total_nonnpacount += cellvalue19;
+                    total_nonnpaconscount += cellvalue20;
+                    total_nonnpaconsbalance += cellvalue21;
+                    total_totalnonnpa += cellvalue22;
+                    total_total += cellvalue23;
+                    total_totalpercentage += cellvalue24;
+
+                    cell10.style.backgroundColor = 'greenyellow';
+                    cell11.style.backgroundColor = 'greenyellow';
+                    cell12.style.backgroundColor = 'yellow';
+                    cell13.style.backgroundColor = 'yellow';
+                    cell14.style.backgroundColor = 'orange';
+                    cell15.style.backgroundColor = 'orange';
+                    cell16.style.backgroundColor = 'red';
+                    cell17.style.backgroundColor = 'red';
+                    cell18.style.backgroundColor = 'red';
+
+
+                });
+
+            
+
+                total1.TOTAL_PER = parseFloat(
+                    ((total_nodueamount / total_pledgeamount) *100).toFixed(2)
+
+                );
+
+                total1.TOTAL_PER1 = parseFloat(
+                    ((total_duesamount / total_pledgeamount) * 100).toFixed(2)
+
+                );
+
+
+                total1.TOTAL_PER2 = parseFloat(
+                    ((total_sma3amount / total_pledgeamount) * 100).toFixed(2)
+
+                );
+
+                total1.TOTAL_PER3 = parseFloat(
+                    ((total_total / total_pledgeamount) * 100).toFixed(2)
+
+                );
+                const row1 = tableBody.insertRow();
+
+                row1.style = 'font-weight:bolder;font-size:12px;background-color:white';
+
+                const cell1 = row1.insertCell();
+                const cell2 = row1.insertCell();
+                const cell3 = row1.insertCell();
+                const cell4 = row1.insertCell();
+                const cell5 = row1.insertCell();
+                const cell6 = row1.insertCell();
+                const cell7 = row1.insertCell();
+                const cell8 = row1.insertCell();
+                const cell9 = row1.insertCell();
+                const cell10 = row1.insertCell();
+                const cell11 = row1.insertCell();
+                const cell12 = row1.insertCell();
+                const cell13 = row1.insertCell();
+                const cell14 = row1.insertCell();
+                const cell15 = row1.insertCell();
+                const cell16 = row1.insertCell();
+                const cell17 = row1.insertCell();
+                const cell18 = row1.insertCell();
+                const cell19 = row1.insertCell();
+                const cell20 = row1.insertCell();
+                const cell21 = row1.insertCell();
+                const cell22 = row1.insertCell();
+                const cell23 = row1.insertCell();
+                const cell24 = row1.insertCell();
+                const cell25 = row1.insertCell();
+
+
+                cell1.textContent = "TOTAL:";
+
+
+                cell2.textContent = total_pledgecount;
+
+
+                cell3.textContent = total_pledgeamount;
+
+
+
+                cell4.textContent = total_noduecount;
+
+                cell5.textContent = total_nodueamount.toFixed(2);
+
+
+
+                cell6.textContent = total1.TOTAL_PER.toFixed(2) ;
+
+
+                cell7.textContent = total_duescount.toFixed(2);
+
+                cell8.textContent = total_duesamount.toFixed(2);
+
+                cell9.textContent = total1.TOTAL_PER1.toFixed(2) ;
+
+                cell10.textContent = total_sma0count;
+
+                cell11.textContent = total_sma0amount.toFixed(2);
+
+                cell12.textContent = total_sma1count;
+
+                cell13.textContent = total_sma1amount.toFixed(2);
+
+                cell14.textContent = total_sma2count;
+
+                cell15.textContent = total_sma2amount.toFixed(2);
+
+                cell16.textContent = total_sma3count;
+
+                cell17.textContent = total_sma3amount.toFixed(2);
+
+                cell18.textContent = total1.TOTAL_PER2.toFixed(2) ;
+
+                cell19.textContent = total_nonnpabalancce.toFixed(2);
+                cell20.textContent = total_nonnpacount.toFixed(2);
+
+
+                cell21.textContent = total_nonnpaconscount.toFixed(2);
+
+                cell22.textContent = total_nonnpaconsbalance.toFixed(2);
+
+                cell23.textContent = total_totalnonnpa.toFixed(2);
+
+                cell24.textContent = total_total.toFixed(2);
+
+                cell25.textContent = total1.TOTAL_PER3.toFixed(2);
+
+
+
+
+                cell10.style.backgroundColor = 'greenyellow';
+                cell11.style.backgroundColor = 'greenyellow';
+                cell12.style.backgroundColor = 'yellow';
+                cell13.style.backgroundColor = 'yellow';
+                cell14.style.backgroundColor = 'orange';
+                cell15.style.backgroundColor = 'orange';
+                cell16.style.backgroundColor = 'red';
+                cell17.style.backgroundColor = 'red';
+                cell18.style.backgroundColor = 'red';
+
+
+            }
+
+
+
+        </script>
+        <script>
+            const today = new Date();
+            const day = String(today.getDate()).padStart(2, '0');
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const year = today.getFullYear();
+            document.getElementById("currentDate").textContent = day + '/' + month + '/' + year;
+        </script>
+        <script>
+            var t = new Date();
+            var hours = t.getHours();
+
+            var amorpm = hours >= 12 ? 'PM' : 'AM';
+            hours = (hours % 12) || 12;
+            var minute = t.getMinutes();
+
+
+
+
+            if (minute < 10) {
+                var finaltime = hours + ':' + '0' + minute + " " + amorpm;
+
+            }
+            else {
+
+                var finaltime = hours + ':' + minute + " " + amorpm;
+
+            }
+            document.getElementById("currentTime").innerHTML = finaltime;
+
+        </script>
+
+
+        <script>
+
+            function loadIndex1()
+            {
+                var root = '';
+                var baselink = '@ViewData["baseurl"]';
+                var id = '@ViewData["HeadName"]';
+
+                if (document.location.hostname == 'localhost') {
+                    window.location.href = "/loans/Index?datas=" + id;
+                }
+                else {
+                    root = '@ViewData["root"]';
+                    domainurl = baselink + root;
+                    window.location.href = domainurl + "/loans/Index?datas=" + id;
+                }
+            }
+
+        </script>
+
+    </div>
+
+</body>
+</html>

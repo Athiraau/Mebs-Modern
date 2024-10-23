@@ -1,0 +1,126 @@
+﻿.dcontainer1 {
+    background-color: #cfd8dc;
+    margin-top: 30px;
+    height: 100%;
+    width: 65%;
+    border-radius: 25px;
+    /* border: 5px solid #132136; */
+    font-size: small;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+    padding:0;
+}
+
+.secondcontainer {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    height: 50%;
+    border-radius: 15px 15px 0px 0px;
+    background-color: #1e3657;
+    color: white;
+    
+}
+
+
+h5 {
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 10px;
+    padding: 20px;
+    padding: 20px 110px;
+}
+
+label {
+    display: block;
+    /*        font-weight: bold;
+                              */
+    font-size: initial;
+}
+
+input[type="date"],
+select {
+    width: 100%;
+    padding: 4px;
+    cursor: pointer;
+    border: 1px solid #ADC;
+    border-radius: 5px;
+}
+
+
+
+table {
+    width: 80%;
+    border-collapse: collapse;
+}
+
+
+
+th,
+td {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+    font-size: initial;
+}
+
+th {
+    background-color: #f2f2f2;
+    font-size: initial;
+}
+
+
+#dcontainer2 {
+    display: none;
+    height: 40%;
+    width: 50%;
+}
+
+.btn-grad {
+    background-image: linear-gradient(to right, #4b6cb7 0%, #182848 51%, #4b6cb7 100%);
+    text-transform: uppercase;
+    transition: 0.5s;
+    width: 100px;
+    padding: 6px;
+    background-size: 200% auto;
+    color: white;
+    border-radius: 10px;
+    cursor: pointer;
+    border: none;
+    display: block;
+}
+
+.btn-grad1 {
+    background-image: linear-gradient(to right, #4b6cb7 0%, #182848 51%, #4b6cb7 100%);
+    padding: 6px;
+    transition: 0.5s;
+    background-size: 200% auto;
+    cursor: pointer;
+    color: white;
+    border-radius: 10px;
+    border: none;
+    display: none;
+    font-size: 8px;
+}
+
+
+.btn-grad:hover {
+    background-position: right center;
+    /* change the direction of the change here */
+    color: #fff;
+    text-decoration: none;
+}
+
+
+.fs-10 {
+    font-size: 9px;
+}
+
+.fs-15 {
+    font-size: 9px;
+}
+
+.p-red {
+    background-color: red;
+}

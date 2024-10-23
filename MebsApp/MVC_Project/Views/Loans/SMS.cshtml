@@ -1,0 +1,456 @@
+﻿
+@{
+    ViewData["Title"] = "SMS";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    @*<meta http-equiv="refresh" content="8" />*@
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="~/css/index.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.4/xlsx.full.min.js"></script>
+
+    <style>
+        .pagecontiner {
+            background-color: transparent;
+        }
+
+        .dcontainer1 {
+            background-color: #CADCFC;
+            margin-top: 30px;
+            height: 100%;
+            width: 65%;
+            border-radius: 25px;
+            /* border: 5px solid #132136; */
+            font-size: small;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+            padding: 0;
+        }
+
+        .secondcontainer {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            height: 50%;
+            border-radius: 15px 15px 0px 0px;
+            background-color: #00246B;
+            color: white;
+        }
+
+
+        h5 {
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+            padding: 20px;
+            padding: 20px 110px;
+        }
+
+        label {
+            display: block;
+            /*        font-weight: bold;
+                                                                                                              */
+            font-size: initial;
+        }
+
+        input[type="date"],
+        select {
+            width: 100%;
+            padding: 4px;
+            cursor: pointer;
+            border: 1px solid #ADC;
+            border-radius: 5px;
+        }
+
+
+
+        table {
+            width: 80%;
+            border-collapse: collapse;
+        }
+
+
+
+        th,
+        td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+            font-size: 10px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            font-size: 10px;
+        }
+
+
+        #dcontainer2 {
+            display: none;
+            height: 40%;
+            width: 50%;
+        }
+
+        .btn-grad {
+            background-image: linear-gradient(to right, #4b6cb7 0%, #182848 51%, #4b6cb7 100%);
+            text-transform: uppercase;
+            transition: 0.5s;
+            width: 100px;
+            padding: 6px;
+            background-size: 200% auto;
+            color: white;
+            border-radius: 10px;
+            cursor: pointer;
+            border: none;
+            display: block;
+        }
+
+        .btn-grad1 {
+            background-image: linear-gradient(to right, #4b6cb7 0%, #182848 51%, #4b6cb7 100%);
+            padding: 6px;
+            transition: 0.5s;
+            background-size: 200% auto;
+            cursor: pointer;
+            color: white;
+            border-radius: 10px;
+            border: none;
+            display: none;
+            font-size: 8px;
+        }
+
+
+        .btn-grad:hover {
+            background-position: right center;
+            /* change the direction of the change here */
+            color: #fff;
+            text-decoration: none;
+        }
+
+
+        .fs-10 {
+            font-size: 9px;
+        }
+
+        .fs-15 {
+            font-size: 9px;
+        }
+
+        .p-red {
+            background-color: red;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="pagecontiner">
+        <div class="dcontainer1">
+
+
+            <form>
+                <div class="secondcontainer">
+                    <p style="font-size:large">SURPLUS SMS REPORT</p>
+                </div>
+
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            <label for="fromDate" style="font-size:12px">FROM DATE:</label>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            <input type="date" id="frmDate" value="" name="fromDate">
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            <label for="toDate" style="font-size:12px">TO DATE:</label>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            <input type="date" id="toDate" value="" name="toDate">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="margin-top:20px;font-size:13px;font-weight:800;">
+                    <div class="col-lg-3">
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-sm-12 ">
+                        <button type="button" id="fetch-button" class="btn-grad"
+                                onclick="Validate();fetchData();showContainer();">
+
+                            SUBMIT
+                        </button>
+                        @* onclick="Validate();();showContainer();cleart();"> *@
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-sm-12">
+                        <button type="button" class=" btn-grad" onclick="loadIndex()">EXIT</button>
+                    </div>
+
+                    <!-- <button id="exportExcel" style=" width: 20px;">Export to Excel</button> -->
+
+                </div>
+
+            </form>
+        </div>
+
+
+        <!-- Table -->
+        <div class="mt-5" id="dcontainer2" style="margin-left:272px;">
+
+            <div>
+                <button type="button" class="btn btn-dark btn-block btn2 fs-10" onclick="exportToExcel();">
+                    Export to Excel
+                </button>
+
+            </div>
+
+            <div class="mt-5">
+                <table class="table table-striped table-hover" id="your-table-id">
+                    <thead>
+                        <tr>
+                            <th class="table-secondary text-center text-white" style="background-color: #00246B" colspan="8">
+                                MANAPPURAM FINANCE LIMITED
+                            </th>
+                        </tr>
+
+                        <tr>
+                            <th class="table-secondary text-center" style="background-color:#CADCFC" colspan="8">
+                                SURPLUS SMS WEEKLY SENT REPORT
+                            </th>
+                        </tr>
+
+
+
+                        <tr>
+                            <th class="fs-10">BRANCH ID</th>
+                            <th class="fs-10">ZONE</th>
+                            <th class="fs-10">CUSTOMER ID</th>
+                            <th class="fs-10">SEND DATE</th>
+                            <th class="fs-10">DELIVERY STATUS</th>
+
+                        </tr>
+                    </thead>
+                    <tbody id="table-body1">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+
+    <script>
+        function ActiveLoginCheck() {
+            var user = '@ViewData["EmpCode"]';
+            if (user == null || user == '') {
+                alert('INACTIVE SESSION');
+                loadIndex();
+            }
+
+        }
+        window.onload = function OnloadFunction() {
+            ActiveLoginCheck();
+        }
+        //disable futuredate
+        function disableFutureDates(dateInputId) {
+            const dateInput = document.getElementById(dateInputId);
+            const today = new Date();
+            dateInput.setAttribute('max', today.toISOString().split('T')[0]);
+        }
+        disableFutureDates("frmDate");
+        disableFutureDates("toDate");
+
+        function loadIndex() {
+
+            var root = '';
+            var baselink = '@ViewData["baseurl"]';
+            var id = '@ViewData["HeadName"]';
+
+            if (document.location.hostname == 'localhost') {
+                window.location.href = "/loans/Index?datas=" + id;
+            }
+            else {
+                root = '@ViewData["root"]';
+                domainurl = baselink + root;
+                window.location.href = domainurl + "/loans/Index?datas=" + id;
+            }
+
+        }
+        function Validate() {
+            var from = document.getElementById("frmDate").value;
+            var to = document.getElementById("toDate").value;
+
+
+            if (from == "") {
+                alert("please select from date");
+                return false;
+            } else if (to == "") {
+                alert("please select  To date");
+                return false;
+            }
+            return true;
+        }
+
+
+        function showContainer() {
+            var dcontainer2 = document.getElementById('dcontainer2');
+            dcontainer2.style.display = 'block';
+        }
+
+        function unshowContainer() {
+            var dcontainer2 = document.getElementById('dcontainer2');
+            dcontainer2.style.display = 'none';
+        }
+
+
+        function fetchDate() {
+            var getdate = document.getElementById('frmDate').value;
+            //alert(getdate);
+
+            const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+
+            const [year, month, day] = getdate.split("-");
+            const formattedMonth = months[parseInt(month, 10) - 1];
+            const formattedDate = `${day}-${formattedMonth}-${year}`;
+            /// document.getElementById("processDate").innerHTML = formattedDate;
+            return formattedDate;
+        }
+
+        function fetchDate1() {
+            var getdate = document.getElementById('toDate').value;
+            //alert(getdate);
+
+            const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+
+            const [year, month, day] = getdate.split("-");
+            const formattedMonth = months[parseInt(month, 10) - 1];
+            const formattedDate = `${day}-${formattedMonth}-${year}`;
+            /// document.getElementById("processDate").innerHTML = formattedDate;
+            return formattedDate;
+        }
+
+
+
+        function callAPIResponse() {     //CALLAPIRESPONSE
+
+            dt = fetchDate();
+            dt1 = fetchDate1();
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+
+
+            var dataz;
+            indata = "Mebs_Auction" + "^" + "smsweekly" + "~" + dt + "*" + dt1;
+
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    const data3 = JSON.parse(response);
+                    populateTable(data3)
+                }
+            });
+        }
+
+
+
+        function fetchData() {
+            //alert("fetch");
+            
+            var baselink = '@ViewData["baseurl"]';
+            callAPIResponse();
+
+
+        }
+
+
+
+
+
+        // Function to create and populate table with data
+        function populateTable(data) {
+
+            // Get reference to the table body
+            const tableBody = document.getElementById('table-body1');
+
+            // Clear existing table rows
+            tableBody.innerHTML = '';
+
+
+
+            // Iterate over the data and create table rows
+            data.forEach(item => {
+                const cellvalue1 = parseFloat(item.BRANCH_ID);
+                const cellvalue2 = parseFloat(item.FZM_ID);
+                const cellvalue3 = parseFloat(item.CUST_ID);
+                const cellvalue4 = parseFloat(item.PROCESS_DT);
+                const cellvalue5 = parseFloat(item.STATUS);
+
+
+
+
+                // Create a new row
+                const row = tableBody.insertRow();
+
+                // Insert cells into the row
+                const cell1 = row.insertCell();
+                const cell2 = row.insertCell();
+                const cell3 = row.insertCell();
+                const cell4 = row.insertCell();
+                const cell5 = row.insertCell();
+
+
+
+
+                // Add more cells if needed
+
+                // Populate cells with data
+
+                cell1.textContent = item.BRANCH_ID;
+                cell2.textContent = item.FZM_ID;
+                cell3.textContent = item.CUST_ID;
+                cell4.textContent = item.PROCESS_DT;
+                cell5.textContent = item.STATUS;
+
+
+
+            });
+
+        }
+
+        function exportToExcel() {
+            const table = document.getElementById('your-table-id');
+            if (table) {
+                const wb = XLSX.utils.table_to_book(table, { sheet: "Sheet JS" });
+                if (wb) {
+                    XLSX.writeFile(wb, 'sms.xlsx');
+                } else {
+                    console.error('Workbook is null. Unable to export data.');
+                }
+            } else {
+                console.error('Table element not found. Unable to export data.');
+            }
+        }
+
+    </script>
+</body>
+</html>

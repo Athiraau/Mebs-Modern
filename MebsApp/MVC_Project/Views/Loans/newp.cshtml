@@ -1,0 +1,391 @@
+﻿@{
+    ViewData["Title"] = "newp";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="~/css/index.css">
+    <script src="~/js/site.js"></script>
+
+
+    <style>
+
+        .completionyear {
+            width: 10%;
+        }
+
+
+        .form-container {
+            border-radius: 5px;
+            padding: 10px;
+            background-color: #F7C5CC;
+            /*box-shadow: 0 2px 5px rgba(17,45,78,1);*/
+        }
+
+        .form-control {
+            height: 30px;
+            font-size: small;
+        }
+
+        .form-label {
+            font-weight: 500;
+            font-size: small;
+            color: #27005D;
+        }
+
+        .label1 {
+            font-size: small;
+            color: #27005D;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 6px 5px;
+            font-size: 10px;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            background-color: #CC313D;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+            .btn:hover {
+                background-color: greenyellow;
+            }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            margin-top: 12px;
+        }
+
+            .btn-group .btn {
+                margin: 0 50px;
+            }
+    </style>
+
+</head>
+
+<body>
+    <div class="pagecontiner">
+        <div class="d-flex justify-content-center align-items-center" style="background-color:#CC313D; font-weight: 600; color:white;height:50px">
+            <span class="text-center"><b>SETTLEMENT UPDATION</b></span>
+        </div>
+        <div class="form-container">
+            <div class="form-group row">
+                <label for="brid" class="col-sm-3 col-form-label form-label">SELECT BRANCH</label>
+                <div class="col-sm-3">
+                    <select id="branch" class="form-control" onchange="callAPIResponse1();">
+                        <option value="SELECT">--SELECT BRANCH--</option>
+
+                    </select>
+                </div>
+            </div>
+            <br />
+
+
+            <div class="form-group row">
+                <label for="pledges" class="col-sm-3 col-form-label form-label">SELECT PLEDGE NUMBER</label>
+                <div class="col-sm-3">
+                    <select id="pledge" class="form-control" readonly>
+                        <option value="SELECT">--SELECT PLEDGE--</option>
+                    </select>
+                </div>
+            </div>
+            <br />
+
+
+            <div class="form-group row">
+                <label for="pledges" class="col-sm-3 col-form-label form-label">ENTER SETTLEMENT AMOUNT</label>
+                <div class="col-sm-3">
+                    <input type="text" id="amt" class="form-control" />
+                </div>
+            </div>
+            <br /><br />
+
+
+
+
+
+            <br />
+
+
+            <br />
+            <div class="btn-group label1">
+                <button class="btn" onclick="SubmitForm();">Confirm</button>
+                <button class="btn" onclick="loadIndex()">Exit</button>
+            </div>
+
+        </div>
+    </div>
+
+
+    <script>
+
+        function loadIndex() {
+
+            var root = '';
+            var baselink = '@ViewData["baseurl"]';
+            var id = '@ViewData["HeadName"]';
+
+            if (document.location.hostname == 'localhost') {
+                window.location.href = "/Loans/Index?datas=" + id;
+            }
+            else {
+                root = '@ViewData["root"]';
+                domainurl = baselink + root;
+                window.location.href = domainurl + "/Loans/Index?datas=" + id;
+            }
+
+        }
+    </script>
+
+
+    <script>
+
+
+        function ActiveLoginCheck() {
+            var user = '@ViewData["EmpCode"]';
+            if (user == null || user == '') {
+                alert('INACTIVE SESSION');
+                loadIndex();
+            }
+
+        }
+
+        window.onload = function OnloadFunction() {
+            ActiveLoginCheck();
+            var res = checkUserAccess();
+
+            if (res != 1) {
+                alert("You are not authorized to view this page..");
+                loadIndex();
+            }
+
+            else {
+                callAPIResponse();
+
+            }
+        }
+
+        function checkUserAccess() {
+
+            var ecode = '@ViewData["EmpCode"]';
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+
+
+            var indata = "Mebs_Auction" + "^" + "USER_ACCESS_settlement_PAGE" + "~" + ecode;
+
+            const a = "";
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+                    res = response;
+
+
+                },
+                error: function (response) {
+                    res = 0;
+
+                }
+            });
+            res = JSON.parse(res);
+            res = res[0].RESULT;
+            return res;
+        }
+
+    </script>
+
+
+    <script>
+
+
+        function callAPIResponse() {
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+            indata = "Mebs_Auction" + "^" + "select_branch_setup" + "~" + 1;
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    const data2 = JSON.parse(response);
+                    LoadDropDown(data2);
+                },
+                error: function (response) {
+                    alert("failed");
+                }
+            });
+        }
+
+
+        function LoadDropDown(data) {
+
+            const options = formatDataAsArray(data);
+            branch.innerHTML = '';
+            options.forEach(option => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option.value;
+                optionElement.text = option.label;
+                branch.add(optionElement);
+            });
+        }
+
+        function formatDataAsArray(data) {
+
+            if (Array.isArray(data) && data.length > 0) {
+                return data.map(item => ({
+                    value: item["BRANCH_ID"],
+                    label: item["BRANCH_NAME"]
+                }));
+            } else {
+                return [];
+            }
+        }
+
+
+
+
+
+        function callAPIResponse1() {
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+            var brid = document.getElementById("branch").value;
+            indata = "Mebs_Auction" + "^" + "select_pledge_setup" + "~" + brid;
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    const data3 = JSON.parse(response);
+                    LoadDropDown1(data3);
+                },
+                error: function (response) {
+                    alert("failed");
+                }
+            });
+        }
+
+
+        function LoadDropDown1(data) {
+
+            const options = formatDataAsArray1(data);
+            pledge.innerHTML = '';
+            options.forEach(option => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option.value;
+                optionElement.text = option.label;
+                pledge.add(optionElement);
+            });
+        }
+
+        function formatDataAsArray1(data) {
+
+            if (Array.isArray(data) && data.length > 0) {
+                return data.map(item => ({
+                    value: item["PLEDGE_NUMBER"],
+                    label: item["PLEDGE"]
+                }));
+            } else {
+                return [];
+            }
+        }
+        function resetForm() {
+            var root = '';
+            var baselink = '@ViewData["baseurl"]';
+            var id = '@ViewData["HeadName"]';
+
+            if (document.location.hostname == 'localhost') {
+                window.location.href = "/LOANS/newp?datas=" + id;
+            }
+            else {
+                root = '@ViewData["root"]';
+                domainurl = baselink + root;
+                window.location.href = domainurl + "/LOANS/newp?datas=" + id;
+            }
+
+
+        }
+        function validatefunction() {
+
+            var br = document.getElementById("branch").value;
+            if (br == "-1") {
+                alert("please select the branch")
+                return 0;
+            }
+            var amount = document.getElementById("amt").value;
+            if (amount === "") {
+                alert("Please Enter the Amount Carefully...");
+                return 0;
+            }
+
+
+            return 1;
+        }
+
+        function SubmitForm() {
+            var a = validatefunction();
+
+
+
+            if (!a == 1)
+                return;
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+            const EmpCode = '@ViewData["EmpCode"]';
+
+
+            var pledgeno = document.getElementById("pledge").value;
+            var amount = document.getElementById("amt").value;
+
+
+            indata = "Mebs_Auction" + "^" + "confirm_amt" + "~" + amount + '*' + EmpCode + '*' + pledgeno;
+
+
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+                    const data4 = JSON.parse(response);
+                    alert("Updated Succesfully");
+                    resetForm();
+
+                },
+                error: function (response) {
+
+                    alert("failed");
+                }
+            });
+
+        }
+
+
+    </script>
+
+</body>
+</html>

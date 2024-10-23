@@ -1,0 +1,596 @@
+﻿@{
+    ViewData["Title"] = "UNSUCCESSFULBRANCHREPORTPHASE1";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    @*<meta http-equiv="refresh" content="8" />*@
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="~/css/index.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.4/xlsx.full.min.js"></script>
+
+
+
+
+    <style>
+        .pagecontiner {
+            background-color: transparent;
+        }
+
+        .dcontainer1 {
+            background-color: #e0cdbe;
+            margin-top: 30px;
+            height: 100%;
+            width: 65%;
+            border-radius: 25px;
+            /* border: 5px solid #132136; */
+            font-size: small;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+            padding: 0;
+        }
+
+        .secondcontainer {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            height: 50%;
+            border-radius: 15px 15px 0px 0px;
+            background-color: #097770;
+            color: white;
+        }
+
+
+        h5 {
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+            padding: 20px;
+            padding: 20px 110px;
+        }
+
+        label {
+            display: block;
+            /*        font-weight: bold;
+                                                                              */
+            font-size: initial;
+        }
+
+        input[type="date"],
+        select {
+            width: 100%;
+            padding: 4px;
+            cursor: pointer;
+            border: 1px solid #ADC;
+            border-radius: 5px;
+        }
+
+
+
+        table {
+            width: 80%;
+            border-collapse: collapse;
+        }
+
+
+
+        th,
+        td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+            font-size: 10px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            font-size: 10px;
+        }
+
+
+        #dcontainer2 {
+            display: none;
+            height: 40%;
+            width: 50%;
+        }
+
+        .btn-grad {
+            background-image: linear-gradient(to right, #097770,#0c9b92, #097770 );
+            text-transform: uppercase;
+            transition: 0.5s;
+            width: 100px;
+            padding: 6px;
+            background-size: 200% auto;
+            color: white;
+            border-radius: 10px;
+            cursor: pointer;
+            border: none;
+            display: block;
+        }
+
+        .btn-grad1 {
+            background-image: linear-gradient(to right, #4b6cb7 0%, #182848 51%, #4b6cb7 100%);
+            padding: 6px;
+            transition: 0.5s;
+            background-size: 200% auto;
+            cursor: pointer;
+            color: white;
+            border-radius: 10px;
+            border: none;
+            display: none;
+            font-size: 8px;
+        }
+
+
+        .btn-grad:hover {
+            background-position: right center;
+            /* change the direction of the change here */
+            color: #fff;
+            text-decoration: none;
+        }
+
+
+        .fs-10 {
+            font-size: 9px;
+        }
+
+        .fs-15 {
+            font-size: 9px;
+        }
+
+        .p-red {
+            background-color: red;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="pagecontiner">
+        <div class="dcontainer1">
+
+
+            <form>
+                <div class="secondcontainer">
+                    <p style="font-size:large">UNSUCCESSFUL BRANCH AUCTION REPORT PHASE 1</p>
+                </div>
+
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            <label for="fromDate" style="font-size:12px">FROM DATE:</label>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            <input type="date" id="frmDate" value="" name="fromDate">
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            <label for="Todate" style="font-size:12px">TO DATE:</label>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            <input type="date" id="Todt" value="" name="Todate">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="margin-top:20px;font-size:13px;font-weight:800;">
+                    <div class="col-lg-3">
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-sm-12 ">
+                        <button type="button" id="fetch-button" class="btn-grad"
+                                onclick="Validate();fetchData();showContainer();">
+
+                            SUBMIT
+                        </button>
+                        @* onclick="Validate();();showContainer();cleart();"> *@
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-sm-12">
+                        <button type="button" class=" btn-grad" onclick="loadindex()">EXIT</button>
+                    </div>
+
+                    <!-- <button id="exportExcel" style=" width: 20px;">Export to Excel</button> -->
+
+                </div>
+            </form>
+        </div>
+
+
+        <!-- Table -->
+        <div class="mt-5" id="dcontainer2">
+
+            <div style="margin-top: 24px;">
+                <button type="button" class=" btn-grad" onclick="exportToExcel();">
+                    Export to Excel
+                </button>
+
+            </div>
+
+            <div class="mt-5">
+                <table class="table table-striped table-hover" id="your-table-id">
+                    <thead>
+                        <tr>
+                            <th class="table-secondary text-center text-white" style="background-color: #097770" colspan="17">
+                                MANAPPURAM FINANCE LIMITED
+                            </th>
+                        </tr>
+
+                        <tr>
+                            <th class="table-secondary text-center" style="background-color:#e0cdbe" colspan="17">
+                                UNSUCCESSFUL BRANCH AUCTION REPORT PHASE 1
+                            </th>
+                        </tr>
+
+                        @* <tr style="background-color:#808080">
+                        <th colspan="3">
+                        <span id="date" style="font-size:10px; font-weight:bold;"></span>
+                        </th>
+                        <th class="text-center fs-10" colspan="6">
+                        UNPAID REPORT
+                        </th>
+                        <th colspan="3" class="fs-10">
+                        <span id="time" style="font-size:10px; font-weight:bold;"></span>
+                        </th>
+                        </tr> *@
+
+                        <tr style="background-color: #a9c0a6">
+                            <th class="text-center fs-10 text-black">SL.NO</th>
+                            <th class="text-center fs-10 text-black">BRANCH NAME</th>
+                            <th class="text-center fs-10 text-black">BRANCH ID</th>
+                            <th class="text-center fs-10 text-black">REGION NAME</th>
+                            <th class="text-center fs-10 text-black">AUCTION LIST DATE</th>
+                            <th class="text-center fs-10 text-black">AUCTION LIKELY DATE</th>
+                            <th class="text-center fs-10 text-black">PLEDGE NUMBER</th>
+                            <th class="text-center fs-10 text-black">GROSS WEIGHT</th>
+                            <th class="text-center fs-10 text-black">NET WEIGHT</th>
+                            <th class="text-center fs-10 text-black">STONE WEIGHT</th>
+                            <th class="text-center fs-10 text-black">STANDARD WEIGHT</th>
+                            <th class="text-center fs-10 text-black">UNSUCCESS REASON</th>
+                            <th class="text-center fs-10 text-black">ENTERD DATE</th>
+                            <th class="text-center fs-10 text-black">AUCTION DATE</th>
+                            <th class="text-center fs-10 text-black">CLASSIFICATION OF GOLD</th>
+                            <th class="text-center fs-10 text-black">BIDDER COUNT</th>
+                            <th class="text-center fs-10 text-black">BIDDER NAMES</th>
+
+                        </tr>
+                    </thead>
+                    <tbody id="table-body1">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+    <script>
+        function disableFutureDates(dateInputId) {
+            const dateInput = document.getElementById(dateInputId);
+            const today = new Date();
+            dateInput.setAttribute('max', today.toISOString().split('T')[0]);
+        }
+        disableFutureDates("frmDate");
+
+        function disableFutureDates1(dateInputId) {
+            const dateInput = document.getElementById(dateInputId);
+            const today = new Date();
+            dateInput.setAttribute('max', today.toISOString().split('T')[0]);
+        }
+        disableFutureDates1("Todt");
+
+        function ActiveLoginCheck() {
+            var user = '@ViewData["EmpCode"]';
+            if (user == null || user == '') {
+                alert('INACTIVE SESSION');
+                loadindex();
+            }
+
+        }
+        //ACCESSIBILITY
+        window.onload = function OnloadFunction() {
+            ActiveLoginCheck();
+            EmpAccess();
+
+        }
+        function EmpAccess() {
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+
+            const EmpCode = '@ViewData["EmpCode"]';
+
+            indata = "Mebs_Auction" + "^" + "Phase1_EmpAccess" + "~" + EmpCode;
+
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+                    reqs = response;
+
+
+
+                }
+
+            });
+
+
+            reqs = JSON.parse(reqs);
+            reqs = reqs[0].RESULT;
+
+
+
+
+            if (reqs > 0) {
+                callAPIResponse();
+
+            }
+            else {
+
+                alert("You are not Authorised to do this Job");
+                loadindex();
+            }
+        }
+
+
+        //exit
+        function loadindex() {
+
+            var root = '';
+            var baselink = '@ViewData["baseurl"]';
+            var id = '@ViewData["HeadName"]';
+
+            if (document.location.hostname == 'localhost') {
+                window.location.href = "/loans/Index?datas=" + id;
+            }
+            else {
+                root = '@ViewData["root"]';
+                domainurl = baselink + root;
+                window.location.href = domainurl + "/loans/Index?datas=" + id;
+            }
+
+        }
+        //code for validation
+
+        function Validate() {
+            var from = document.getElementById("frmDate");
+            if (from.value == "") {
+                //If the "Please Select" option is selected display error.
+                alert("Please select a Fromdate");
+                return false;
+            }
+            var to = document.getElementById("Todt");
+            if (to.value == "") {
+                //If the "Please Select" option is selected display error.
+                alert("Please select a Todate");
+                return false;
+            }
+            // img.style.display = "block";
+            return true;
+        }
+        //code for showing the table container
+
+        function showContainer() {
+            var dcontainer2 = document.getElementById('dcontainer2');
+            dcontainer2.style.display = 'block';
+
+            var buttonSummary = document.getElementById('fetch-button1');
+            buttonSummary.style.display = "block";
+
+            var buttonNpa = document.getElementById('fetch-button2');
+            buttonNpa.style.display = "block";
+
+
+            var buttonNonNpa = document.getElementById('fetch-button3');
+            buttonNonNpa.style.display = "block";
+        }
+
+
+        //export to excel
+        function exportToExcel() {
+            const table = document.getElementById('your-table-id');
+            if (table) {
+                const wb = XLSX.utils.table_to_book(table, { sheet: "Sheet JS" });
+                if (wb) {
+                    XLSX.writeFile(wb, 'UNSUCCESSFUL BRANCH AUCTION REPORT PHASE1.xlsx');
+                } else {
+                    console.error('Workbook is null. Unable to export data.');
+                }
+            } else {
+                console.error('Table element not found. Unable to export data.');
+            }
+        }
+        //date fetch
+        function fetchDate() {
+            var getdate = document.getElementById('frmDate').value;
+
+
+            const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+
+            const [year, month, day] = getdate.split("-");
+            const formattedMonth = months[parseInt(month, 10) - 1];
+            const formattedDate = `${day}-${formattedMonth}-${year}`;
+            /// document.getElementById("processDate").innerHTML = formattedDate;
+            return formattedDate;
+        }
+        function fetchDate1() {
+            var getdate = document.getElementById('Todt').value;
+
+
+            const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+
+            const [year, month, day] = getdate.split("-");
+            const formattedMonth = months[parseInt(month, 10) - 1];
+            const formattedDate = `${day}-${formattedMonth}-${year}`;
+            /// document.getElementById("processDate").innerHTML = formattedDate;
+            return formattedDate;
+        }
+
+        //API
+        function callAPIResponse() {
+
+
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+
+            const dt = fetchDate();
+            const dt1 = fetchDate1();
+
+            //const dt = fetchDate() + "~" + fetchDate1();
+            var dataz;
+            indata = "Mebs_Auction" + "^" + "unsuccessrptphase1" + "~" + dt + "*" + dt1;
+
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    const data3 = JSON.parse(response);
+                    populateTable(data3)
+                }
+            });
+        }
+        function fetchData() {
+
+            var baselink = '@ViewData["baseurl"]';
+            callAPIResponse();
+            //    //const apiUrl = baselink + 'smareportsapi/api/SMAModule/GetSMAData/SMACLASSFINRPT/' + formattedDate + '/1';
+            //    const indata = formattedDate;
+            //       const data = callAPIResponse(indata);
+            //   const   data3 = JSON.parse(data.replace(/&quot;/g, '"'));
+            // populateTable(data3)
+
+        }
+
+
+        // Function to create and populate table with data
+        function populateTable(data) {
+
+            // Get reference to the table body
+            const tableBody = document.getElementById('table-body1');
+
+            // Clear existing table rows
+            tableBody.innerHTML = '';
+
+
+
+            // Iterate over the data and create table rows
+            data.forEach(item => {
+                const cellvalue = parseFloat(item.SLNO);
+                const cellvalue1 = parseFloat(item.BRANCH_NAME);
+                const cellvalue2 = parseFloat(item.BRANCH_ID);
+                const cellvalue3 = parseFloat(item.REGION_NAME);
+                const cellvalue4 = parseFloat(item.AUCTION_LIST_DATE);
+                const cellvalue5 = parseFloat(item.AUCTIONABLE_DATE);
+                const cellvalue6 = parseFloat(item.PLEDGE_NUMBER);
+                const cellvalue7 = parseFloat(item.GROSS_WT);
+                const cellvalue8 = parseFloat(item.NET_WT);
+                const cellvalue9 = parseFloat(item.STONE_WT);
+                const cellvalue10 = parseFloat(item.STD_WT);
+                const cellvalue11 = parseFloat(item.UNSUCCESSFULL_REASON);
+                const cellvalue12 = parseFloat(item.ENTERD_DATE);
+                const cellvalue13 = parseFloat(item.AUCTION_DATE);
+                const cellvalue14 = parseFloat(item.CLASS_ID);
+                const cellvalue15 = parseFloat(item.BIDDER_COUNT);
+                const cellvalue16 = parseFloat(item.BIDDER_NAME);
+                // const cellvalue17 = parseFloat(item.NPA_PERCENTAGE);
+                // const cellvalue18 = parseFloat(item.NONNPA_COUNT);
+                // const cellvalue19 = parseFloat(item.NONNPA_BALANCE);
+                // const cellvalue20 = parseFloat(item.NONNPA_CONS_COUNT);
+                // const cellvalue21 = parseFloat(item.NONNPA_CONS_BALANCE);
+                // const cellvalue22 = parseFloat(item.TOTAL_NONNPA);
+                // const cellvalue23 = parseFloat(item.TOTAL);
+                // const cellvalue24 = parseFloat(item.TOTAL_PERCENTAGE);
+
+
+
+
+
+
+                // Create a new row
+                const row = tableBody.insertRow();
+
+                // Insert cells into the row
+                const cell1 = row.insertCell();
+                const cell2 = row.insertCell();
+                const cell3 = row.insertCell();
+                const cell4 = row.insertCell();
+                const cell5 = row.insertCell();
+                const cell6 = row.insertCell();
+                const cell7 = row.insertCell();
+                const cell8 = row.insertCell();
+                const cell9 = row.insertCell();
+                const cell10 = row.insertCell();
+                const cell11 = row.insertCell();
+                const cell12 = row.insertCell();
+                const cell13 = row.insertCell();
+                const cell14 = row.insertCell();
+                const cell15 = row.insertCell();
+                const cell16 = row.insertCell();
+                const cell17 = row.insertCell();
+                // const cell19 = row.insertCell();
+                // const cell20 = row.insertCell();
+                // const cell21 = row.insertCell();
+                // const cell22 = row.insertCell();
+                // const cell23 = row.insertCell();
+                // const cell24 = row.insertCell();
+
+
+                // const cell25 = row.insertCell();
+
+
+                // Add more cells if needed
+
+                // Populate cells with data
+                cell1.textContent = item.SLNO;
+                cell2.textContent = item.BRANCH_NAME;
+                cell3.textContent = item.BRANCH_ID;
+                cell4.textContent = item.REGION_NAME;
+                cell5.textContent = item.AUCTION_LIST_DATE;
+                cell6.textContent = item.AUCTIONABLE_DATE;
+                cell7.textContent = item.PLEDGE_NUMBER;
+                cell8.textContent = item.GROSS_WT;
+                cell9.textContent = item.NET_WT;
+                cell10.textContent = item.STONE_WT;
+                cell11.textContent = item.STD_WT;
+                cell12.textContent = item.UNSUCCESSFULL_REASON;
+                cell13.textContent = item.ENTERD_DATE;
+                cell14.textContent = item.AUCTION_DATE;
+                cell15.textContent = item.CLASS_ID;
+                cell16.textContent = item.BIDDER_COUNT;
+                cell17.textContent = item.BIDDER_NAME;
+                // cell17.textContent = item.SMA3_AMOUNT;
+                // cell18.textContent = item.NPA_PERCENTAGE;
+                // cell19.textContent = item.NONNPA_COUNT;
+                // cell20.textContent = item.NONNPA_BALANCE;
+                // cell21.textContent = item.NONNPA_CONS_COUNT;
+                // cell22.textContent = item.NONNPA_CONS_BALANCE;
+                // cell23.textContent = item.TOTAL_NONNPA;
+                // cell24.textContent = item.TOTAL;
+                // cell25.textContent = item.TOTAL_PERCENTAGE;
+
+            });
+
+        }
+
+
+    </script>
+</body>
+</html>

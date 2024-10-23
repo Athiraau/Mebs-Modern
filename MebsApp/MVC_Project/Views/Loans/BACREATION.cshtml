@@ -1,0 +1,2543 @@
+﻿@{
+    ViewData["Title"] = "BACREATION";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<html>
+<head>
+    <meta charset="utf-8" />
+    @*<meta http-equiv="refresh" content="8" />*@
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="~/css/index.css">
+    <style>
+        .heading {
+            color: white;
+            font-size: 20px;
+            background-color: #4b6cb7;
+            text-align: center;
+            border: 1px solid black;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+
+        .head {
+            color: black;
+            font-size: 10px;
+            text-align: center;
+            font-weight: bolder;
+        }
+
+        .maindiv {
+            border-radius: 8px;
+            background-color: white;
+            width: 80%;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+        }
+
+        ::placeholder {
+            font-size: 10px;
+            color: #000000;
+        }
+
+        .pagecontiner {
+            margin-left: 120px;
+        }
+
+        input[type="file"]::file-selector-button {
+            border: 2px solid #4b6cb7;
+            padding: 0.2em 0.4em;
+            border-radius: 0.2em;
+            background-color: #4b6cb7;
+            transition: 1s;
+            color: white;
+        }
+
+        button {
+            background-color: #4b6cb7;
+            border-radius: 5px;
+            border: none;
+            color: white;
+            gap: 10px;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+            margin-bottom: 10px;
+            font-size: 10px;
+            height: 30px;
+            width: 60%
+        }
+
+            button:hover {
+                background-color: #7E8EF1;
+            }
+
+        .cls_test {
+            font-size: 10px;
+            height: 38px;
+            color: #686D76;
+        }
+    </style>
+</head>
+<body>
+    <div class="pagecontiner">
+        <div class="maindiv">
+            <div class="heading">BUSINESS AGENT CREATION</div>
+            <div class="form m-6 p-2">
+                <div class="row  p-2 d-flex justify-content-around">
+                    <div class="col-lg-4 col-md-6 col-sm-2">
+                        <input type="text" class="form-control cls_test" oninput="this.value = this.value.replace(/[^a-zA-Z. ]/g , '');" id="baname" placeholder="BA Name">
+                    </div>
+                    <div class="col-lg-8 col-md-6 col-sm-2">
+                        <textarea cols="8" rows="1" class="form-control cls_test" oninput="this.value = this.value.replace(/[^a-zA-Z0-9\s,'-()[\] ]/g , '');" id="address" placeholder="Address"></textarea>
+                    </div>
+                </div>
+                <div class="row  p-2 d-flex justify-content-between">
+                    <div class="col-lg-4 col-md-3 col-sm-2">
+                        <select class="form-control cls_test" id="selectState">
+                            <OPTION> ---SELECT STATE--- </OPTION>
+                        </select>
+                    </div>
+                    <div class="col-lg-4 col-md-3 col-sm-2">
+                        <select class="form-control cls_test" id="selectDistrict">
+                            <OPTION> ---SELECT DISTRICT--- </OPTION>
+                        </select>
+                    </div>
+                    <div class="col-lg-4 col-md-3 col-sm-2">
+                        <select class="form-control cls_test" id="selectPost">
+                            <OPTION> ---SELECT POSTOFFICE--- </OPTION>
+                        </select>
+                    </div>
+                </div>
+                <div class="row  p-2 d-flex justify-content-around">
+                    <div class="col-lg-3 col-md-3 col-sm-2">
+                        <input type="text" class="form-control cls_test" maxlength="6" oninput="this.value = this.value.replace(/[^0-9]/g, '');" id="selectpincode" placeholder="Pincode">
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-2">
+                        <input type="text" class="form-control cls_test" maxlength="10" id="pannumber" placeholder="Pancard No" onchange="Panvalidation()">
+                    </div>
+                    <div class="col-lg-6 col-md-4 col-sm-">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="GenderOption" id="M" value="M">
+                            <label class="form-check-label" for="Radio1" style="font-size:x-small">Male</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="GenderOption" id="F" value="F">
+                            <label class="form-check-label" for="Radio2" style="font-size:x-small">Female</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="GenderOption" id="O" value="O">
+                            <label class="form-check-label" for="Radio3" style="font-size:x-small">Others</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row  p-2 d-flex justify-content-around ">
+                    <div class="col-lg-6 col-md-4 col-sm-2">
+                        <select class="form-control cls_test" id="selectQuali">
+                            <option selected="selected">--SELECT QUALIFICATION--</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-6 col-md-4 col-sm-2">
+                        <select class="form-control cls_test" id="selectOccupation">
+                            <option selected="selected">--SELECT OCCUPATION--</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row  p-2 d-flex justify-content-around ">
+                    <div class="col-lg-4 col-md-3 col-sm-2">
+                        <input type="text" class="form-control cls_test" id="dob" placeholder="Date of Birth" onfocus="(this.type='date')" onchange="datecheck(this.id)">
+                    </div>
+                    <div class="col-lg-4 col-md-3 col-sm-2">
+                        <input type="text" class="form-control cls_test" maxlength="2" oninput="this.value = this.value.replace(/[^0-9]/g, '');" id="age" placeholder="Age">
+                    </div>
+                    <div class="col-lg-4 col-md-3 col-sm-2">
+                        <input type="email" class="form-control cls_test" id="email"  placeholder="email" onchange="emailcheck()">
+                    </div>
+                </div>
+                <div class="row  p-2 d-flex justify-content-around">
+                    <div class="col-lg-4 col-md-3 col-sm-2">
+                        <input type="text" class="form-control cls_test" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '');" id="phone" placeholder="Phone Number" onchange="mobileNumberAvailabilityCheck()">
+                    </div>
+                    <div class="col-lg-4 col-md-3 col-sm-2">
+                        <input type="text" class="form-control cls_test" id="otp" placeholder="Enter OTP here"  onchange="VerifyOTP();">
+                    </div>
+                    <div class="col-lg-4 col-md-3 col-sm-2 d-flex p-2">
+                        <i style="display:none;" class="fas fa-check" style="color:green;"></i>
+                        <p style="display:none; font-size:x-small; margin-left:10px;" id="reponseText"></p>
+                    </div>
+                    
+                </div>
+                <div class="row  p-2 d-flex justify-content-around">
+                    <div class="col-lg-6 col-md-4 col-sm-2">
+                        <input type="text" class="form-control cls_test" id="wedding" placeholder="Wedding Anniversary" onfocus="(this.type='date')" onchange="datecheck(this.id)">
+                    </div>
+                    <div class="col-lg-6 col-md-4 col-sm-2">
+                        <select class="form-control cls_test" id="bacategory">
+                            <option value="-1" selected="selected">--SELECT BA CATEGORY--</option>
+                            <option value="1">INDIVIDUAL BA</option>
+                            <option value="2">CORPORATE BA</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row  p-2 d-flex justify-content-around">
+                    <div class="col-lg-6 col-md-4 col-sm-2">
+                        <select class="form-control cls_test" id="incentive">
+                            <option value="-1" selected="selected">--SELECT INCENTIVE--</option>
+                            <option value="1">DEFAULT INCENTIVE SCHEME</option>
+                            <option value="2">NEWLY CREATED INCENTIVE SCHEME</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-6 col-md-4 col-sm-2">
+                        <select class="form-control cls_test" id="source">
+                            <option value="-1" selected="selected">---SELECT SOURCE---</option>
+                            <option value="1">WALK IN</option>
+                            <option value="1">ASIRVAD MEETING</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row  p-2 d-flex justify-content-around">
+                    <div class="col-lg-6 col-md-4 col-sm-2">
+                        <input type="text" class="form-control cls_test" id="status" placeholder="Status">
+                    </div>
+                    <div class="col-lg-6 col-md-4 col-sm-2">
+                        <select class="form-control cls_test" id="category">
+                            <option value="-1" selected="selected">---SELECT CATEGORY---</option>
+                            <option value="1">RELATIVE OF EMPLOYEE</option>
+                            <option value="2">ASIRVAD CENTER HEAD</option>
+                            <option value="3">OTHERS</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row  p-2 d-flex justify-content-around">
+                    <div class="col-lg-6 col-md-4 col-sm-2">
+                        <input type="text" class="form-control cls_test" maxlength="6" oninput="this.value = this.value.replace(/[^0-9]/g, '');" id="referempcode" placeholder="Reffered Emp code">
+                    </div>
+                    <div class="col-lg-6 col-md-4 col-sm-2">
+                        <input type="text" class="form-control cls_test" id="referempname" placeholder="Reffered Emp Name">
+                    </div>
+                </div>
+                <div class="row  p-2 d-flex ">
+                    <div class="head">NEFT DETAILS</div>
+                </div>
+                <div class="row  p-2 d-flex justify-content-around">
+                    <div class="col-lg-6 col-md-4 col-sm-2">
+                        <select class="form-control cls_test" id="selectStates">
+                            <option selected="selected">---SELECT STATE---</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-6 col-md-4 col-sm-2">
+                        <select class="form-control cls_test" id="selectDistricts">
+                            <option selected="selected">---SELECT DISTRICT---</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row  p-2 d-flex justify-content-around">
+                    <div class="col-lg-6 col-md-4 col-sm-2">
+                        <select class="form-control cls_test" id="selectBank">
+                            <option selected="selected">---SELECT BANK---</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-6 col-md-4 col-sm-2">
+                        <select class="form-control cls_test" id="selectbranch">
+                            <option selected="selected">---SELECT BRANCH---</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row  p-2 d-flex justify-content-around">
+                    <div class="col-lg-3 col-md-3 col-sm-2">
+                        <input type="text" class="form-control" id="ifsc" placeholder="IFSC code" style="font-size:10px;height:38px; color:#686D76;">
+                    </div>
+                    <div class="col-lg-5 col-md-3 col-sm-2">
+                        <input type="text" class="form-control" id="accntno" maxlength="16" placeholder="Account No" oninput="this.value = this.value.replace(/[^0-9]/g, '');" style="font-size:10px;height:38px; color:#686D76;">
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-2">
+                        <select class="form-control" id="account" style="font-size:10px; height:38px; color:#686D76;">
+                            <option selected="selected">---SELECT ACCOUNT---</option>
+                        </select>
+                    </div>
+                </div>
+                <center>
+                    <div class="row  p-2 d-flex justify-content-around ">
+                        <div class="col-lg-12 col-md-3 col-sm-2">
+                            <input type="text" class="form-control cls_test" oninput="this.value = this.value.replace(/[^a-zA-Z. ]/g, '');" id="entername" placeholder="Enter Your Name(as in Bank Passbook)">
+                        </div>
+                    </div>
+                   @* <div class="row  d-flex justify-content-around">
+                        <div class="col-lg-6 col-md-3 col-sm-2">
+                            <label for="formFileMultiple" class="form-label" style="font-size:10px; color:#686D76; margin-left:0px">Attach Pass Book Copy or Cancelled Cheque Leaf</label>
+                        </div>
+                        <div class="col-lg-6 col-md-3 col-sm-2">
+                            <input type="file" id="uploadPassbook" style="font-size:10px; margin-right:120px; color:#686D76;">
+
+                        </div>
+                    </div>*@
+                    <div class="row  justify-content-around text-start">
+                        <div class="col-lg-6 col-md-3 col-sm-2 ">
+                            <label for="formFileMultiple" class="form-label" style="font-size:10px; margin-left:22px; color:#686D76; ">Attach Pass Book Copy or Cancelled Cheque Leaf</label>
+                        </div>
+                        <div class="col-lg-6 col-md-3 col-sm-2">
+                            <input type="file" id="uploadPassbook" style="font-size:10px; color:#686D76;">
+                        </div>
+                    </div>
+                    <div class="row  justify-content-around text-start">
+                        <div class="col-lg-6 col-md-3 col-sm-2 ">
+                            <label for="formFileMultiple" class="form-label" style="font-size:10px; margin-left:22px; color:#686D76; ">Attach Pan card Copy </label>
+                        </div>
+                        <div class="col-lg-6 col-md-3 col-sm-2">
+                            <input type="file" id="uploadPanCard" style="font-size:10px; color:#686D76;">
+                        </div>
+                    </div>
+                    <div class="row  justify-content-around text-start">
+                        <div class="col-lg-6 col-md-3 col-sm-2">
+                            <label for="formFileMultiple" class="form-label" style="font-size:10px; margin-left:22px; color:#686D76;">Attach Customer Photo </label>
+                        </div>
+                        <div class="col-lg-6 col-md-3 col-sm-2">
+                            <input type="file" id="uploadBAPhoto" style="font-size:10px; color:#686D76;">
+                        </div>
+                    </div>
+                    <div class="row  justify-content-around text-start">
+                        <div class="col-lg-6 col-md-3 col-sm-2">
+                            <label for="formFileMultiple" class="form-label" style="font-size:10px;margin-left:22px; color:#686D76;">Attach ID proof</label>
+                        </div>
+                        <div class="col-lg-6 col-md-3 col-sm-2">
+                            <input type="file" id="uploadIDproof" style="font-size:10px; color:#686D76;">
+                        </div>
+                    </div>
+                </center>
+                <center>
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-5">
+                        <div class=" col-sm-2">
+                            @*                            <button type="button" onclick="validation();">Confirm</button>
+                            *@
+
+                            <button type="button" onclick="submitFunction()">Confirm</button>
+                        </div>
+                        <div class=" col-sm-2">
+                            <button type="button" onclick="resetPage()">Reset</button>
+                        </div>
+                        <div class=" col-sm-2">
+                            <button type="button" onclick="loadIndex()">Exit</button>
+                        </div>
+                    </div>
+                </center>
+                </divform>
+                
+
+            </div>
+
+            <input type="text" id="base64passbook" style="display:none;">
+            <input type="text" id="base64pancard" style="display:none;">
+            <input type="text" id="base64photo" style="display:none;">
+            <input type="text" id="base64id" style="display:none;">
+        </div>
+    </div>
+    
+
+    
+    
+
+    <script>
+
+
+        function submitFunction()
+        {           
+            var validation_res = validation();
+                 
+
+            if (validation_res == 1)
+            {
+                var Post_BA_data_Result = PostDataAPICall();
+                const BAresult = Post_BA_data_Result;
+
+                  if (Post_BA_data_Result =null)
+                  {
+                    alert("BA Application Failed..Please try again..");
+                    return  false;
+                  }
+                  else
+                  {
+                    var checkFlagPassbook = UploadPassbook();
+                    var checkFlagPan = UploadPANcard();
+                    var checkFlagPhoto = UploadBAPhoto();
+                    var checkFlagId = UploadBAIDProof();
+
+
+                    if (checkFlagPassbook != '1')
+                        alert("Passbook uploading failed..");
+                    else if (checkFlagPan != '1')
+                        alert("PAN Card uploading failed..");
+                    else if (checkFlagPhoto != '1')
+                        alert("BA Photo uploading failed..");
+                    else if (checkFlagId != '1')
+                        alert("ID proof uploading failed..");
+                    else
+                        alert(BAresult);
+                  }
+             }
+
+           
+        }
+
+
+
+
+        function PostDataAPICall() {
+
+
+            var brid = '@ViewData["BrID"]';
+            var EmpCode = '@ViewData["EmpCode"]';
+            var baname = document.getElementById('baname').value;
+            var address = document.getElementById('address').value;
+            var state = document.getElementById('selectState').value;
+            var district = document.getElementById('selectDistrict').value;
+            var post = document.getElementById('selectPost').value;
+            var pincode = document.getElementById('selectpincode').value;
+            var pancard = document.getElementById('pannumber').value;
+            var gender = document.getElementsByName('GenderOption');
+            var genvalue = '';
+
+            for (var i = 0; i < gender.length; i++) {
+                if (gender[i].checked == true) {
+                    genvalue = gender[i].value;
+                }
+            }
+            var qualification = document.getElementById('selectQuali').value;
+            var occupation = document.getElementById('selectOccupation').value;
+            var dob = document.getElementById('dob').value;
+
+            dob = Dateformat(dob);
+
+            var age = document.getElementById('age').value;
+            var email = document.getElementById('email').value;
+            var phone = document.getElementById('phone').value;
+            var otp = document.getElementById('otp').value;
+            var wedding = document.getElementById('wedding').value;
+
+            wedding = Dateformat(wedding);
+
+            var bacategory = document.getElementById('bacategory').value;
+            var incentive = document.getElementById('incentive').value;
+            var source = document.getElementById('source').value;
+            var status = document.getElementById('status').value;
+            var category = document.getElementById('category').value;
+            var refempcode = document.getElementById('referempcode').value;
+            var empname = document.getElementById('referempname').value;
+            var states = document.getElementById('selectStates').value;
+            var districts = document.getElementById('selectDistricts').value;
+            var bank = document.getElementById('selectBank').value;
+            var branch = document.getElementById('selectbranch').value;
+            var ifsc = document.getElementById('ifsc').value;
+            var accountno = document.getElementById('accntno').value;
+            var accounttype = document.getElementById('account').value;
+            var names = document.getElementById('entername').value;
+            var BaEn_details = source + '~' + status + '~' + category + '~' + '';
+
+
+
+            var indata = "1" + "¥" + brid + "¥" + baname + "¥" + names + "¥" + address + "¥" + state + "¥" + district + "¥" + ifsc + "¥" + branch + "¥" + accountno + "¥" + accounttype + "¥" + phone + "¥" + EmpCode + "¥" + email + "¥" + bank + "¥" + states + "¥" + districts + "¥" + pincode + "¥" + occupation + "¥" + age + "¥" + pancard + "¥" + genvalue + "¥" + qualification + "¥" + otp + "¥" + dob + "¥" + wedding + "¥" + bacategory + "¥" + incentive + "¥" + BaEn_details + "¥" + refempcode;
+
+            var Post_BA_data_Result =  PostBADataAPICall(indata);
+            return Post_BA_data_Result;
+
+
+        }
+
+        var checkFlag = '0';
+        function PostBADataAPICall(indata) {
+
+
+            indata = 'PROC_ADD_NEW_BA' + '^' + indata;
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+
+            var Post_BA_data_Result='';
+
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+                    result = response;
+                    checkFlag = '1';
+                      },
+                error: function (response) {
+                    checkFlag = 0;
+                    //   alert("failed");
+                }
+            });
+                       
+            // Remove html tags and space chars
+            result = result.replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, ''); 
+            result = result.replace("]", " ");
+            result = result.replace("[", " ");
+            Post_BA_data_Result = result.replace("MSG", " ");
+
+          return Post_BA_data_Result;
+        }
+
+
+
+        function Dateformat(dt) {
+
+
+            const [year, month, day] = dt.split("-");
+
+            const formattedDate = `${day}-${month}-${year}`;
+
+            return formattedDate;
+
+        }
+
+
+
+
+    </script>
+    <script>
+
+        function sendOTP() {
+
+            var reponseText = document.getElementById('reponseText');
+           
+
+                      var ecode = '@ViewData["EmpCode"]';
+            var phone_no = document.getElementById('phone').value;
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/OTPHelper"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/OTPHelper"; }
+
+
+
+            const indata = "sendotp" + "^" + "send_ba_otp" + "^" + phone_no;
+
+            var res = '';
+
+
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                await:true,
+                success: function (response) {
+                    res =response;
+                    alert("Sending OTP.. Please Wait...");
+                },
+                error: function (response) {
+                   
+                    res = -1;
+                }
+            });
+
+           
+         let results = JSON.parse(res);
+
+        let st = results.status;
+       let msg = results.message;
+    
+         var reponseText = document.getElementById('reponseText');
+
+            if (st == 0) {
+
+                reponseText.style.display = 'block';
+
+                reponseText.textContent = msg;
+                reponseText.style.color = '#8B8000';
+
+            }
+
+            else {
+                reponseText.style.display = 'block';
+
+                reponseText.textContent = msg;
+                reponseText.style.color = '#FF0000';
+            }
+
+
+
+        }
+
+
+        var otp_verifyFlag=0;
+        function VerifyOTP() {
+
+            var otp_text = document.getElementById('otp').value;
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/OTPHelper"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/OTPHelper"; }
+
+            const indata ="verifyotp" + "^" + "verify_ba_otp" + "^" + otp_text;
+
+            var res = '';
+
+
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                await: true,
+                success: function (response) {
+                    res = response;
+
+                },
+                error: function (response) {
+
+                    res = -1;
+                }
+            });
+
+
+            let results = JSON.parse(res);
+
+            let st = results.status;
+            msg = results.message;
+
+            
+
+            if (st == 1) {
+
+                otp_verifyFlag=1;
+
+                reponseText.style.display = 'block';
+
+                reponseText.textContent = msg;
+                reponseText.style.color = '#8B8000';
+            }
+
+            else {
+                   otp_verifyFlag=0;
+                reponseText.style.display = 'block';
+
+                reponseText.textContent = msg;
+                reponseText.style.color = '#FF0000';
+            }
+
+        }
+
+
+
+
+        function formatDataAsArray_Dist(data) {
+
+            if (Array.isArray(data) && data.length > 0) {
+                return data.map(item => ({
+                    value: item["status"],
+                }));
+            } else {
+                return [];
+            }
+        }
+
+    </script>
+
+
+    <script>
+        //DOCUMENT UPLOAD
+         // PASSBOOK UPLOAD---------------------------------------------------------------------------------------------------
+
+        const uploadPassbook = document.getElementById('uploadPassbook');
+
+        var base64passbook = document.getElementById('base64passbook');   //get base64 data
+
+        var docTypFlag = '0';
+        uploadPassbook.addEventListener('change', function () {
+            const file = this.files[0];
+            const reader = new FileReader();
+            const fileType = file['type'];
+            const validImageTypes = ['image/gif', 'image/jpeg', 'image/png', 'image/jpg', 'application/pdf'];
+            if (!validImageTypes.includes(fileType)) {
+
+                alert('Please upload valid document');
+                docTypFlag = "0";
+                return 0;
+            }
+            else
+                docTypFlag = "1";
+
+            //const validImageTypes = ['image/jpeg', 'image/jpg'];
+            //    if (file.type !== 'application/pdf') {
+            //    alert('Only PDF files are allowed');
+            //    docTypFlag= "0";
+            //    return;
+            //}
+            //else
+            //    docTypFlag = "1";
+
+
+            reader.onload = function (event) {
+
+                const base64Url = event.target.result;
+                base64passbook.value = base64Url;
+
+            };
+            reader.readAsDataURL(file);
+        });
+
+
+        function UploadPassbook() {    //setting upload query and call API
+            var passbookFlag = '0';
+
+            var accountno = document.getElementById('accntno').value;
+
+            var base64Input = document.getElementById('base64passbook').value;
+            var base64Data = documentBase64(base64Input);    //json convertion
+
+            base64Data = base64Data.replace("\"", "");
+
+            accountno = "\'" + accountno + "\'";
+
+            var query = "UPDATE neft_customer s SET s.id_proof=:DOCUMENT WHERE S.BENEFICIARY_ACCOUNT=" + accountno + " AND s.moduleid = 115";
+
+            query = query.replace("\"", " ");
+
+            query = query.replace("\"'", "\'");
+
+            PostDocumentAPICall(query, base64Data);   //Document upload api call function
+            if (checkFlag == '1');
+            return 1;
+        }
+
+
+
+        // PANCARD UPLOAD---------------------------------------------------------------------------------------------------
+
+        const uploadPanCard = document.getElementById('uploadPanCard');
+
+        var base64pancard = document.getElementById('base64pancard');
+
+        var docTypFlag = '0';
+        uploadPanCard.addEventListener('change', function () {
+            const file = this.files[0];
+            const reader = new FileReader();
+            const fileType = file['type'];
+            const validImageTypes = ['image/gif', 'image/jpeg', 'image/png', 'image/jpg', 'application/pdf'];
+            if (!validImageTypes.includes(fileType)) {
+
+                alert('Please upload valid document');
+                docTypFlag = "0";
+                return 0;
+            }
+            else
+                docTypFlag = "1";
+
+            reader.onload = function (event) {
+
+                const base64Url = event.target.result;
+                // alert(base64Url);
+                base64pancard.value = base64Url;
+
+            };
+            reader.readAsDataURL(file);
+        });
+
+
+        function UploadPANcard() {    //setting upload query and call API
+
+
+            var phone = document.getElementById('phone').value;
+
+            var base64Input = document.getElementById('base64pancard').value;
+            var base64Data = documentBase64(base64Input);    //json convertion
+
+            base64Data = base64Data.replace("\"", "");
+
+            phone = "\'" + phone + "\'";
+
+            var query = "UPDATE tbl_add_businessagent s SET s.pan_attachment=:DOCUMENT WHERE S.phone=" + phone;
+
+            query = query.replace("\"", " ");
+
+            query = query.replace("\"'", "\'");
+
+            PostDocumentAPICall(query, base64Data);   //Document upload api call function
+            if (checkFlag == '1');
+            return 1;
+        }
+
+        var pancardFlag = '0';
+        // BA PHOTO UPLOAD---------------------------------------------------------------------------------------------------
+
+        const uploadBAPhoto = document.getElementById('uploadBAPhoto');
+
+        var base64photo = document.getElementById('base64photo');
+
+        uploadBAPhoto.addEventListener('change', function () {
+            const file = this.files[0];
+            const reader = new FileReader();
+
+            const fileType = file['type'];
+            const validImageTypes = ['image/jpeg','image/jpg'];
+            if (!validImageTypes.includes(fileType)) {
+
+                alert('Only JPEG/JPG files are allowed');
+                docTypFlag = "0";
+                return 0;
+            }
+            else
+                docTypFlag = "1";
+
+
+            reader.onload = function (event) {
+                
+                const base64Url = event.target.result;
+                base64photo.value = base64Url;
+
+            };
+            reader.readAsDataURL(file);
+        });
+
+
+        function UploadBAPhoto() {    //setting upload query and call API
+
+
+            var phone = document.getElementById('phone').value;
+
+            var base64Input = document.getElementById('base64photo').value;
+            var base64Data = documentBase64(base64Input);    //json convertion
+
+            base64Data = base64Data.replace("\"", "");
+
+            phone = "\'" + phone + "\'";
+
+            var query = "UPDATE tbl_add_businessagent s SET s.cus_photo=:DOCUMENT WHERE S.phone=" + phone;
+
+            query = query.replace("\"", " ");
+
+            query = query.replace("\"'", "\'");
+
+            PostDocumentAPICall(query, base64Data);   //Document upload api call function
+            if (checkFlag == '1');
+            return 1;
+        }
+
+
+        // BA ID PROOF UPLOAD---------------------------------------------------------------------------------------------------
+
+        const uploadIDproof = document.getElementById('uploadIDproof');
+
+        var base64id = document.getElementById('base64id');
+
+        uploadIDproof.addEventListener('change', function () {
+            const file = this.files[0];
+            const reader = new FileReader();
+            const fileType = file['type'];
+            const validImageTypes = ['image/gif', 'image/jpeg', 'image/png', 'image/jpg', 'application/pdf'];
+            if (!validImageTypes.includes(fileType)) {
+
+                alert('Please upload valid document');
+                docTypFlag = "0";
+                return 0;
+            }
+            else
+                docTypFlag = "1";
+
+            reader.onload = function (event) {
+
+                const base64Url = event.target.result;
+                // alert(base64Url);
+                base64id.value = base64Url;
+
+            };
+            reader.readAsDataURL(file);
+        });
+
+        function UploadBAIDProof() {    //setting upload query and call API
+
+
+            var phone = document.getElementById('phone').value;
+
+            var base64Input = document.getElementById('base64id').value;
+            var base64Data = documentBase64(base64Input);    //json convertion
+
+            base64Data = base64Data.replace("\"", "");
+
+            phone = "\'" + phone + "\'";
+
+            var query = "UPDATE tbl_add_businessagent s SET s.id_proof=:DOCUMENT WHERE S.phone=" + phone;
+
+            query = query.replace("\"", " ");
+
+            query = query.replace("\"'", "\'");
+
+            PostDocumentAPICall(query, base64Data);   //Document upload api call function
+            if (checkFlag == '1');
+            return 1;
+
+        }
+        //----------------------------------------------------------------------------------------------------------
+
+        function documentBase64(base64Input) {
+
+            var resp = JSON.stringify(base64Input);
+            resp = resp.replace("data:application/pdf;base64,", "");
+            resp = resp.replace("data:image/jpeg;base64,", "");
+            resp = resp.replace("data:image/jpg;base64,", "");
+            resp = resp.replace("data:image/png;base64,", "");
+
+            resp = resp.replace("\'", "");
+
+            return resp;
+        }
+
+
+        var checkFlag = '0';
+        function PostDocumentAPICall(query, base64Data) {   //Document upload api call function
+
+            var _link = '';
+
+            if (document.location.hostname == 'localhost') { _link = "/Loans/DocumentUpload"; }
+
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/DocumentUpload"; }
+
+            var indata1 = query + '^' + base64Data;
+            indata1 = indata1.replace("\"", "");
+            indata1 = indata1.replace("\"'", "\'");
+
+            $.ajax({
+
+                type: "POST",
+
+                url: _link,
+
+                data: { datas: indata1 },
+
+                async: false,
+
+                success: function () {
+                    checkFlag = '1';
+                },
+
+                error: function (response) { check = 0; }
+            });
+        }
+
+        //----------------------------------------------------------------------------------------------------------
+
+    </script>
+    <script>
+       
+    </script>
+    <script>
+
+        // USER ACCESS
+        function checkUserAccess() {
+
+            var ecode = '@ViewData["EmpCode"]';
+
+       //     ecode = 65657;   //sample user
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+
+
+            var indata = 'BACREATION_USERACCESS' + '^' + ecode;
+
+            const a = "";
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+                    res = response;
+
+                    res = res.replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, '');
+                    res = res.replace("]", "");
+                    res = res.replace("[", "");
+                    res = res.replace("RESP", "");
+
+                },
+                error: function (response) {
+                    res = 0;
+
+                }
+            });
+
+            return res;
+
+        }
+
+
+
+
+
+    </script>
+
+    <script>
+
+        function Panvalidation() {
+
+            var panID = document.getElementById('pannumber').value;
+            var response = '';
+
+            if(panID=="" || panID==null)
+            {
+                alert('Please enter PANCard number');
+                return false;
+            }
+            panID = panID.toUpperCase();
+            let l = panID.length;
+
+            if (l !== 10) {
+                response = 0;
+            } else {
+                let strRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
+                let re = new RegExp(strRegex);
+                if (re.test(panID)) {
+                    response = 1;
+                } else {
+                    response = 0;
+                }
+            }
+
+            if (response == 0) {
+                alert('Please enter a valid PANCard');
+                document.getElementById('pannumber').value = "";
+            }
+            else
+            {
+                var indata = "PANNUMBERCHECK" + "^" + panID;
+                var response1 = callApiCommon1(indata);
+                if (response1 >0){
+                    alert('PAN NUMBER ALREADY EXISTS ..');
+                     document.getElementById('pannumber').value = "";
+                }
+                else
+                {
+                    const FirmID=1;
+                    const EmpCode = '@ViewData["EmpCode"]';
+                    var indata = panID + '^' + EmpCode + '^' + FirmID;
+                    var panResponse =publicPANValidation(indata);
+                    if (panResponse!='SUCCESS')
+                    {
+                    alert('INVALID PANCARD NUMBER..');
+                        document.getElementById('pannumber').value = "";
+                    }
+
+
+                }
+
+
+            }
+   
+         }
+         
+
+        
+      function publicPANValidation(indata)
+      {
+            var ecode = '@ViewData["EmpCode"]';
+
+          var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/PANValidation"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/PANValidation"; }
+
+            const a = "";
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+                    res = response;
+
+                    },
+                error: function (response) {
+                    res = 0;
+
+                }
+            });
+
+            
+            res = JSON.parse(res);
+            var result = res.responseMsg;
+            return result;
+
+      }
+
+
+
+
+        window.onload = function OnloadFunction() {
+
+         var accessFlag = checkUserAccess();
+         
+           if (accessFlag!=1)
+         {  alert("You are not authorized to view this page..");
+           loadIndex();
+         }
+               
+         else{
+            callStateApi();
+            callQualiApi();
+            callOccupationApi();
+            callBankStateApi();
+            callAcctypeApi();
+
+         }
+        }
+
+
+
+        var dob = document.getElementById("dob");
+
+        dob.onchange = function () {
+
+            const dt = dob.value;  //dob year
+            const [year, month, day] = dt.split("-");
+
+            let currentDate = new Date();  //current year
+            let currentYear = currentDate.getFullYear();
+
+            const age = currentYear - year;
+
+        
+                document.getElementById("age").value = age;
+                  }
+
+        var age = document.getElementById("age");
+        var dob = document.getElementById("dob");
+
+        age.onchange = function () {
+
+            if (age.value < 18) {
+
+                alert("Age must be greater than 18");
+                document.getElementById("age").value = "";
+                document.getElementById("dob").value = "";
+                return 0;
+            }
+             if(age>99)
+            {
+            alert("Age must be lesserthan 100");
+            document.getElementById("age").value = "";
+                 document.getElementById("dob").value = "";
+                  return 0;
+            }           
+        }
+
+        var StateSelect = document.getElementById("selectState");
+
+        StateSelect.onchange = function () {
+
+            callDistrictApi();
+        }
+
+        var DistrictSelect = document.getElementById("selectDistrict");
+
+        DistrictSelect.onchange = function () {
+
+            callPostApi();
+        }
+
+        var PostoffSelect = document.getElementById("selectPost");
+
+        PostoffSelect.onchange = function () {
+
+            callPInCodeApi();
+        }
+
+        var StatesSelect = document.getElementById("selectStates");
+
+        StatesSelect.onchange = function () {
+
+            callDistrict_BankApi()
+
+        }
+
+        var DistrictsSelect = document.getElementById("selectDistricts");
+
+        DistrictsSelect.onchange = function () {
+
+            callBankApi();
+        }
+
+        var BankSelect = document.getElementById("selectBank");
+
+        BankSelect.onchange = function () {
+
+            callBranchApi();
+        }
+
+        var BranchSelect = document.getElementById("selectbranch");
+
+        BranchSelect.onchange = function () {
+
+            callifscApi()
+        }
+
+        var selectRefEmp = document.getElementById("referempcode");
+
+        selectRefEmp.onchange = function () {
+
+            callreferempnameApi(selectRefEmp.value);
+        }
+
+          var phone = document.getElementById("phone");
+
+       
+
+
+        //----------------LOAD STATE
+
+        function callStateApi() {
+
+
+            //  const EmpCode = '@ViewData["EmpCode"]';
+            //  var brid = '@ViewData["BrID"]';
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+
+            indata = "GETSTATELIST" + "^" + "1";
+
+
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    const data2 = JSON.parse(response);
+                    LoadDropDownState(data2);
+                },
+                error: function (response) {
+                    alert("failed");
+                }
+            });
+        }
+
+        function LoadDropDownState(data) {
+            var StateDrop = document.getElementById('selectState');
+
+            const options = formatDataAsArray_State(data);
+            StateDrop.innerHTML = '';
+            options.forEach(option => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option.value;
+                optionElement.text = option.label;
+                StateDrop.add(optionElement);
+            });
+        }
+
+        function formatDataAsArray_State(data) {
+            if (Array.isArray(data) && data.length > 0) {
+                return data.map(item => ({
+                    value: item["ID"],
+                    label: item["STATE"]
+                }));
+            } else {
+                return [];
+            }
+        }
+
+
+        //----------------LOAD DISTRICT
+
+        function callDistrictApi() {
+
+            //  const EmpCode = '@ViewData["EmpCode"]';
+            //  var brid = '@ViewData["BrID"]';
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+
+
+            const sID = document.getElementById('selectState').value;
+
+            indata = "GETDISTRICTLIST" + "^" + sID;
+
+
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    const data2 = JSON.parse(response);
+                    LoadDropDownDist(data2);
+                },
+                error: function (response) {
+                    alert("failed");
+                }
+            });
+        }
+
+        function LoadDropDownDist(data) {
+            var DistrictDrop = document.getElementById('selectDistrict');
+
+            const options = formatDataAsArray_Dist(data);
+            DistrictDrop.innerHTML = '';
+            options.forEach(option => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option.value;
+                optionElement.text = option.label;
+                DistrictDrop.add(optionElement);
+            });
+        }
+
+        function formatDataAsArray_Dist(data) {
+            if (Array.isArray(data) && data.length > 0) {
+                return data.map(item => ({
+                    value: item["ID"],
+                    label: item["DISTRICT_NAME"]
+                }));
+            } else {
+                return [];
+            }
+        }
+
+
+        //----------------LOAD POST OFFICE
+
+        function callPostApi() {
+
+            //  const EmpCode = '@ViewData["EmpCode"]';
+            //  var brid = '@ViewData["BrID"]';
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+
+            const dID = document.getElementById('selectDistrict').value;
+
+            indata = "GETPOSTOFFICE" + "^" + dID;
+
+
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    const data2 = JSON.parse(response);
+                    LoadDropDownPost(data2);
+                },
+                error: function (response) {
+                    alert("failed");
+                }
+            });
+        }
+
+        function LoadDropDownPost(data) {
+            var PostDrop = document.getElementById('selectPost');
+
+            const options = formatDataAsArray_Post(data);
+            PostDrop.innerHTML = '';
+            options.forEach(option => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option.value;
+                optionElement.text = option.label;
+                PostDrop.add(optionElement);
+            });
+        }
+
+        function formatDataAsArray_Post(data) {
+            if (Array.isArray(data) && data.length > 0) {
+                return data.map(item => ({
+                    value: item["ID"],
+                    label: item["POST_NAME"]
+                }));
+            } else {
+                return [];
+            }
+        }
+
+
+        //----------------LOAD QUALIFICATION
+
+        function callQualiApi() {
+
+            //  const EmpCode = '@ViewData["EmpCode"]';
+            //  var brid = '@ViewData["BrID"]';
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+
+
+            indata = "GETQUALIFICATION" + "^" + "1";
+
+
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    const data2 = JSON.parse(response);
+                    LoadDropDownQuali(data2);
+                },
+                error: function (response) {
+                    alert("failed");
+                }
+            });
+        }
+
+        function LoadDropDownQuali(data) {
+            var QualiDrop = document.getElementById('selectQuali');
+
+            const options = formatDataAsArray_Quali(data);
+            QualiDrop.innerHTML = '';
+            options.forEach(option => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option.value;
+                optionElement.text = option.label;
+                QualiDrop.add(optionElement);
+            });
+        }
+
+        function formatDataAsArray_Quali(data) {
+            if (Array.isArray(data) && data.length > 0) {
+                return data.map(item => ({
+                    value: item["ID"],
+                    label: item["QUALIFICATION"]
+                }));
+            } else {
+                return [];
+            }
+        }
+
+
+        //----------------LOAD OCCUPATION
+        function callOccupationApi() {
+
+            //  const EmpCode = '@ViewData["EmpCode"]';
+            //  var brid = '@ViewData["BrID"]';
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+
+
+            indata = "GETOCCUPATION" + "^" + "1";
+
+
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    const data2 = JSON.parse(response);
+                    LoadDropDownOccupation(data2);
+                },
+                error: function (response) {
+                    alert("failed");
+                }
+            });
+        }
+
+        function LoadDropDownOccupation(data) {
+            var OccuDrop = document.getElementById('selectOccupation');
+
+            const options = formatDataAsArray_Occu(data);
+            OccuDrop.innerHTML = '';
+            options.forEach(option => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option.value;
+                optionElement.text = option.label;
+                OccuDrop.add(optionElement);
+            });
+        }
+
+        function formatDataAsArray_Occu(data) {
+            if (Array.isArray(data) && data.length > 0) {
+                return data.map(item => ({
+                    value: item["ID"],
+                    label: item["OCCUPATION"]
+                }));
+            } else {
+                return [];
+            }
+        }
+
+        //----------------LOAD PINCODE
+
+        function callPInCodeApi() {
+
+
+            const PIndex = document.getElementById('selectPost').selectedIndex;
+
+            const PID = document.getElementById('selectPost').options[PIndex];
+            var PIDtext = PID.text;
+
+       
+            //  const EmpCode = '@ViewData["EmpCode"]';
+            //  var brid = '@ViewData["BrID"]';
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+
+            //ndata = "IND_DEVICE_UPDATION_LOAD" + "^" + "400456";
+            indata = "GETPINCODE" + "^" + PIDtext;
+
+
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    //  const data2 = JSON.parse(response);
+                    //   LoadDropDownpincode(data2);
+
+                    LoadTextPinCode(response);
+
+                },
+                error: function (response) {
+                    alert("failed");
+                }
+            });
+        }
+
+
+        function LoadTextPinCode(response) {
+
+            // Remove html tags and space chars
+            response = response.replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, ''); //slno.replace("[", "");
+            response = response.replace("]", " ");
+            response = response.replace("[", " ");
+            response = response.replace("PIN_CODE", "");
+            document.getElementById("selectpincode").value = response;
+
+
+        }
+
+        //----------------LOAD STATE
+
+        function callBankStateApi() {
+
+            //  const EmpCode = '@ViewData["EmpCode"]';
+            //  var brid = '@ViewData["BrID"]';
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+
+
+            indata = "GETSTATELIST" + "^" + "1";
+
+
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    const data2 = JSON.parse(response);
+                    LoadDropDownState_bank(data2);
+                },
+                error: function (response) {
+                    alert("failed");
+                }
+            });
+        }
+
+        function LoadDropDownState_bank(data) {
+            var StateDrop_b = document.getElementById('selectStates');
+
+            const options = formatDataAsArray_State_bank(data);
+            StateDrop_b.innerHTML = '';
+            options.forEach(option => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option.value;
+                optionElement.text = option.label;
+                StateDrop_b.add(optionElement);
+            });
+        }
+
+        function formatDataAsArray_State_bank(data) {
+            if (Array.isArray(data) && data.length > 0) {
+                return data.map(item => ({
+                    value: item["ID"],
+                    label: item["STATE"]
+                }));
+            } else {
+                return [];
+            }
+        }
+
+        //----------------LOAD DISTRICT
+
+        function callDistrict_BankApi() {
+
+            //  const EmpCode = '@ViewData["EmpCode"]';
+            //  var brid = '@ViewData["BrID"]';
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+
+
+            const sID = document.getElementById('selectStates').value;
+
+            indata = "GETDISTRICTLIST" + "^" + sID;
+
+
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    const data2 = JSON.parse(response);
+                    LoadDropDown_Bank(data2);
+                },
+                error: function (response) {
+                    alert("failed");
+                }
+            });
+        }
+
+        function LoadDropDown_Bank(data) {
+            var DistrictDrop_Bank = document.getElementById('selectDistricts');
+
+            const options = formatDataAsArray_Dist_Bank(data);
+            DistrictDrop_Bank.innerHTML = '';
+            options.forEach(option => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option.value;
+                optionElement.text = option.label;
+                DistrictDrop_Bank.add(optionElement);
+            });
+        }
+
+        function formatDataAsArray_Dist_Bank(data) {
+            if (Array.isArray(data) && data.length > 0) {
+                return data.map(item => ({
+                    value: item["ID"],
+                    label: item["DISTRICT_NAME"]
+                }));
+            } else {
+                return [];
+            }
+        }
+
+
+
+        //----------------LOAD BANK
+
+
+        function callBankApi() {
+           
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+
+            const dID = document.getElementById('selectDistricts').value;
+
+
+            indata = "GETBANKNAME" + "^" + dID;
+
+
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    const data2 = JSON.parse(response);
+                    LoadDropDownbank(data2);
+                },
+                error: function (response) {
+                    alert("failed");
+                }
+            });
+        }
+
+        function LoadDropDownbank(data) {
+            var BankDrop = document.getElementById('selectBank');
+
+            const options = formatDataAsArray_Bank(data);
+            BankDrop.innerHTML = '';
+            options.forEach(option => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option.value;
+                optionElement.text = option.label;
+                BankDrop.add(optionElement);
+            });
+            const BID = document.getElementById('selectBank').value;
+        }
+
+        function formatDataAsArray_Bank(data) {
+
+            if (Array.isArray(data) && data.length > 0) {
+                return data.map(item => ({
+                    value: item["ID"],
+                    // value = value.replace("MSG", "");
+                    label: item["BANKNAME"]
+                }));
+            } else {
+                return [];
+            }
+        }
+
+        //----------------LOAD BRANCH
+
+        function callBranchApi() {
+
+
+            //  const EmpCode = '@ViewData["EmpCode"]';
+            //  var brid = '@ViewData["BrID"]';
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+
+
+            const BID = document.getElementById('selectBank').value;
+
+            const SID = document.getElementById('selectStates').value;
+
+            const DID = document.getElementById('selectDistricts').value;
+
+            indata = "GETBRANCHNAME" + "^" + DID + "~" + BID + "~" + SID;
+
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    const data2 = JSON.parse(response);
+                    LoadDropDownBranch(data2);
+                },
+                error: function (response) {
+                    alert("failed");
+                }
+            });
+        }
+
+        function LoadDropDownBranch(data) {
+            var BranchDrop = document.getElementById('selectbranch');
+
+            const options = formatDataAsArray_Branch(data);
+            BranchDrop.innerHTML = '';
+            options.forEach(option => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option.value;
+                optionElement.text = option.label;
+                BranchDrop.add(optionElement);
+            });
+
+        }
+
+        function formatDataAsArray_Branch(data) {
+            if (Array.isArray(data) && data.length > 0) {
+                return data.map(item => ({
+                    value: item["ID"],
+                    label: item["BRANCH"]
+                }));
+            } else {
+                return [];
+            }
+        }
+        //----------------LOAD IFSC
+
+        function callifscApi() {
+
+            
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+            const BR_INDEX = document.getElementById('selectbranch').selectedIndex;
+            const BRID = document.getElementById('selectbranch').options[BR_INDEX];
+            var BR_NAME = BRID.text;
+            const BNK_INDEX = document.getElementById('selectBank').selectedIndex;
+            const BNKID = document.getElementById('selectBank').options[BNK_INDEX];
+            var BNK_NAME = BNKID.text;
+            indata = "GETIFSCCODE" + "^" + BNK_NAME + "~" + BR_NAME;
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+                    LoadTextIfsc(response)
+                },
+                error: function (response) {
+                    alert("failed");
+                }
+            });
+        }
+
+        function LoadTextIfsc(response) {
+            response = response.replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, '');
+            response = response.replace("]", " ");
+            response = response.replace("[", " ");
+            response = response.replace("IFSC_CODE", "");
+            document.getElementById("ifsc").value = response;
+        }
+
+
+
+
+
+        // ----------------LOAD ACCOIUNT TYPE
+
+        function callAcctypeApi() {
+
+
+            //  const EmpCode = '@ViewData["EmpCode"]';
+            //  var brid = '@ViewData["BrID"]';
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+
+
+            indata = "GETACCTYPE" + "^" + "1";
+
+
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    const data2 = JSON.parse(response);
+                    LoadDropDownAccntType(data2);
+                },
+                error: function (response) {
+                    alert("failed");
+                }
+            });
+        }
+
+        function LoadDropDownAccntType(data) {
+            var AccounttypeDrop = document.getElementById('account');
+            const options = formatDataAsArray_Accounttype(data);
+            AccounttypeDrop.innerHTML = '';
+            options.forEach(option => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option.value;
+                optionElement.text = option.label;
+                AccounttypeDrop.add(optionElement);
+            });
+        }
+
+        function formatDataAsArray_Accounttype(data) {
+            if (Array.isArray(data) && data.length > 0) {
+                return data.map(item => ({
+                    value: item["ID"],
+                    label: item["ACCOUNT_NAME"]
+                }));
+            } else {
+                return [];
+            }
+        }
+
+        function callreferempnameApi(Emp) {
+
+           
+            var empname = document.getElementById('referempname');
+
+            //  const EmpCode = '@ViewData["EmpCode"]';
+            //  var brid = '@ViewData["BrID"]';
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+
+
+            indata = "GETEMPNAME" + "^" + Emp;
+
+
+            var response = '';
+            var res;
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    res = response;
+                },
+                error: function (response) {
+                    alert("failed");
+                }
+            });
+
+            res = res.replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, '');
+            res = res.replace("]", " ");
+            res = res.replace("[", " ");
+            res = res.replace("EMP_NAME", " ");
+
+
+            empname.value = res;
+
+        }
+
+        function LoadRefEmp(data) {
+
+            var empname = document.getElementById('referempname');
+
+            const options = formatDataAsArray_EmpRef(data);
+           
+        }
+
+        function formatDataAsArray_EmpRef(data) {
+
+
+
+            if (Array.isArray(data) && data.length > 0) {
+
+                return data.map(item => ({
+                    value: item["EMP_NAME"],
+                    label: item["EMP_NAME"]
+                }));
+
+                           } else {
+                return [];
+            }
+        }
+
+
+        //for assigning current date to a variable
+        const formattedToday = todayformat();
+
+        //validating whether dob is greater than current date
+
+        function datecheck(did) {
+            var dt = document.getElementById(did);
+            //  var wedding = document.getElementById('wedding');
+            const formattedToday = todayformat();
+            if (dt.value > formattedToday) {
+                alert("Please Enter a Valid Date");
+                dt.value = null;
+
+            }
+            return true;
+        }
+
+
+        // disable future date DOB
+
+        function disableFutureDates1(dateInputId) {
+            const dateInput = document.getElementById('dob');
+            const today = new Date();
+            dateInput.setAttribute('max', today.toISOString().split('T')[0]);
+
+        }
+        disableFutureDates1('dob');
+
+        // disable future date WEDDING ANIVERSARY
+
+        function disableFutureDates2(dateInputId) {
+            const dateInput = document.getElementById('wedding');
+            const today = new Date();
+            dateInput.setAttribute('max', today.toISOString().split('T')[0]);
+
+        }
+        disableFutureDates2('wedding');
+
+        // function that returns today date
+
+        function todayformat() {
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            let mm = today.getMonth() + 1; // Months start at 0!
+            let dd = today.getDate();
+
+            if (dd < 10) dd = '0' + dd;
+            if (mm < 10) mm = '0' + mm;
+
+            const formattedToday = yyyy + '-' + mm + '-' + dd;
+            return formattedToday;
+        }
+
+
+
+        function validation() {
+
+
+            var baname = document.getElementById('baname').value;
+            var address = document.getElementById('address').value;
+            var state = document.getElementById('selectState').value;
+            var district = document.getElementById('selectDistrict').value;
+            var post = document.getElementById('selectPost').value;
+            var pancard = document.getElementById('pannumber').value;
+
+            var qualification = document.getElementById('selectQuali').value;
+            var occupation = document.getElementById('selectOccupation').value;
+            var dob = document.getElementById('dob').value;
+            var age = document.getElementById('age').value;
+            var email = document.getElementById('email').value;
+            var phone = document.getElementById('phone').value;
+            var otp = document.getElementById('otp').value;
+            var wedding = document.getElementById('wedding').value;
+            var bacategory = document.getElementById('bacategory').value;
+            var incentive = document.getElementById('incentive').value;
+            var source = document.getElementById('source').value;
+            var status = document.getElementById('status').value;
+            var category = document.getElementById('category').value;
+            var empcode = document.getElementById('referempcode').value;
+            var empname = document.getElementById('referempname').value;
+            var states = document.getElementById('selectStates').value;
+            var districts = document.getElementById('selectDistricts').value;
+            var bank = document.getElementById('selectBank').value;
+            var branch = document.getElementById('selectbranch').value;
+            var accountno = document.getElementById('accntno').value;
+            var accounttype = document.getElementById('account').value;
+            var names = document.getElementById('entername').value;
+            var attachpassook = document.getElementById('uploadPassbook').value;
+            var attachpan = document.getElementById('uploadPanCard').value;
+            var attachphoto = document.getElementById('uploadBAPhoto').value;
+            var attachidproof = document.getElementById('uploadIDproof').value;
+
+
+
+
+
+            // validation of name
+
+            if (baname === "") {
+                alert("Please Enter Name.");
+                return 0;
+            }
+
+            // validation of address
+
+            if (address === "") {
+                alert("Please Enter Address.");
+                return 0;
+            }
+
+            // validation of state
+
+            if (state === "-1") {
+                alert("Please select a state.");
+                return 0;
+            }
+
+            // validation of  district
+
+            if (district === "-1") {
+                alert("Please select a  district.");
+                return 0;
+            }
+
+            // validation of post
+
+            if (post === "-1") {
+                alert("Please select a postoffice.");
+                return 0;
+            }
+
+            // validation of pancard
+
+            if (pancard === "") {
+                alert("Please Enter Pancard Number.");
+                return 0;
+            }
+            //else {
+
+            //    var s = Panvalidation();
+
+            //    if (s === 0) {
+            //        alert("Please Enter a Valid Pancard Number.");
+            //        return 0;
+            //    }
+            //}
+            // validation of gender
+
+            var gender = document.getElementsByName('GenderOption');
+            var genvalue = false;
+
+            for (var i = 0; i < gender.length; i++) {
+                if (gender[i].checked == true) {
+                    genvalue = true;
+                }
+            }
+            if (!genvalue) {
+                alert("Please Select Gender");
+                return false;
+            }
+            // validation of select qualification
+
+            if (qualification === "-1") {
+                alert("Please select a qualification.");
+                return 0;
+            }
+
+
+            // validation of select qualification
+
+            if (occupation === "-1") {
+                alert("Please select a occupation.");
+                return 0;
+            }
+
+            // validation of dob
+
+            if (dob === "") {
+                alert("Please Select Date of birth.");
+                return 0;
+            }
+
+            // validation of age
+
+            if (age === "") {
+                alert("Please Enter Age.");
+                return 0;
+            }
+            else if (age < 18) {
+                alert("Age must be greater than 18");
+                return 0;
+
+            }
+                if(age>99)
+            {
+            alert("Age must be lesser than 100");
+            document.getElementById("age").value = "";
+                 document.getElementById("dob").value = "";
+                  return 0;
+            }
+          
+
+            // validation of email
+
+            if (email === "") {
+                alert("Please Enter Email.");
+                return 0;
+            }
+
+            // validation of phonenumber
+
+            if (phone === "") {
+                alert("Please Enter Your Phonenumber.");
+                return 0;
+            }
+
+
+            // validation of otp
+
+            if (otp === "") {
+                alert("Please Re-Enter Mobile and number and verify OTP..");
+                return 0;
+            }
+            if (otp_verifyFlag==0)
+            {
+                alert("Please Re-Enter Mobile and number and verify OTP..");
+                return 0;
+            }
+
+
+            // validation of wedding
+
+            if (wedding === "") {
+                alert("Please Select Date.");
+                return 0;
+            }
+
+            // validation of bacategory
+
+            if (bacategory === "-1") {
+                alert("Please Select BA Category.");
+                return 0;
+            }
+
+            // validation of incentive
+
+            if (incentive === "-1") {
+                alert("Please Select BA Category.");
+                return 0;
+            }
+
+            // validation of source
+
+            if (source === "-1") {
+                alert("Please Select Source.");
+                return 0;
+            }
+
+            // validation of status
+
+            if (source === "") {
+                alert("Please Enter Status.");
+                return 0;
+            }
+
+            // validation of category
+
+            if (category === "-1") {
+                alert("Please Select Category.");
+                return 0;
+            }
+
+            // validation of empcode
+
+            if (empcode === "") {
+                alert("Please Enter Reffered Empcode.");
+                return 0;
+            }
+
+            // validation of empname
+
+            if (empname === "") {
+                alert("Please Enter Reffered Empname.");
+                return 0;
+            }
+
+            // validation of states
+
+            if (states === "-1") {
+                alert("Please Select State.");
+                return 0;
+            }
+
+            // validation of districts
+
+            if (districts === "-1") {
+                alert("Please Select District.");
+                return 0;
+            }
+
+            // validation of bank
+
+            if (bank === "-1") {
+                alert("Please Select Bank.");
+                return 0;
+            }
+
+            // validation of branch
+
+            if (branch === "-1") {
+                alert("Please Select Branch.");
+                return 0;
+            }
+
+            // validation of accountno
+
+            if (accountno === "") {
+                alert("Please Enter Account Number.");
+                return 0;
+            }
+
+            // validation of accounttype
+
+            if (accounttype === "-1") {
+                alert("Please Select Account Type.");
+                return 0;
+            }
+
+            // validation of names
+
+            if (names === "") {
+                alert("Please Enter Your Name.");
+                return 0;
+            }
+
+            //validating document types
+            if (docTypFlag !="1") {
+                alert("Please check attached file types.");
+                return 0;
+            }
+
+
+            // validation of filepassbook
+
+            if (attachpassook === "") {
+                alert("Please Select Passbook File.");
+                return 0;
+            }
+            // validation of filepancard
+
+            if (attachpan === "") {
+                alert("Please Select Pancard File.");
+                return 0;
+            }
+
+            // validation of filephoto
+
+            if (attachphoto === "") {
+                alert("Please Select Photo.");
+                return 0;
+            }
+
+            // validation of fileid
+
+            if (attachidproof === "-1") {
+                alert("Please Select ID Proof.");
+                return 0;
+            }
+
+            return 1;
+
+        }
+
+        // PAN VALIDATION
+
+
+
+
+
+
+    </script>
+
+    <script>
+        // INPUT VALIDATION VIA API CALL
+
+
+        function mobileNumberAvailabilityCheck()
+        {
+            phone = document.getElementById('phone').value;
+            var a =phone. slice(0, 1);
+
+            var reponseText = document.getElementById('reponseText');
+            
+            if (a=="0" || a=="1" || a=="2" || a=="3" || a=="4" || a=="5")
+            {
+                alert('INVALID MOBILE NUMBER ..!!');
+                document.getElementById('phone').value = "";
+                document.getElementById('reponseText') ="";
+             return false;
+            }
+
+
+            var indata = "MOBILECHECK" + "^" + phone;
+            var res = callApiCommon(indata);
+            if (res == 1)
+            {
+              alert('MOBILE NUMBER ALREADY EXISTS..!!');
+             return false;
+            }
+            else
+            {
+               // document.getElementById('otp').removeAttribute('readonly');
+                sendOTP();
+            }
+
+         }
+
+    
+
+        function emailcheck() {
+
+              var age = document.getElementById('age').value;
+            if (age <18) {
+                alert("Age must be greater than 18");
+                document.getElementById("age").value = "";
+                document.getElementById("dob").value = "";
+                return 0;
+            }
+            else if  (age > 99) {
+                alert("Age must be lesser than 100");
+                document.getElementById("age").value = "";
+                document.getElementById("dob").value = "";
+                return 0;
+            }
+           
+          email = document.getElementById('email').value;
+
+          const res1=  EmailPatternValidation(email);
+
+          
+
+          if (res1 ==0)
+          {
+               alert('ENTER A VALID EMAIL ID..!!');
+                document.getElementById('email').value = "";
+
+               return false;
+          }
+
+
+             var indata = "EMAILVALIDATION" + "^" + email;
+            const res = callApiCommon(indata);
+            if (res == 1) 
+              {
+                  alert('EMAIL ID ALREADY EXISTS..!!');
+                  document.getElementById('email').value = "";
+              }
+
+            if (res == 2)
+              {  
+                  alert('ENTER A VALID EMAIL ID..!!');
+                document.getElementById('email').value = "";
+              }
+
+       }
+
+       function  EmailPatternValidation(indata)
+       {
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/EmailPatternValidation"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/EmailPatternValidation"; }
+
+            var data2 = '';
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    data2 = response;
+
+                },
+                error: function (response) {
+                    alert("failed");
+                }
+            });
+
+
+            return data2;
+
+       }
+
+
+
+        function callApiCommon(indata) {
+            //  const EmpCode = '@ViewData["EmpCode"]';
+            //  var brid = '@ViewData["BrID"]';
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+
+            var data2 = '';
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    data2 = response;
+
+                },
+                error: function (response) {
+                    alert("failed");
+                }
+            });
+
+
+            // Remove html tags and space chars
+            data2 = data2.replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, '');
+            data2 = data2.replace("]", " ");
+            data2 = data2.replace("[", " ");
+            data2 = data2.replace("MSG", "");
+            // document.getElementById("selectpincode").value = response;
+            return data2;
+        }
+
+         function callApiCommon1(indata) {
+            //  const EmpCode = '@ViewData["EmpCode"]';
+            //  var brid = '@ViewData["BrID"]';
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+
+            var data2 = '';
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    data2 = response;
+
+                },
+                error: function (response) {
+                    alert("failed");
+                }
+            });
+
+          
+          let results = JSON.parse(data2);
+           
+
+          let st = results[0].RES;
+            
+            return st;
+        }
+
+    </script>
+
+    <script>
+
+         function loadIndex() {
+
+            var root = '';
+            var baselink = '@ViewData["baseurl"]';
+            var id = '@ViewData["HeadName"]';
+
+            if (document.location.hostname == 'localhost') {
+                window.location.href = "/Loans/Index?datas=" + id;
+            }
+            else {
+                root = '@ViewData["root"]';
+                domainurl = baselink + root;
+                window.location.href = domainurl + "/Loans/Index?datas=" + id;
+            }
+
+        }
+
+        function resetPage() {
+
+            var root = '';
+            var baselink = '@ViewData["baseurl"]';
+            var id = '@ViewData["HeadName"]';
+
+            if (document.location.hostname == 'localhost') {
+                window.location.href = "/Loans/BACREATION?datas=" + id;
+            }
+            else {
+                root = '@ViewData["root"]';
+                domainurl = baselink + root;
+                window.location.href = domainurl + "/Loans/BACREATION?datas=" + id;
+            }
+
+        }
+
+    </script>
+
+
+
+</body>
+</html>
+
+
+
+

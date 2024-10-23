@@ -1,0 +1,617 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor httpContextAccessor
+@{
+    ViewData["Title"] = "ONLINECOURSEAPPLICATION";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="~/css/index.css">
+    <style>
+
+        .container {
+            margin-top: 30px;
+            border-radius: 50px;
+            max-height: 100vh;
+            width: 900px;
+        }
+
+        .fs-10 {
+            font-size: 10px;
+        }
+
+        .card {
+            border-radius: 5px;
+            box-shadow: rgba(0,0,0,0.35) 0px 5px 15px;
+            /*   background-color: #6B8A7A; */
+        }
+
+        .card-header {
+            background-color: #6B8A7A;
+            color: white;
+        }
+
+        #remark {
+            display: none;
+        }
+    </style>
+
+</head>
+<body>
+    <script type="text/javascript" src="~/js/ProjectScript.js"></script>
+    <div class="pagecontiner">
+
+        <div class="container d-flex justify-content-center">
+            <div class="card" style="width:max-content">
+                <div class="card-header text-center pt-3">
+                    <h6>CERTIFICATE VERIFICATION</h6>
+                </div>
+
+
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6 col-12 text-center">
+                            <label for="empcode" style="font-size: 12px;">Employee Code</label>
+                        </div>
+                        <div class="col-md-3 col-12 text-center">
+                            <select style="font-size: 12px;width: 200px" id="userDropdown">
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="table-container" style="max-height: 300px;overflow-y: auto;">
+                        <table class=" table table-bordered table-hover table-responsive fs-10">
+
+                            <thead>
+                                <tr>
+                                    <th>AppNo</th>
+                                    <th>Employee Code</th>
+                                    <th>Employee Name</th>
+                                    <th>Branch Id</th>
+                                    <th>University</th>
+                                    <th>Course</th>
+                                    <th>Score</th>
+                                    <th>Percentage</th>
+                                    <th>Grade</th>
+                                    <th>MarkList</th>
+                                    <th>Certificate</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-body1">
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+                <div class="m-3 text-center">
+                    <button type="button" class="btn btn-dark mx-1" onclick="valRecomand()" style="font-size:11px;">Recommend</button>
+                    <button type="button" class="btn btn-dark mx-1" style="font-size:11px;" onclick="valReject()">Reject</button>
+                    <button type="button" class="btn btn-dark mx-1" style="font-size:11px;" onclick=" loadIndex()">Exit</button>
+
+                </div>
+
+                <form>
+                    <div id="remark">
+                        <div class="text-center">
+                            <textarea id="remarkData"></textarea>
+                        </div>
+                        <div class="text-center m-3">
+                            <button type="button" class="btn btn-dark mx-1" style="font-size:11px;" onclick="validataionSubmit()">Submit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        //----redirect to index page
+
+        function loadIndex() {
+
+            var root = '';
+            var baselink = '@ViewData["baseurl"]';
+            var id = '@ViewData["HeadName"]';
+
+            if (document.location.hostname == 'localhost') {
+                window.location.href = "/HRM/Index?datas=" + id;
+            }
+            else {
+                root = '@ViewData["root"]';
+                domainurl = baselink + root;
+                window.location.href = domainurl + "/HRM/Index?datas=" + id;
+            }
+
+        }
+    </script>
+    <script>
+
+        function EmployeeAccessApi() {
+
+            var ecode = '@ViewData["EmpCode"]';
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/HRM/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/HRM/getAPIData"; }
+            
+
+            var indata = 'ONLINECOURSE_VERIFYACCESS' + '^' + ecode;
+
+            var access_code = '';
+            var res1 = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    res1 = response;
+                    access_code = JSON.parse(res1);
+                    res1 = access_code[0].RESPONSE;
+                    if (res1 == 0) {
+                        alert("Not Authorized to view this page..");
+                        loadIndex();
+                    }
+
+                    return;
+
+
+                },
+                error: function (response) {
+                    check = 0;
+
+                }
+            });
+
+
+
+        }
+
+
+    </script>
+    <script>
+        const EmpCode = '@ViewData["EmpCode"]';
+        var brid = '@ViewData["BrID"]';
+        // API GET LOAD
+        window.onload = function OnloadFunction() {
+        ActiveLoginCheck();
+        EmployeeAccessApi();
+
+        callAPIResponse();
+
+        }
+        function ActiveLoginCheck() {
+            var user = '@ViewData["EmpCode"]';
+            if (user == null || user == '') {
+                alert('INACTIVE SESSION');
+                loadIndex();
+            }
+
+        }
+     
+
+        function callAPIResponse() {
+
+            const EmpCode = '@ViewData["EmpCode"]';
+            var brid = '@ViewData["BrID"]';
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/HRM/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/HRM/getAPIData"; }
+
+
+            indata = "Course_LoadEmployeeName" + "^" + EmpCode + "~" + brid;
+
+
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    const data2 = JSON.parse(response);
+                    LoadDropDown(data2);
+                },
+                error: function (response) {
+                    alert("failed");
+                }
+            });
+        }
+
+        function valRecomand() {
+            const userDropdown = document.getElementById('userDropdown').value;
+            if (userDropdown == -1) {
+                alert("Please Select an Employee Code..!")
+            } else {
+                PostData();
+            }
+        }
+
+        function valReject() {
+            const userDropdown = document.getElementById('userDropdown').value;
+            if (userDropdown == -1) {
+                alert("Please Select an Employee Code..!")
+            } else {
+                showdata();
+            }
+        }
+
+        function LoadDropDown(data) {
+
+            const userDropdown = document.getElementById('userDropdown');
+
+            data.forEach(user => {
+
+                const option = document.createElement('option');
+                option.value = user.SLNO;
+                option.textContent = user.EMPCODE;
+                userDropdown.appendChild(option);
+            });
+        }
+
+        document.getElementById('userDropdown').addEventListener('change', function () {
+
+            const selectedUserId = this.value;
+            if (selectedUserId) {
+                fetchUserDetails(selectedUserId);
+            } else {
+
+            }
+        });
+
+        function fetchUserDetails(selectedUserId) {
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/HRM/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/HRM/getAPIData"; }
+
+            id_user = selectedUserId
+
+
+            indata = "COURSE_LOAD_DATA" + "^" + id_user;
+
+
+
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    const data2 = JSON.parse(response);
+                    populateTable(data2)
+                },
+                error: function (response) {
+                    alert("failed");
+                }
+            });
+        }
+
+
+
+        function PostDataAPICall(indata) {
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/HRM/postAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/HRM/postAPIData"; }
+
+
+            indata = 'ExternalCourseApply' + '^' + indata;
+
+            var res1 = '';
+            var access_code = '';
+
+
+            $.ajax({
+                type: "POST",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    res1 = response;
+                    access_code = JSON.parse(res1);
+                    res1 = access_code[0].RESPONSE;
+
+
+                },
+                error: function (response) {
+                    check = 0;
+
+                }
+            });
+
+
+            slno = res1;
+
+        }
+
+        function PostDataAPICallRej(indata) {
+
+
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/HRM/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/HRM/getAPIData"; }
+
+
+            indata = 'ExternalCourseRecc_Rej' + '^' + indata;
+
+            var res1 = '';
+            var access_code = '';
+
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    res1 = response;
+                    access_code = JSON.parse(res1);
+                    res1 = access_code[0].RESPONSE;
+
+                },
+                error: function (response) {
+                    check = 0;
+                }
+            });
+
+            // Remove html tags and space chars
+            slno = res1;
+        }
+
+        function PostData() {
+
+            let today = new Date();
+            let dd = today.getDate();
+            let mm = today.getMonth() + 1;
+            let yyyy = today.getFullYear();
+
+            if (dd < 10) {
+                dd = '0' + dd;
+            }
+            if (mm < 10) {
+                mm = '0' + mm;
+            }
+
+            const formattedToday = yyyy + '-' + mm + '-' + dd;
+
+            Formateddate = formatDateForAPI(formattedToday);
+
+
+            a = document.getElementById('userDropdown');
+
+            const slNo = a.value;
+
+            var user = '@ViewData["EmpCode"]';
+
+            var baselink = '@ViewData["baseurl"]';
+            const apiUrl = baselink + 'smareportsapi/api/SMAModule/PostSMAData';
+
+            const indata = user + '~' + 1 + '~' + 1 + '~' + 1 + '~' + 1 + '~' + 1 + '~' + slNo + '~' + 1 + "~" + Formateddate + "~" + 2 + "~" + 1;
+
+            PostDataAPICall(indata);
+
+
+            if (slno == 2) {
+                alert("Reccommended Successfully");
+
+            }
+
+            reloadFunction();
+        }
+
+        function formatDateForAPI(dateString) {
+
+
+            // Split the date string into year, month, and day components
+            const [year, monthString, day] = dateString.split("-");
+            // Convert month string to month number (1-based for readability)
+            const month = parseInt(monthString);
+            // Define an object mapping month numbers to uppercase month names
+            const monthNames = {
+                1: "JAN",
+                2: "FEB",
+                3: "MAR",
+                4: "APR",
+                5: "MAY",
+                6: "JUN",
+                7: "JUL",
+                8: "AUG",
+                9: "SEP",
+                10: "OCT",
+                11: "NOV",
+                12: "DEC",
+            };
+
+            // Check if month is valid (1-12)
+            if (month < 1 || month > 12) {
+                return "Invalid month";
+            }
+
+            // Use template literals and monthNames object for formatted output
+            const formattedDate = `${day.padStart(2, "0")}-${monthNames[month]}-${year}`;
+            return formattedDate;
+        }
+
+        function validataionSubmit() {
+
+
+
+            REMARK = document.getElementById("remarkData").value;
+            if (REMARK.length > 40) {
+                alert("Please Enter Remarks in  40 Characters!!!");
+            } else if (REMARK.length == "") {
+                alert("Please Enter Remarks Field!!!");
+                return;
+            }
+            else {
+                PostDataRej();
+                reloadFunction();
+
+            }
+        }
+
+        function PostDataRej() {
+
+            REMARK = document.getElementById("remarkData").value;
+            let today = new Date();
+            let dd = today.getDate();
+            let mm = today.getMonth() + 1;
+            let yyyy = today.getFullYear();
+
+            if (dd < 10) {
+                dd = '0' + dd;
+            }
+            if (mm < 10) {
+                mm = '0' + mm;
+            }
+
+            const formattedToday = yyyy + '-' + mm + '-' + dd;
+
+            Formateddate = formatDateForAPI(formattedToday);
+
+
+
+            a = document.getElementById('userDropdown');
+
+            const slNo = a.value;
+
+            var user = '@ViewData["EmpCode"]';
+
+            var baselink = '@ViewData["baseurl"]';
+            const apiUrl = baselink + 'smareportsapi/api/SMAModule/PostSMAData';
+
+            const indata = user + '~' + 1 + '~' + 1 + '~' + 1 + '~' + 1 + '~' + 1 + '~' + slNo + '~' + REMARK + "~" + Formateddate + "~" + 4 + "~" + 1;
+
+            PostDataAPICallRej(indata);
+
+            if (slno == 4) {
+                alert("Rejected Successfully");
+
+            }
+
+        }
+
+        function reloadFunction() {
+            window.location.reload();
+        }
+
+        function populateTable(data) {
+
+            // Get reference to the table body
+            const tableBody = document.getElementById('table-body1');
+
+            // Clear existing table rows
+            tableBody.innerHTML = '';
+
+            data.forEach(item => {
+                // Create a new row
+
+                const row = tableBody.insertRow();
+
+                // Insert cells into the row
+                const cell1 = row.insertCell();
+                const cell2 = row.insertCell();
+                const cell3 = row.insertCell();
+                const cell4 = row.insertCell();
+                const cell5 = row.insertCell();
+                const cell6 = row.insertCell();
+                const cell7 = row.insertCell();
+                const cell8 = row.insertCell();
+                const cell9 = row.insertCell();
+                const cell10 = row.insertCell();
+                const cell11 = row.insertCell();
+
+                cell1.innerHTML = item.SL_NO;
+                cell2.innerHTML = item.EMP_CODE;
+                cell3.innerHTML = item.EMP_NAME;
+                cell4.innerHTML = item.BRANCH_ID;
+                cell5.innerHTML = item.UNIVERSITY_NAME;
+                cell6.innerHTML = item.QUALIFICATION;
+                cell7.innerHTML = item.SCR;
+                cell8.innerHTML = item.PCR;
+                cell9.innerHTML = item.GRADE;
+
+                // ------------VIEW 1 BUTTON------------------------//
+
+
+                function base64ToPdfDownload(base64String, filename) {
+
+                    if (base64String == "") {
+                        alert("No Data in marklist !");
+                    } else {
+                        const link = document.createElement('a');
+                        link.textContent = "View";
+                        link.className = "btn btn-dark btn-sm"
+                        link.href = `data:application/pdf;base64,${base64String}`;
+                        link.download = filename || 'marklist.pdf';
+                        cell10.appendChild(link);
+                    };
+
+                }
+
+                // Example usage
+                const myBase64String = item.MARKLIST
+                base64ToPdfDownload(myBase64String, 'marklist.pdf');
+
+
+                // ------------VIEW 2 BUTTON------------------------
+
+                // const button1 = document.createElement('button');
+                // button1.textContent = 'VIEW'; // Set the text content of the button
+
+                // button1.setAttribute('id', 'updateButton1');
+
+                function base64ToPdfDownload1(base64String, filename) {
+
+                    if (base64String == "") {
+                        alert("No Data in Certificate !")
+                    } else {
+                        const link1 = document.createElement('a');
+                        link1.textContent = "View";
+                        link1.className = "btn btn-dark btn-sm"
+                        link1.href = `data:application/pdf;base64,${base64String}`;
+                        link1.download = filename || 'marklist.pdf';
+                        cell11.appendChild(link1);
+                    }
+
+                }
+
+                // Example usage
+                const myBase64String1 = item.CERTIFICATE
+                base64ToPdfDownload1(myBase64String1, 'certificate.pdf');
+
+            });
+
+        }
+
+        function showdata() {
+            var remark = document.getElementById('remark');
+            remark.style.display = 'block';
+        }
+
+        function alertfunction() {
+
+            a = document.getElementById("userDropdown").options.length;
+            if (a > 1) {
+
+            }
+        }
+    </script>
+
+
+
+</body>
+
+
+</html>
+
+

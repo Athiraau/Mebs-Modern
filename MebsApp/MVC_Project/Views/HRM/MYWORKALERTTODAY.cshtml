@@ -1,0 +1,842 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor httpContextAccessor
+@{
+    ViewData["Title"] = "ONLINECOURSEAPPLICATION";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="~/css/index.css">
+    <script src="~/js/site.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.6/jspdf.plugin.autotable.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Sofia">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+</head>
+<style>
+    .fs-8 {
+        font-size: 10px;
+    }
+
+    .poppins-regular {
+        font-family: "Poppins", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+    }
+
+    .rounded {
+        border-top: 4px solid #bbb;
+        border-radius: 2px;
+    }
+</style>
+<body>
+    <div class="pagecontiner" id="dcontainer2">
+        <div style="margin-left: 90px;">
+            <div style="height:50px;width:100%;">
+                <button type="button" class="btn btn-dark btn-sm" style="margin-bottom:10px" onclick="printData();">Print</button>
+                <button type="button" class="btn btn-dark btn-sm" style="margin-bottom:10px" onclick="loadIndex()">Exit</button>
+                <table width="100%" id="table-body1" class="table table-striped poppins-regular table-hover font  fs-8">
+                </table>
+                <table width="100%" id="table-body2" class="table table-striped poppins-regular table-hover font  fs-8">
+                </table>
+            </div>
+
+            @*   <button onclick="populateTable()">click</button>
+            <button onclick="exportPdf()">pdf</button> *@
+        </div>
+    </div>
+    <script>
+
+
+        window.onload = function OnloadFunction() {
+            // populateTable()
+            LoadEmpDetails()
+            // populateTable2()
+        }
+
+
+
+        function formatDateForAPI(dateString) {
+
+
+            // Split the date string into year, month, and day components
+            const [year, monthString, day] = dateString.split("-");
+            // Convert month string to month number (1-based for readability)
+            const month = parseInt(monthString);
+            // Define an object mapping month numbers to uppercase month names
+            const monthNames = {
+                1: "JAN",
+                2: "FEB",
+                3: "MAR",
+                4: "APR",
+                5: "MAY",
+                6: "JUN",
+                7: "JUL",
+                8: "AUG",
+                9: "SEP",
+                10: "OCT",
+                11: "NOV",
+                12: "DEC",
+            };
+
+            // Check if month is valid (1-12)
+            if (month < 1 || month > 12) {
+                return "Invalid month";
+            }
+
+            // Use template literals and monthNames object for formatted output
+            const formattedDate = `${day.padStart(2, "0")}-${monthNames[month]}-${year}`;
+            return formattedDate;
+        }
+
+
+        function populateTable(data2, data3, data4, data5, data6, data7) {
+          
+            const options = {
+                timeZone: 'Asia/Kolkata',
+                hour: 'numeric',
+                minute: 'numeric',
+                second: 'numeric',
+                hour12: true
+            };
+
+            BLOCKCOUNT = data6[0].BLOCKCOUNT;
+            HIGHCOUNT = data6[0].HIGH_COUNT;
+            LOWCOUNT = data6[0].LOW_COUNT;
+            MEDIUMCOUNT = data6[0].MEDIUM_COUNT;
+            ALERTCOUNT = data6[0].REASON_COUNT;
+            //LOWALERT = data3[0].BLOCK_ID;
+
+
+            const indianTime = new Date().toLocaleString('en-IN', options);
+
+
+            //----------------------------
+            let today = new Date();
+            let dd = today.getDate();
+            let mm = today.getMonth() + 1;
+            let yyyy = today.getFullYear();
+
+            if (dd < 10) {
+                dd = '0' + dd;
+            }
+            if (mm < 10) {
+                mm = '0' + mm;
+            }
+
+            const formattedToday = yyyy + '-' + mm + '-' + dd;
+
+            Formateddate = formatDateForAPI(formattedToday);
+
+
+            //selecting data from an array
+            // Get reference to the table body
+            const tableBody = document.getElementById('table-body1');
+
+            // Clear existing table rows
+            tableBody.innerHTML = '';
+
+            if (HIGHCOUNT > 0 || BLOCKCOUNT > 0 || LOWCOUNT > 0 || MEDIUMCOUNT > 0 || ALERTCOUNT > 0) {
+
+
+                data2.forEach(item => {
+                    const row = tableBody.insertRow();
+                    const row1 = tableBody.insertRow();
+                    const row2 = tableBody.insertRow();
+                    const row8 = tableBody.insertRow();
+                    const row3 = tableBody.insertRow();
+                    const row4 = tableBody.insertRow();
+                    const row4hr = tableBody.insertRow();
+                    const row7 = tableBody.insertRow();
+                    const row9 = tableBody.insertRow();
+
+                    //----cash entry block
+
+
+                    // Insert cells into the row
+                    const cell1 = row.insertCell();
+                    cell1.style.color = "red";
+
+                    cell1.style.background = "Gold";
+                    cell1.colSpan = "12";
+                    cell1.style.textAlign = "center";
+                    cell1.style.fontSize = "medium";
+                    //insert 2nd row
+                    const cell2 = row1.insertCell();
+                    cell2.style.textAlign = "center";
+                    cell2.colSpan = "12";
+                    cell2.style.background = "LightGrey"
+                    //insert 3rd row
+                    const cell3 = row2.insertCell();
+                    cell3.colSpan = "3";
+                    cell3.align = "left";
+                    const cell4 = row2.insertCell();
+                    cell4.colSpan = "6";
+                    cell4.align = "center";
+                    cell4.style.fontWeight = "bold";
+                    const cell5 = row2.insertCell();
+                    cell5.colSpan = "3";
+                    cell5.align = "right";
+
+                    //insert 1 more row
+                    const cell80 = row8.insertCell();
+                    cell80.colSpan = "2";
+                    cell80.align = "left";
+                    cell80.style.fontSize = "10px";
+
+                    const cell81 = row8.insertCell();
+                    cell81.colSpan = "2";
+                    cell81.align = "left";
+                    cell81.style.fontSize = "10px";
+                    cell81.style.fontWeight = "bold";
+                    const cell82 = row8.insertCell();
+                    cell82.colSpan = "4";
+                    cell82.align = "left";
+                    const cell83 = row8.insertCell();
+                    cell83.colSpan = "6";
+                    cell83.align = "left";
+                    cell83.style.fontWeight = "bold";
+                    //insert 4th cell
+                    const cell6 = row3.insertCell();
+                    cell6.colSpan = "2";
+                    cell6.align = "left";
+                    const cell7 = row3.insertCell();
+                    cell7.colSpan = "2";
+                    cell7.align = "left";
+                    cell7.style.fontWeight = "bold";
+                    const cell8 = row3.insertCell();
+                    cell8.colSpan = "4";
+                    cell8.align = "left";
+                    const cell9 = row3.insertCell();
+                    cell9.colSpan = "6";
+                    cell9.align = "left";
+                    cell9.style.fontWeight = "bold";
+                    //INSERT HR
+
+                    //INSERT 5TH CELL
+                    const cell10 = row4.insertCell();
+                    cell10.colSpan = "2";
+                    cell10.align = "left";
+                    const cell11 = row4.insertCell();
+                    cell11.colSpan = "2";
+                    cell11.align = "left";
+                    cell11.style.fontWeight = "bold";
+                    const cell12 = row4.insertCell();
+                    cell12.colSpan = "4";
+                    cell12.align = "left";
+                    const cell13 = row4.insertCell();
+                    cell13.colSpan = "6";
+                    cell13.align = "left";
+                    cell13.style.fontWeight = "bold"
+                    //insert 6th Cell
+
+                    // const cell16 = row7.insertCell();
+                    // cell16.colSpan = "12";
+                    // cell16.innerHTML = "<hr>"
+                    //inser
+
+
+
+
+                    //integrating api in table
+                    cell1.innerHTML = "Manapuram Finance Limited";
+                 //   cell1.style="color:blue";
+                    cell2.innerHTML = "Branch ID=" + item.BRANCH_ID + "," + "Branch Name=" + item.BRANCH_NAME;
+                    cell3.innerHTML = "Date : " + Formateddate;
+                    cell4.innerHTML = ""
+                    cell5.innerHTML = "Time : " + indianTime;
+                    cell6.innerHTML = "Designation:";
+                    cell7.innerHTML = item.DESIGNATION;
+                    cell8.innerHTML = "Branch Name:";
+                    cell9.innerHTML = item.BRANCH_NAME;
+                    cell10.innerHTML = "Department";
+                    cell11.innerHTML = item.DEP_NAME;
+                    cell12.innerHTML = "Post";
+                    cell13.innerHTML = item.POST_NAME;
+                    cell80.innerHTML = "EmpCode";
+                    cell81.innerHTML = item.EMP_CODE;
+                    cell82.innerHTML = "EmpName:"
+                    cell83.innerHTML = item.EMP_NAME;
+                });
+
+                if (ALERTCOUNT > 0) {
+
+                    const tableBody = document.getElementById('table-body1');
+
+                    const alert = tableBody.insertRow();
+
+                    const cell_alert = alert.insertCell();
+                    cell_alert.colSpan = "12";
+                    cell_alert.rowSpan = "1";
+                    cell_alert.style.color = "green";
+
+                    cell_alert.innerHTML = "<b><font size=2>&nbsp;WORK&nbsp;ALERTS&nbsp;TODAY&nbsp;</font></b>";
+
+                    const alert_msg = tableBody.insertRow();
+                    const cell_alert_msg = alert_msg.insertCell();
+                    cell_alert_msg.colSpan = "12";
+                    cell_alert_msg.rowSpan = "1";
+                    cell_alert_msg.style.color = "green";
+
+
+                    cell_alert_msg.innerHTML = "<b><font size=1>(Dear Employee, Please note that Below Details only Alerts..Not Block Your Punching Today..!!&nbsp;If you already done this Work,then No Problem..!!)</font></b>";
+
+
+                    data7.forEach(item => {
+
+                        const tableBody = document.getElementById('table-body1');
+
+                        const alert_msg_2 = tableBody.insertRow();
+                        const cell_alert_msg_2 = alert_msg_2.insertCell();
+                        cell_alert_msg_2.colSpan = "12";
+                        cell_alert_msg_2.rowSpan = "1";
+                        cell_alert_msg_2.style.padding = "1px";
+                        cell_alert_msg_2.style.fontWeight = "bold";
+                        cell_alert_msg_2.innerHTML = "&nbsp;&nbsp;" + item.REASON;
+
+                    });
+
+                    const alert_msg_1 = tableBody.insertRow();
+                    const cell_alert_msg_1 = alert_msg_1.insertCell();
+                    cell_alert_msg_1.colSpan = "12";
+                    cell_alert_msg_1.rowSpan = "1";
+                    cell_alert_msg_1.style.padding = "1px";
+                    cell_alert_msg_1.innerHTML = "<hr>";
+
+                }
+
+
+                if (HIGHCOUNT > 0) {
+                    const tableBody = document.getElementById('table-body1');
+
+                    const alert_top = tableBody.insertRow();
+
+                    const cell_alert_top = alert_top.insertCell();
+                    cell_alert_top.colSpan = "12";
+                    cell_alert_top.rowSpan = "1";
+                    cell_alert_top.style.color = "red";
+
+                    cell_alert_top.innerHTML = "<b><font size=2>&nbsp;TOP&nbsp;PRIORITY&nbsp;WORK ALERT&nbsp;PENDING</font></b>";
+
+                    data5.forEach(item => {
+
+
+                        const alert_msg_top_2 = tableBody.insertRow();
+                        const cell_alert_top_msg_2 = alert_msg_top_2.insertCell();
+                        cell_alert_top_msg_2.colSpan = "12";
+                        cell_alert_top_msg_2.rowSpan = "1";
+                        cell_alert_top_msg_2.style.padding = "1px";
+                        cell_alert_top_msg_2.style.fontWeight = "bold";
+                        cell_alert_top_msg_2.innerHTML = "&nbsp;&nbsp;" + item.REASON;
+
+                    });
+                    const alert_msg_top_1 = tableBody.insertRow();
+                    const cell_alert_top_msg_1 = alert_msg_top_1.insertCell();
+                    cell_alert_top_msg_1.colSpan = "12";
+                    cell_alert_top_msg_1.rowSpan = "1";
+                    cell_alert_top_msg_1.style.padding = "1px";
+                    cell_alert_top_msg_1.innerHTML = "<hr>";
+
+                }
+
+                if (MEDIUMCOUNT > 0) {
+
+                    const tableBody = document.getElementById('table-body1');
+
+                    const alert_medium = tableBody.insertRow();
+
+                    const cell_alert_medium = alert_medium.insertCell();
+                    cell_alert_medium.colSpan = "12";
+                    cell_alert_medium.rowSpan = "1";
+                    cell_alert_medium.style.color = "blue";
+
+                    cell_alert_medium.innerHTML = "<b><font size=2 >MEDIUM PRIORITY WORK ALERT PENDING</font></b > ";
+
+                    data4.forEach(item => {
+
+
+                        const alert_msg_medium_2 = tableBody.insertRow();
+                        const cell_alert_medium_msg_2 = alert_msg_medium_2.insertCell();
+                        cell_alert_medium_msg_2.colSpan = "12";
+                        cell_alert_medium_msg_2.rowSpan = "1";
+                        cell_alert_medium_msg_2.style.padding = "1px";
+                        cell_alert_medium_msg_2.style.fontWeight = "bold";
+                        cell_alert_medium_msg_2.innerHTML = "&nbsp;&nbsp;" + item.REASON;
+
+                    });
+
+                    const alert_msg_medium_1 = tableBody.insertRow();
+                    const cell_alert_medium_msg_1 = alert_msg_medium_1.insertCell();
+                    cell_alert_medium_msg_1.colSpan = "12";
+                    cell_alert_medium_msg_1.rowSpan = "1";
+                    cell_alert_medium_msg_1.style.padding = "1px";
+                    cell_alert_medium_msg_1.innerHTML = "<hr>";
+
+                }
+
+
+                if (data3.length > 0) {
+
+                    const tableBody = document.getElementById('table-body1');
+
+                    const alert_low = tableBody.insertRow();
+
+                    const cell_alert_low = alert_low.insertCell();
+                    cell_alert_low.colSpan = "12";
+                    cell_alert_low.rowSpan = "1";
+                    cell_alert_low.style.color = "orange";
+                    
+
+                    cell_alert_low.innerHTML = "<b><font size=2 >LOW PRIORITY WORK ALERT PENDING</font></b > ";
+
+                    data3.forEach(item => {
+
+
+                        const alert_msg_low_2 = tableBody.insertRow();
+                        const cell_alert_low_msg_2 = alert_msg_low_2.insertCell();
+                        cell_alert_low_msg_2.colSpan = "12";
+                        cell_alert_low_msg_2.rowSpan = "1";
+                        cell_alert_low_msg_2.style.padding = "1px";
+                        cell_alert_low_msg_2.style.fontWeight = "bold";
+                        cell_alert_low_msg_2.innerHTML = "&nbsp;&nbsp;" + item.REASON;
+
+                    });
+
+
+                    const alert_msg_low_1 = tableBody.insertRow();
+                    const cell_alert_low_msg_1 = alert_msg_low_1.insertCell();
+                    cell_alert_low_msg_1.colSpan = "12";
+                    cell_alert_low_msg_1.rowSpan = "1";
+                    cell_alert_low_msg_1.style.padding = "1px";
+                    cell_alert_low_msg_1.innerHTML = "<hr>";
+
+                }
+
+                if (BLOCKCOUNT > 0) {
+
+                    const topblock = tableBody.insertRow();
+
+                    const top_cell_alert = topblock.insertCell();
+                    top_cell_alert.colSpan = "12";
+                    top_cell_alert.rowSpan = "1";
+                    top_cell_alert.style.color = "red";
+
+                    top_cell_alert.innerHTML = "<b><font size=2>&nbsp;TOP&nbsp;PRIORITY&nbsp;WORK ALERT&nbsp;PENDING</font>";
+
+                    if (BLOCKCOUNT == 1) {
+
+                        cashEntryPosition();
+
+                    } else if (BLOCKCOUNT == 2) {
+
+                        GoldEntryBlock();
+                    } else if (BLOCKCOUNT == 4) {
+                        KeyBlock();
+                    } else if (BLOCKCOUNT == 3) {
+                        cashEntryPosition();
+                        GoldEntryBlock();
+                    } else if (BLOCKCOUNT == 6) {
+                        GoldEntryBlock();
+                        KeyBlock();
+                    } else if (BLOCKCOUNT == 5) {
+                        cashEntryPosition();
+                        KeyBlock();
+                    } else if (BLOCKCOUNT == 7) {
+                        cashEntryPosition();
+                        GoldEntryBlock();
+                        KeyBlock();
+                    }
+                    const gold_alert_hr = tableBody.insertRow();
+                    const cell_gold_alert_hr = gold_alert_hr.insertCell();
+                    cell_gold_alert_hr.colSpan = "12";
+                    cell_gold_alert_hr.rowSpan = "1";
+
+                    cell_gold_alert_hr.innerHTML = "<hr>";
+                }
+
+                PUNCHBLOCK(data6);
+
+             
+            } else {
+                const row = tableBody.insertRow()
+
+                const cell1 = row.insertCell();
+                cell1.colSpan = "12";
+                cell1.style.textAlign = "center";
+                cell1.style.fontWeight = "bold";
+                cell1.innerHTML = "YOU HAVE NO WORK ALERTS TODAY";
+
+                PUNCHBLOCK(data6);
+
+            }
+
+
+        }
+
+
+        function populateTable2(data8, data6) {
+            EXITBLOCKCOUNT = data6[0].EXITBLOCK_COUNT;
+          
+
+            if (EXITBLOCKCOUNT > 0) {
+
+                const tableBody = document.getElementById('table-body2');
+
+                const row = tableBody.insertRow();
+
+                const cell1 = row.insertCell();
+                cell1.colSpan = "12";
+                cell1.style.textAlign = "center";
+                cell1.style.fontWeight = "bold";
+                cell1.innerHTML = "EXIT BLOCK";
+                data8.forEach(item => {
+
+                    const row_NEW = tableBody.insertRow();
+                    const row_NEW_1 = tableBody.insertRow();
+
+                    const cell1 = row_NEW.insertCell();
+                    cell1.style.width = "20px";
+                    cell1.style.background = "LightGrey"
+                    cell1.style.fontWeight = "bold";
+                    cell1.style.textAlign = "left";
+                    //insert 2nd row
+                    const cell2 = row_NEW.insertCell();
+                    cell2.style.textAlign = "center";
+
+                    cell2.style.background = "LightGrey"
+                    //SECOND ROW
+                    cell2.style.fontWeight = "bold";
+                    const cell3 = row_NEW_1.insertCell();
+                    cell3.style.width = "20px";
+
+
+                    cell3.style.textAlign = "left";
+                    //insert 2nd row
+                    const cell4 = row_NEW_1.insertCell();
+                    cell4.style.textAlign = "center";
+
+
+                    //integrating api in table
+                    cell1.innerHTML = "SLNO";
+                    cell2.innerHTML = "Block Reson";
+                    cell3.innerHTML = item.SLNO;
+                    cell4.innerHTML = item.BLOCK_REASON;
+
+                });
+
+            } else {
+                const tableBody = document.getElementById('table-body2');
+                const row_exit_1 = tableBody.insertRow();
+
+                const cell1_exit = row_exit_1.insertCell();
+                cell1_exit.colSpan = "12";
+                cell1_exit.style.textAlign = "center";
+                cell1_exit.style.fontWeight = "bold";
+                cell1_exit.innerHTML = "YOU HAVE NO EXIT BLOCK TODAY";
+            }
+
+
+        }
+
+    
+
+        //-----------------Loding api Datas---------------Load Employee Details-------------
+
+        function LoadEmpDetails() {
+            const EmpCode = '@ViewData["EmpCode"]';
+            var brid = '@ViewData["BrID"]';
+
+              var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/HRM/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/HRM/getAPIData"; }
+
+
+            indata = "ALERT_EMPLOAD" + "^" + EmpCode;
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    const data2 = JSON.parse(response);
+                    LowPriorityDatas(data2)
+
+                },
+                error: function (response) {
+                    alert("failed");
+                }
+            });
+        }
+
+
+
+        //---------------------low priority---------------------
+        function LowPriorityDatas(data2) {
+
+
+            const EmpCode = '@ViewData["EmpCode"]';
+            var brid = '@ViewData["BrID"]';
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/HRM/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/HRM/getAPIData"; }
+
+
+            indata = "ALERT_DATALOAD" + "^" + EmpCode + "~" + 1;
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    const data3 = JSON.parse(response);
+                    mediumpriority(data2, data3);
+                },
+                error: function (response) {
+                    alert("failed");
+                }
+            });
+        }
+        //---------------------medium priority---------------------
+
+        function mediumpriority(data2, data3) {
+
+            const EmpCode = '@ViewData["EmpCode"]';
+            var brid = '@ViewData["BrID"]';
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/HRM/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/HRM/getAPIData"; }
+
+
+            indata = "ALERT_DATALOAD" + "^" + EmpCode + "~" + 2;
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    const data4 = JSON.parse(response);
+                    highpriority(data2, data3, data4);
+                },
+                error: function (response) {
+                    alert("failed");
+                }
+            });
+        }
+
+        //--------------------- high  priority---------------------
+
+
+        function highpriority(data2, data3, data4) {
+
+            const EmpCode = '@ViewData["EmpCode"]';
+            var brid = '@ViewData["BrID"]';
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/HRM/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/HRM/getAPIData"; }
+
+
+            indata = "ALERT_DATALOAD" + "^" + EmpCode + "~" + 3;
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    const data5 = JSON.parse(response);
+                    count(data2, data3, data4, data5);
+                },
+                error: function (response) {
+                    alert("failed");
+                }
+            });
+        }
+        //---------------------Count---------------------
+
+        function count(data2, data3, data4, data5) {
+
+            const EmpCode = '@ViewData["EmpCode"]';
+            var brid = '@ViewData["BrID"]';
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/HRM/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/HRM/getAPIData"; }
+
+
+            indata = "ALERT_COUNT" + "^" + EmpCode;
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    const data6 = JSON.parse(response);
+                    simpleAlert(data2, data3, data4, data5, data6);
+                },
+                error: function (response) {
+                    alert("failed");
+                }
+            });
+        }
+        //simple alert -----------------------------------------------
+
+        function simpleAlert(data2, data3, data4, data5, data6) {
+
+            const EmpCode = '@ViewData["EmpCode"]';
+            var brid = '@ViewData["BrID"]';
+
+              var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/HRM/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/HRM/getAPIData"; }
+
+
+            indata = "ALERT_DATALOAD" + "^" + EmpCode + "~" + 4;
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    const data7 = JSON.parse(response);
+                    populateTable(data2, data3, data4, data5, data6, data7);
+                },
+                error: function (response) {
+                    alert("failed");
+                }
+            });
+        }
+
+        // //punching Block -----------------------------------------------
+
+        function PUNCHBLOCK(data6) {
+
+            const EmpCode = '@ViewData["EmpCode"]';
+            var brid = '@ViewData["BrID"]';
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/HRM/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/HRM/getAPIData"; }
+
+            //ndata = "IND_DEVICE_UPDATION_LOAD" + "^" + "400456";
+            indata = "ALERT_EXITBLOCK" + "^" + EmpCode;
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    const data8 = JSON.parse(response);
+                    populateTable2(data8, data6);
+                },
+                error: function (response) {
+                    alert("failed");
+                }
+            });
+        }
+
+
+
+
+
+
+
+
+        //-------------------blockCount Entry HardCoded-------------
+
+
+
+
+        function cashEntryPosition() {//block id 1
+            const tableBody = document.getElementById('table-body1');
+
+            const cash = tableBody.insertRow();//row 5 cash entry
+
+
+            const cell14 = cash.insertCell();
+            cell14.colSpan = "12";
+            cell14.rowSpan = "1";
+            cell14.innerHTML = "<b><font size=1>&nbsp;&nbsp;CASH POSITION ENTRY PENDING</font></b>";
+
+           
+        }
+
+        function GoldEntryBlock() {
+            const tableBody = document.getElementById('table-body1');
+
+            const gold = tableBody.insertRow();
+
+            const cell15 = gold.insertCell();
+            cell15.colSpan = "12";
+            cell15.rowSpan = "1";
+
+            cell15.innerHTML = "<b><font size=1>&nbsp;&nbsp;GOLD ENTRY CONFIRMATION PENDING</font></b>";
+
+
+
+        }
+
+        function KeyBlock() {
+            const tableBody = document.getElementById('table-body1');
+
+            const key = tableBody.insertRow();
+
+            const cell16 = key.insertCell();
+            cell16.colSpan = "12";
+            cell16.rowSpan = "1";
+
+            cell16.innerHTML = "<b><font size=1>&nbsp;&nbsp;KEY PUNCHING PENDING</font>";
+        }
+
+
+        function printData() {
+            var divToPrint = document.getElementById("dcontainer2");
+            newWin = window.open("");
+            newWin.document.write(divToPrint.outerHTML);
+            newWin.print();
+            newWin.close();
+        }
+
+        function loadIndex() {
+
+            var root = '';
+            var baselink = '@ViewData["baseurl"]';
+            var id = '@ViewData["HeadName"]';
+
+            if (document.location.hostname == 'localhost') {
+                window.location.href = "/HRM/Index?datas=" + id;
+            }
+            else {
+                root = '@ViewData["root"]';
+                domainurl = baselink + root;
+                window.location.href = domainurl + "/HRM/Index?datas=" + id;
+            }
+
+        }
+
+    </script>
+</body>
+</html>
+
+

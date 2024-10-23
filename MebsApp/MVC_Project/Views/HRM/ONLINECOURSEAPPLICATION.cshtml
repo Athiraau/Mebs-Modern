@@ -1,0 +1,866 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor httpContextAccessor
+@{
+    ViewData["Title"] = "ONLINECOURSEAPPLICATION";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="~/css/index.css">
+    <script src="~/js/site.js"></script>
+
+
+    <style>
+
+        .completionyear {
+            width: 30%;
+        }
+
+
+        .form-container {
+            border-radius: 8px;
+            padding: 15px;
+            background-color: #ffff;
+            /*box-shadow: 0 2px 5px rgba(17,45,78,1);*/
+        }
+
+        .form-control {
+            height: 30px;
+            font-size: small;
+        }
+
+        .form-label {
+            font-weight: 500;
+            font-size: small;
+            color: #27005D;
+        }
+
+        .label1 {
+            font-size: small;
+            color: #27005D;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 6px 10px;
+            font-size: 10px;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            background-color: #538392;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+            .btn:hover {
+                background-color: pink;
+            }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            margin-top: 12px;
+        }
+
+            .btn-group .btn {
+                margin: 0 50px;
+            }
+    </style>
+
+</head>
+
+
+
+<body>
+
+
+    <div class="pagecontiner">
+        <div class="d-flex justify-content-center align-items-center" style="background-color:#538392; font-weight: 600; color:white;height:50px">
+            <span class="text-center">ONLINE COURSE CERTIFICATE UPDATION</span>
+        </div>
+        <div class="form-container">
+            <div class="form-group row">
+                <label for="university" class="col-sm-3 col-form-label form-label">University</label>
+                <div class="col-sm-9">
+                    <select id="universitySelect" class="form-control">
+                        <option value="SELECT">SELECT</option>
+
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="course" class="col-sm-3 col-form-label form-label">Course</label>
+                <div class="col-sm-9">
+                    <select id="course" class="form-control">
+                    </select>
+                </div>
+            </div>
+
+
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label form-label">Score</label>
+                <div class="col-sm-9">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="radio-group">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="scoreType" id="scoreRadio" checked value="scoreRadio">
+                                    <label class="form-check-label label1" for="scoreRadio">Score</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="scoreType" id="gradeRadio" value="gradeRadio">
+                                    <label class="form-check-label  label1" for="gradeRadio">Grade</label>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-sm-8">
+                            <div id="scoreInput" style="display:block">
+                                <div class="form-group row">
+                                    <span class="col-sm-3 col-form-label form-label" style="font-size:11px">Scored Mark</span>
+                                    <div class="col-sm-3">
+                                        <input type="text" id="score" class="form-control" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                                    </div>
+
+                                    <span class="col-sm-3 col-form-label form-label" style="font-size:11px" oninput="validateInput()">Percentage</span>
+                                    <div class="col-sm-3">
+                                        <input type="text" id="percentage" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="gradeInput" style="display:none">
+                                <div class="form-group row">
+                                    <span class="col-sm-3 col-form-label form-label">Grade</span>
+                                    <div class="col-sm-3">
+                                        <input type="text" id="grade" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+
+                function validateInput(input) {
+                    input.value = input.value.replace(/[^0-9]/g, '');
+                    if (input.value > 100) {
+                        alert('percentage should be less than 100')
+                        input.value = '100';
+                    }
+                }
+
+                // Example usage:
+                const input = document.getElementById('percentage');
+                input.addEventListener('input', function () {
+                    validateInput(this);
+                });
+
+            </script>
+
+
+
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label form-label">Education Mode</label>
+                <div class="col-sm-9">
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <div class="radio-group">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="educationMode" id="regularRadio" checked value="regularRadio">
+                                    <label class="form-check-label  label1" for="regularRadio">Regular</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="educationMode" id="distanceRadio" value="distanceRadio">
+                                    <label class="form-check-label label1" for="distanceRadio">Distance</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="educationMode" id="correspondenceRadio" value="correspondenceRadio">
+                                    <label class="form-check-label  label1" for="correspondenceRadio">Correspondence</label>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div id="CollegeNameInput" style="display:block">
+                <div class="form-group row">
+                    <span class="col-sm-3 col-form-label form-label">College Name</span>
+                    <div class="col-sm-9">
+                        <input type="text" id="CollegeName" class="form-control" />
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="form-group row">
+                <label for="completionYear" class="col-sm-3 col-form-label form-label">Completion Year</label>
+                <div class="col-sm-9">
+                    <input type="date" id="completionYear" class="form-control completionyear" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="certificateInput" class="col-sm-3 col-form-label form-label  label1">Upload Certificate</label>
+                <div class="col-sm-9">
+                    <input type="file" id="certificateInput" class="form-control-file  label1" accept=".pdf">
+                    <small class="form-text text-muted  label1">Upload PDF</small>
+                    <img id="certificatePreview" src="#" alt="Certificate Preview" style="max-width: 80%; margin-top: 10px; display: none;">
+                </div>
+            </div>
+            <div class="form-group row" required>
+                <label for="marklistInput" class="col-sm-3 col-form-label form-label">Upload Marklist</label>
+                <div class="col-sm-9">
+                    <input type="file" id="marklistInput" class="form-control-file label1" accept=".pdf">
+                    <small class="form-text text-muted  label1">Upload PDF</small>
+                    <img id="marklistPreview" src="#" alt="Marklist Preview" style="max-width: 80%; margin-top: 10px; display: none;">
+                </div>
+            </div>
+            <div class="btn-group  label1">
+                <button class="btn" onclick="SubmitForm();">Apply</button>
+                <button class="btn" onclick="loadIndex()">Exit</button>
+            </div>
+        </div>
+        <input type="text" id="base64Input" style="display:none;">
+        <input type="text" id="base64Input2" style="display:none;">
+
+
+        <script>
+
+
+
+            // Get the radio buttons
+            const regularRadio = document.getElementById('regularRadio');
+            const distanceRadio = document.getElementById('distanceRadio');
+            const correspondenceRadio = document.getElementById('correspondenceRadio');
+
+            // Get the input fields
+            const CollegeNameInput = document.getElementById('CollegeNameInput');
+
+            // Add event listeners to the radio buttons
+            regularRadio.addEventListener('change', () => {
+                // Show the college name input field
+                CollegeNameInput.style.display = 'block';
+            });
+
+            distanceRadio.addEventListener('change', () => {
+                // Hide the college name input field
+                CollegeNameInput.style.display = 'none';
+            });
+
+            correspondenceRadio.addEventListener('change', () => {
+                // Hide the college name input field
+                CollegeNameInput.style.display = 'none';
+            });
+        </script>
+        <script>
+            // Get the radio buttons
+            const scoreRadio = document.getElementById('scoreRadio');
+            const gradeRadio = document.getElementById('gradeRadio');
+
+            // Get the input fields
+            const scoreInput = document.getElementById('scoreInput');
+            const gradeInput = document.getElementById('gradeInput');
+
+            // Add event listeners to the radio buttons
+            scoreRadio.addEventListener('change', () => {
+                // Show the score input fields
+                scoreInput.style.display = 'block';
+                gradeInput.style.display = 'none';
+            });
+
+            gradeRadio.addEventListener('change', () => {
+                // Show the grade input field
+                scoreInput.style.display = 'none';
+                gradeInput.style.display = 'block';
+            });
+        </script>
+
+        <script>
+            //----redirect to index page
+
+            function loadIndex() {
+
+                var root = '';
+                var baselink = '@ViewData["baseurl"]';
+                var id = '@ViewData["HeadName"]';
+
+                if (document.location.hostname == 'localhost') {
+                    window.location.href = "/HRM/Index?datas=" + id;
+                }
+                else {
+                    root = '@ViewData["root"]';
+                    domainurl = baselink + root;
+                    window.location.href = domainurl + "/HRM/Index?datas=" + id;
+                }
+
+            }
+        </script>
+
+
+
+        <script>
+            $(document).ready(function () {
+                $('input[name="scoreType"]').change(function () {
+                    if ($(this).val() === 'scoreRadio') {
+                        $('#scoreInputs').show();
+                        $('#gradeInput').hide();
+                        $('#collegeInput').hide();
+                    } else if ($(this).val() === 'gradeRadio') {
+                        $('#scoreInputs').hide();
+                        $('#gradeInput').show();
+                        $('#collegeInput').hide();
+                    }
+                });
+
+                $('input[name="educationMode"]').change(function () {
+                    if ($(this).val() === 'regularRadio') {
+                        $('#collegeInput').show();
+                    } else {
+                        $('#collegeInput').hide();
+                    }
+                });
+
+                $('input[name="scoreType"]').trigger('change');
+                $('input[name="educationMode"]').trigger('change');
+            });
+        </script>
+
+        <script>
+            // VALIDATION
+
+            function disableFutureDates(dateInputId) {
+                const dateInput = document.getElementById(dateInputId);
+                const today = new Date();
+                dateInput.setAttribute('max', today.toISOString().split('T')[0]);
+
+
+            }
+            disableFutureDates("completionYear");
+
+            function validatefunction() {
+                // VALIDATE FIELDS
+                var Chk = 0;
+                var eduChk = 0;
+
+                // Validate Score/Grade Selection
+                if (!document.getElementById('scoreRadio').checked && !document.getElementById('gradeRadio').checked) {
+                    Chk = 0;
+                } else {
+                    Chk = 1;
+                }
+
+                // Validate Education Mode Selection
+                if (!document.getElementById('regularRadio').checked && !document.getElementById('distanceRadio').checked && !document.getElementById('correspondenceRadio').checked) {
+                    eduChk = 0;
+                } else {
+                    eduChk = 1;
+                }
+
+                var university1 = document.getElementById("universitySelect").value;
+                var course1 = document.getElementById("course").value;
+                var scoreType1 = document.querySelector('input[name="scoreType"]:checked').value;
+                var score1 = document.getElementById("score").value;
+                var percentage1 = document.getElementById("percentage").value;
+                var grade1 = document.getElementById("grade").value;
+
+                var educationMode1 = document.querySelector('input[name="educationMode"]:checked').value;
+                var collegeName1 = document.getElementById("CollegeName").value;
+                var completionYear1 = document.getElementById("completionYear").value;
+                var certificateInput1 = document.getElementById("certificateInput").files[0];
+                var marklistInput1 = document.getElementById("marklistInput").files[0];
+
+
+
+                // Validate University Selection
+                if (university1 === "-1") {
+                    alert("Please select a university.");
+                    return 0;
+                }
+
+                // Validate Course Selection
+                if (course1 === "-1") {
+                    alert("Please select a course.");
+                    return 0;
+                }
+
+                // Validate Score/Percentage
+                if (scoreType1 === "scoreRadio" && (score1 === "" || percentage1 === "")) {
+                    alert("Please enter your score / Percentage.");
+                    return 0;
+                }
+
+                // Validate Grade
+                if (document.getElementById('gradeRadio').checked && grade1 === "") {
+                    alert("Please enter your grade.");
+                    return 0;
+                }
+
+                // Validate College Name
+                if (educationMode1 === "regularRadio" && collegeName1 === "") {
+                    alert("Please enter your college name.");
+                    return 0;
+                }
+
+                // Validate Completion Year
+                if (completionYear1 === "") {
+                    alert("Please select a completion year.");
+                    return 0;
+                }
+
+
+                // Validate Score/Grade Selection
+                if (Chk === 0) {
+                    alert("Please select Grade/Score");
+                    return 0;
+                }
+
+                // Validate Education Mode Selection
+                if (eduChk === 0) {
+                    alert("Please select Education Mode");
+                    return 0;
+                }
+
+                // Validate Certificate Upload
+                if (!certificateInput1) {
+                    alert("Please upload a certificate.");
+                    return 0;
+                }
+
+                // Validate Marklist Upload
+                if (!marklistInput1) {
+                    alert("Please upload a marklist.");
+                    return 0;
+                }
+
+
+                // Validate Type of uploaded document
+                if (docTyp === "1" || docTyp1 === "1") {
+                    alert('Only PDF files are allowed');
+                    return 0;
+                }
+
+                // All validations passed
+                return 1;
+            }
+        </script>
+
+
+        <script>
+            const certificateInput = document.getElementById('certificateInput');
+            const marklistInput = document.getElementById('marklistInput');
+            const base64Input = document.getElementById('base64Input');
+            const base64Input2 = document.getElementById('base64Input2');
+            const certificatePreview = document.getElementById('certificatePreview');
+            const marklistPreview = document.getElementById('marklistPreview');
+
+
+            var docTyp1 = "0";
+            certificateInput.addEventListener('change', function () {
+                const file = this.files[0];
+                const reader = new FileReader();
+
+                if (file.type !== 'application/pdf') {
+                    alert('Only PDF files are allowed');
+                    docTyp1 = "1";
+                    return;
+                }
+                else {
+                    docTyp1 = "0";
+                }
+
+
+
+
+
+                reader.onload = function (event) {
+                    const base64Url = event.target.result;
+                    base64Input.value = base64Url;
+                    certificatePreview.src = base64Url;
+                    // certificatePreview.style.display = 'block';
+                    console.log('Base64 URL:', base64Url);
+                };
+                reader.readAsDataURL(file);
+            });
+
+            var docTyp = "0";
+            marklistInput.addEventListener('change', function () {
+                const file = this.files[0];
+                const reader = new FileReader();
+
+                if (file.type !== 'application/pdf') {
+                    alert('Only PDF files are allowed');
+                    docTyp = "1";
+                    return;
+                }
+                else {
+                    docTyp = "0";
+                }
+
+                reader.onload = function (event) {
+                    //
+                    const base64Url = event.target.result;
+                    //  alert(base64Url);
+                    base64Input2.value = base64Url;
+                    marklistPreview.src = base64Url;
+                    // marklistPreview.style.display = 'block';
+                    console.log('Base64 URL:', base64Url);
+                };
+                reader.readAsDataURL(file);
+            });
+
+
+            function fetchDate() {
+                var getdate = document.getElementById('completionYear').value;
+                // alert(getdate);
+
+                const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+
+                const [year, month, day] = getdate.split("-");
+                const formattedMonth = months[parseInt(month, 10) - 1];
+                const formattedDate = `${day}-${formattedMonth}-${year}`;
+                document.getElementById("completionYear").innerHTML = formattedDate;
+                return formattedDate;
+            }
+
+            function resetForm() {
+                var root = '';
+                var baselink = '@ViewData["baseurl"]';
+                var id = '@ViewData["HeadName"]';
+
+                if (document.location.hostname == 'localhost') {
+                    window.location.href = "/HRM/ONLINECOURSEAPPLICATION?datas=" + id;
+                }
+                else {
+                    root = '@ViewData["root"]';
+                    domainurl = baselink + root;
+                    window.location.href = domainurl + "/HRM/ONLINECOURSEAPPLICATION?datas=" + id;
+                }
+
+
+            }
+        </script>
+
+
+        <script>
+
+            var check = '1';
+            var slno = '0';
+            function SubmitForm() {
+                var a = validatefunction();
+
+
+
+                if (!a == 1)
+                    return;
+
+                var college = null;
+                var totmarks = 0;
+                var pers = 0;
+                var grade = '';
+
+                var university = document.getElementById('universitySelect').value;
+                var course = document.getElementById('course').value;
+                var scoreType = document.querySelector('input[name="scoreType"]:checked').value;
+
+                var educationMode = document.querySelector('input[name="educationMode"]:checked').value;
+                college = document.getElementById('CollegeName').value;
+                var completionYear = document.getElementById('completionYear').value;
+                const EmpCode = '@ViewData["EmpCode"]';
+                var brid = '@ViewData["BrID"]';
+                totmarks = document.getElementById('score').value;
+                pers = document.getElementById('percentage').value;
+                grade = document.getElementById('grade').value;
+                var gradetext = '';
+                if (document.getElementById('scoreRadio').checked) {
+                    grade = '-1';
+                }
+
+                if (grade != -1) {
+                    grade = grade.replace('+', ' PLUS');
+                    grade = grade.replace('-', 'MINUS');
+                }
+
+                const dt = fetchDate();
+
+
+
+                var indata = EmpCode + "~" + university + "~" + course + "~" + totmarks + "~" + pers + "~" + grade + "~" + "0" + "~" + college + "~" + dt + "~" + "1" + "~" + brid;
+                PostDataAPICall(indata);
+                UploadCertificate();
+                UploadMarkList();
+                alertfunction();
+
+
+                resetForm();
+                //   
+            }
+
+            function PostDataAPICall(indata) {
+
+                var _link = '';
+                var res1 = '';
+                var access_code = '';
+                //if (document.location.hostname == 'localhost') { _link = "/HRM/getAPIData"; }
+                //else { var root = '@ViewData["root"]'; _link = "/" + root + "/HRM/getAPIData"; }
+
+                if (document.location.hostname == 'localhost') { _link = "/HRM/postAPIData"; }
+                else { var root = '@ViewData["root"]'; _link = "/" + root + "/HRM/postAPIData"; }
+
+
+                indata = 'ExternalCourseApply' + '^' + indata;
+
+                const a = "";
+                $.ajax({
+                    type: "POST",
+                    url: _link,
+                    data: { datas: indata },
+                    async: false,
+                    success: function (response) {
+
+                        res1 = response;
+                        access_code = JSON.parse(res1);
+                        res1 = access_code[0].RESPONSE;
+
+                    },
+                    error: function (response) {
+                        check = 0;
+                        //   alert("failed");
+                    }
+                });
+                
+                // Remove html tags and space chars
+                slno = res1;
+
+            }
+
+            function alertfunction() {
+
+                if (check == 0) {
+
+                    alert("Application submission failed.. Please try again");
+
+                }
+                else {
+                    if (slno == 0) {
+                        alert("Already submitted");
+                    }
+
+                    else {
+                        var Str = "Applied Successfully & Your Application No is: " + slno + "!!";
+                        alert(Str);
+
+                    }
+
+                }
+
+            }
+
+
+
+            function UploadCertificate() {
+
+                //  alert("uploading certificate..");
+
+                var base64Input = document.getElementById('base64Input').value;
+                var base64Data = documentBase64(base64Input);
+                base64Data = base64Data.replace("\"", "");
+                var query = "update  TBL_EXTERNALCOURSE ap set ap.certificate =:DOCUMENT  where ap.SL_NO=" + slno;
+                query = query.replace("\"", " ");
+                query = query.replace("\"'", "\'");
+                PostDocumentAPICall(query, base64Data);
+            }
+
+            function UploadMarkList() {
+
+                // alert("uploading marklist..");
+                var base64Input = document.getElementById('base64Input2').value;
+                var base64Data = documentBase64(base64Input);
+                base64Data = base64Data.replace("\"", "");
+                var query = "update  TBL_EXTERNALCOURSE ap set ap.MARKLIST =:DOCUMENT  where  ap.SL_NO=" + slno;
+                query = query.replace("\"", " ");
+                query = query.replace("\"'", "\'");
+                PostDocumentAPICall(query, base64Data);
+            }
+
+            function documentBase64(base64Input) {
+
+                var resp = JSON.stringify(base64Input);
+                resp = resp.replace("data:application/pdf;base64,", "");
+                resp = resp.replace("\'", "");
+
+                return resp;
+            }
+
+            function PostDocumentAPICall(query, base64Data) {
+
+                var _link = '';
+                if (document.location.hostname == 'localhost') { _link = "/HRM/DocumentUpload"; }
+                else { var root = '@ViewData["root"]'; _link = "/" + root + "/HRM/DocumentUpload"; }
+
+                var indata1 = query + '~' + base64Data;
+                indata1 = indata1.replace("\"", "");
+                indata1 = indata1.replace("\"'", "\'");
+
+                $.ajax({
+                    type: "POST",
+                    url: _link,
+                    data: { datas: indata1 },
+                    async: false,
+                    success: function () {
+
+                        //  alert("docu success");
+
+                    },
+                    error: function (response) {
+                        check = 0;
+                    }
+
+                });
+
+            }
+        </script>
+        <script>
+            // API GET LOAD
+            window.onload = function OnloadFunction() {
+                ActiveLoginCheck();
+                callAPIResponse();
+                callAPIResponse1();
+
+            }
+
+            function ActiveLoginCheck() {
+                var user = '@ViewData["EmpCode"]';
+                if (user == null || user == '') {
+                    alert('INACTIVE SESSION');
+                    logout();
+                }
+
+            }
+            function logout() {
+
+                var root = '';
+                var baselink = '@ViewData["baseurl"]';
+
+                if (document.location.hostname == 'localhost') {
+                    window.location.href = "/home/Logout";
+                }
+                else {
+                    root = '@ViewData["root"]';
+                    domainurl = baselink + root;
+                    window.location.href = domainurl + "/Home/Logout";
+                }
+            }
+
+            function callAPIResponse() {
+
+                var _link = '';
+                if (document.location.hostname == 'localhost') { _link = "/HRM/getAPIData"; }
+                else { var root = '@ViewData["root"]'; _link = "/" + root + "/HRM/getAPIData"; }
+
+                
+
+                indata = "load_university" + "^" + 1;
+                var response = '';
+                $.ajax({
+                    type: "GET",
+                    url: _link,
+                    data: { datas: indata },
+                    async: false,
+                    success: function (response) {
+
+                        const data2 = JSON.parse(response);
+                        LoadDropDown(data2);
+                    },
+                    error: function (response) {
+                        // alert("failed");
+                    }
+                });
+            }
+
+            function LoadDropDown(data) {
+                const options = formatDataAsArray(data);
+                universitySelect.innerHTML = '';
+                options.forEach(option => {
+                    const optionElement = document.createElement('option');
+                    optionElement.value = option.value;
+                    optionElement.text = option.label;
+                    universitySelect.add(optionElement);
+                });
+            }
+
+            function formatDataAsArray(data) {
+                if (Array.isArray(data) && data.length > 0) {
+                    return data.map(item => ({
+                        value: item["UNIV_ID"],
+                        label: item["UNIVERSITY_NAME"]
+                    }));
+                } else {
+                    return [];
+                }
+            }
+
+            function callAPIResponse1() {
+
+                var _link = '';
+                if (document.location.hostname == 'localhost') { _link = "/HRM/getAPIData"; }
+                else { var root = '@ViewData["root"]'; _link = "/" + root + "/HRM/getAPIData"; }
+
+                indata = "load_qualification" + "^" + 1;
+                var response = '';
+                $.ajax({
+                    type: "GET",
+                    url: _link,
+                    data: { datas: indata },
+                    async: false,
+                    success: function (response) {
+
+                        const data = JSON.parse(response);
+                        LoadDropDown1(data);
+                    },
+                    error: function (response) {
+                        //alert("failed");
+                    }
+                });
+            }
+
+            function LoadDropDown1(data) {      // COURSE SELECTION
+                const courseSelect = document.getElementById('course');
+                const options = formatDataAsArray1(data);
+                courseSelect.innerHTML = '';
+                options.forEach(option => {
+                    const optionElement = document.createElement('option');
+                    optionElement.value = option.value;
+                    optionElement.text = option.label;
+                    courseSelect.add(optionElement);
+                });
+            }
+            function formatDataAsArray1(data) {
+                if (Array.isArray(data) && data.length > 0) {
+                    return data.map(item => ({
+                        value: item["QUALIFICATION_ID"],
+                        label: item["QUALIFICATION"]
+                    }));
+                } else {
+                    return [];
+                }
+            }
+        </script>
+
+
+
+
+    </div>
+</body>
+
+
+</html>
+
+

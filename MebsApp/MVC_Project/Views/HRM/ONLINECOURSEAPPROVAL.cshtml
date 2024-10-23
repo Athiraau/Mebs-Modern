@@ -1,0 +1,1064 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor httpContextAccessor
+@{
+    ViewData["Title"] = "ONLINECOURSEAPPROVAL";
+    Layout = "~/Views/Shared/_layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate Verification</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="~/css/index.css">
+    <script src="~/js/site.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .card {
+            margin-bottom: 20px;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            background-color: #538392;
+            color: #ffff;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .table {
+            font-size: 10px; /* Reduced font size */
+        }
+
+            .table th, .table td {
+                border: 1px solid;
+                padding: 5px; /* Reduced padding */
+            }
+
+            .table th {
+                background-color: #538392;
+                color: #ffff;
+            }
+
+            .table td {
+                vertical-align: middle;
+            }
+
+        .btn {
+            font-size: 11px;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #538392;
+            color: #fff;
+            cursor: pointer;
+        }
+
+            .btn:hover {
+                background-color: lightpink;
+            }
+
+        #remark {
+            margin-top: 20px;
+        }
+
+            #remark textarea {
+                width: 30%;
+                height: 100px;
+                padding: 10px;
+                font-size: 12px;
+                border: 1px solid #538392;
+            }
+
+        .optionstyle {
+            font-size: 10px;
+            font-weight: 100;
+        }
+
+
+        .error {
+            font-size: 8px;
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="pagecontiner">
+        <div class=" d-flex justify-content-center">
+            <div class="card" style="width:max-content">
+
+                <div class="card-header text-center pt-3">
+                    <h6>CERTIFICATE APPROVAL</h6>
+                </div>
+
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 col-sm-12 col-12 text-center">
+                            <input type="radio" name="radio" id="dateWise">  <label for="empcode" style="font-size: 15px;">Date Wise</label>
+
+                        </div>
+                        <div class="col-md-6 col-12 text-center">
+                            <input type="radio" name="radio" id="employeeWise">  <label for="empcode" style="font-size: 15px;">Employee Wise</label>
+
+                        </div>
+
+                    </div>
+                    <div id="DatewiseInput" style="display:none">
+                        <div class="form-group row  mt-4 mb-4">
+                            <span class="col-sm-6 col-form-label form-label text-center" style="font-size:15px">Date of Application :</span>
+                            <div class="col-sm-4">
+                                <input type="date" id="date" class="form-control input-sm" />
+                            </div>
+                            <div class="col-sm-2 mt-1">
+                                <button type="button" class="btn btn-secondary" id="1" onclick="EmpListCall(id);">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <script>
+                        // VALIDATION
+                        function validateDate() {
+
+                            var from = document.getElementById("date").value;
+
+                            if (from == "") {
+                                alert("please select  date");
+                                return false;
+                            }
+                            else {
+                                return true
+                            }
+                        }
+
+
+
+
+
+
+                        function disableFutureDates(dateInputId) {
+                            const dateInput = document.getElementById(dateInputId);
+                            const today = new Date();
+                            dateInput.setAttribute('max', today.toISOString().split('T')[0]);
+
+                        }
+                        disableFutureDates("date");
+
+
+                    </script>
+                    @* <script>
+                    var today = new Date();
+                    var dd = String(today.getDate()).padStart(2, '0');
+                    var mm = String(today.getMonth() + 1).padStart(2, '0');
+                    var yyyy = today.getFullYear();
+
+                    var maxDate = yyyy + '-' + mm + '-' + dd;
+
+                    document.getElementById('date').setAttribute('max', maxDate);
+                    </script> *@
+
+                    <div id="EmployeewiseInput" style="display:none">
+                        <div class="form-group row mt-4 mb-4">
+                            <label for="empCode" class="col-sm-6 col-form-label form-label text-center" style="font-size:15px">Employee Code:</label>
+                            <div class="col-sm-4">
+                                <input type="text" maxlength="6" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" id="empCode" class="form-control input-sm" pattern="[0-9]{6}">
+                                @*  <input type="text" maxlength="6" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control" id="emp_code" value="@ViewData["EmpCode"]" style="height:30px;font-size:small" readonly="true"> *@
+                                <div id="empCodeError" class="error"></div>
+                            </div>
+                            <div class="col-sm-2">
+                                <button type="button" class="btn btn-secondary" id="2" onclick="EmpListCall(id);">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <script>
+
+                        function EmpListCall(id) {
+
+
+                            const userDropdown = document.getElementById('userDropdown');
+                            //   userDropdown.
+
+                            document.getElementById('userDropdown').innerText = null;
+
+                            if (id == '1')
+                                search2();
+                            else
+                                search();
+
+
+                        }
+
+
+
+                    </script>
+                    <script>
+
+
+                        function validateEmpCode(input) {
+                            // Remove non-digit characters
+                            input.value = input.value.replace(/\D/g, '');
+
+                            // Check if the input is exactly 6 digits
+
+
+                            // Display error message if the input is not 6 digits
+                            const empCodeError = document.getElementById('empCodeError');
+                            // alert(input.value.length);
+                            if (input.value.length > 6) {
+                                empCodeError.textContent = 'Please enter a valid employee code';
+                                input.value = "";
+                            } else {
+                                empCodeError.textContent = '';
+                            }
+                        }
+
+
+                    </script>
+
+
+
+                    <hr />
+
+                    <div class="row mb-4">
+                        <div class="col-md-6 col-12 text-center">
+                            <label for="empcode" style="font-size: 15px;">Employee Name</label>
+                        </div>
+                        <div class="col-md-6 col-12 text-center">
+                            <select class="form-control" style="font-size: 9px; color:black" id="userDropdown">
+                                <!-- Options will be populated here -->
+                            </select>
+                        </div>
+                    </div>
+                    <div id="table-container" style="max-height: 300px;overflow-y: auto;">
+                        <table class="table table-bordered table-hover table-responsive fs-10">
+                            <thead>
+                                <tr>
+                                    <th>AppNo</th>
+                                    <th>Employee Code</th>
+                                    <th>Employee Name</th>
+                                    <th>Branch Id</th>
+                                    <th>University</th>
+                                    <th>Course</th>
+                                    <th>Score</th>
+                                    <th>Percentage</th>
+                                    <th>Grade</th>
+                                    <th>MarkList</th>
+                                    <th>Certificate</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-body1">
+                                <!-- my tables pasted to be here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="m-3 text-center">
+                    <button type="button" class="btn btn-dark mx-1" style="font-size:14px;" onclick="PostData()">Approve</button>
+                    <button type="button" class="btn btn-dark mx-1" style="font-size:14px;" onclick="toggleRemark()">Reject</button>
+                    <button type="button" class="btn btn-dark mx-1" style="font-size:14px;" onclick="loadIndex()">Exit</button>
+                </div>
+                <form>
+                    <div id="remark" style="display: none;" class="text-center">
+
+                        <textarea placeholder="Enter Remark" class="w-75 h-25 md-12" id="remarkData"></textarea>
+                        <div class="text-center m-3">
+                            <button type="submit" class="btn btn-dark mx-1" style="font-size:14px;" onclick="validataionSubmit()">Submit</button>
+                        </div>
+                    </div>
+
+                </form>
+
+                <div class="modal" role="dialog">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-color:#538392;color:white; height:fit-content;">
+                                <h5 class="modal-title">Alert!!!</h5>
+
+                            </div>
+                            <div class="modal-body">
+                                <p>You are not authorized to view this page..</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="loadIndex()">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modalReject" role="dialog" style="display:none;">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-color:#538392;color:white; height:fit-content;">
+                                <h5 class="modal-title">Alert!!!</h5>
+
+                            </div>
+                            <div class="modal-body">
+                                <p>Application Rejected...</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="loadIndex()">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modalApprove" role="dialog" style="display:none;>
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-color:#538392;color:white; height:fit-content;">
+                                <h5 class="modal-title">Alert!!!</h5>
+
+                            </div>
+                            <div class="modal-body">
+                                <p>Application Successfully Approved.. .</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="loadIndex()">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <script>
+                    function toggleRemark() {
+                        document.getElementById('remark').style.display = 'block';
+                    }
+                </script>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+
+
+
+        function loadDashBoard1() {
+            var _link = '';
+            if (document.location.hostname == 'localhost') {
+                _link = "/Home/Dashboard?empcode=";
+            }
+            else {
+                var root = '@ViewData["root"]'; _link = "/" + root + "/Home/Dashboard?empcode=";
+            }
+
+
+
+            let id = @Model.EmpCode;
+            var ecode = encrypt(id);
+            window.location.href = _link + ecode;
+
+        }
+
+
+
+    </script>
+
+    <script>
+
+        function EmployeeAccessApi() {
+
+            var ecode = '@ViewData["EmpCode"]';
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/HRM/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/HRM/getAPIData"; }
+
+
+            var indata = 'ONLINECOURSE_APPRACCESS' + '^' + ecode;
+
+            var access_code = '';
+            var res1 = '';
+            const a = "";
+
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+
+                    res1 = response;
+                    access_code = JSON.parse(res1);
+                    res1 = access_code[0].RESPONSE;
+
+                    if (res1 == 0) {
+
+                        $(".modal").modal("show");
+
+                    }
+
+                    return;
+
+
+
+                },
+                error: function (response) {
+                    check = 0;
+
+                }
+            });
+
+
+
+        }
+
+
+    </script>
+
+
+    <script>
+
+        window.onload = function OnloadFunction() {
+
+            EmployeeAccessApi();
+            //callAPIResponse();
+        }
+        function reloadFunction() {
+            var root = '';
+            var baselink = '@ViewData["baseurl"]';
+            var id = '@ViewData["EmpCode"]';
+
+            if (document.location.hostname == 'localhost') {
+                window.location.href = "/HRM/ONLINECOURSEAPPROVAL?datas=" + id;
+            }
+            else {
+                root = '@ViewData["root"]';
+                domainurl = baselink + root;
+                window.location.href = domainurl + "/HRM/ONLINECOURSEAPPROVAL?datas=" + id;
+            }
+        }
+
+        function search() {
+
+
+            var empcode = document.getElementById('empCode').value;
+
+            if (!empcode) {
+
+                alert("Please enter Employee Code");
+
+            } else {
+
+                indata = "COURSE_APPROVEDATALOAD" + "^" + empcode + "~" + 1;
+
+            }
+
+
+            const EmpCode = '@ViewData["EmpCode"]';
+
+            var brid = '@ViewData["BrID"]';
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/HRM/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/HRM/getAPIData"; }
+
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    const data2 = JSON.parse(response);
+
+                    LoadDropDown(data2);
+                },
+                error: function (response) {
+                    alert("failed");
+                }
+            });
+        }
+
+
+        //function for searching date
+        //function for searching date
+        function search2() {
+
+
+            var date = document.getElementById('date').value;
+            if (!date) {
+                alert('please select date');
+
+            }
+
+            Formateddate = formatDateForAPI(date);
+
+
+
+            const EmpCode = '@ViewData["EmpCode"]';
+            var brid = '@ViewData["BrID"]';
+
+            // alert(Formateddate);
+            indata = "COURSE_APPROVEDATALOAD" + "^" + Formateddate + "~" + 2;
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/HRM/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/HRM/getAPIData"; }
+
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    const data2 = JSON.parse(response);
+
+
+
+                    // console.log(data2);
+                    LoadDropDown(data2);
+                },
+                error: function (response) {
+                    alert("failed");
+                }
+            });
+        }
+
+        function LoadDropDown(data) {
+            const userDropdown = document.getElementById('userDropdown');
+
+            data.forEach(user => {
+
+                const option = document.createElement('option');
+                option.className = "optionstyle";
+                option.value = user.SLNO;
+                option.textContent = user.COURSEDATA;
+
+                userDropdown.appendChild(option);
+
+
+            });
+
+
+        }
+
+
+        document.getElementById('userDropdown').addEventListener('change', function () {
+
+            const selectedUserId = this.value;
+            if (selectedUserId) {
+                fetchUserDetails(selectedUserId);
+            } else {
+                // document.getElementById('username').value = '';
+                // document.getElementById('name').value = '';
+                // document.getElementById('email').value = '';
+                // document.getElementById('phone').value = '';
+            }
+        });
+
+
+
+
+        function fetchUserDetails(selectedUserId) {
+
+            var id_user = selectedUserId;
+
+            indata = "COURSE_APPROVEDATALOAD" + "^" + id_user + "~3";
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/HRM/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/HRM/getAPIData"; }
+
+
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    const data2 = JSON.parse(response);
+                    console.log(data2);
+                    populateTable(data2)
+                },
+                error: function (response) {
+                    alert("failed");
+                }
+            });
+        }
+
+
+        function populateTable(data) {
+
+            // Get reference to the table body
+            const tableBody = document.getElementById('table-body1');
+
+            // Clear existing table rows
+            tableBody.innerHTML = '';
+
+
+            data.forEach(item => {
+                // Create a new row
+
+                console.log(item);
+                const row = tableBody.insertRow();
+
+                // Insert cells into the row
+                const cell1 = row.insertCell();
+                const cell2 = row.insertCell();
+                const cell3 = row.insertCell();
+                const cell4 = row.insertCell();
+                const cell5 = row.insertCell();
+                const cell6 = row.insertCell();
+                const cell7 = row.insertCell();
+                const cell8 = row.insertCell();
+                const cell9 = row.insertCell();
+                const cell10 = row.insertCell();
+                const cell11 = row.insertCell();
+
+                cell1.innerHTML = item.SL_NO;
+                cell2.innerHTML = item.EMP_CODE;
+                cell3.innerHTML = item.EMP_NAME;
+                cell4.innerHTML = item.BRANCH_ID;
+                cell5.innerHTML = item.UNIVERSITY_NAME;
+                cell6.innerHTML = item.QUALIFICATION;
+                cell7.innerHTML = item.SCR;
+                cell8.innerHTML = item.PCR;
+                cell9.innerHTML = item.GRADE;
+
+                // ------------VIEW 1 BUTTON------------------------//
+
+                // const button = document.createElement('button');
+                // button.textContent = 'VIEW'; // Set the text content of the button
+
+                // button.setAttribute('id', 'updateButton');
+
+                function base64ToPdfDownload(base64String, filename) {
+
+                    if (base64String == "") {
+                        alert("No Data in marklist !");
+                    } else {
+                        const link = document.createElement('a');
+                        link.textContent = "View";
+                        link.className = "btn btn-dark btn-sm"
+                        link.href = `data:application/pdf;base64,${base64String}`;
+                        link.download = filename || 'marklist.pdf';
+                        cell10.appendChild(link);
+                    };
+
+                    // link.click();
+                }
+
+                // Example usage
+                const myBase64String = item.MARKLIST
+                base64ToPdfDownload(myBase64String, 'marklist.pdf');
+
+
+                // ------------VIEW 2 BUTTON------------------------
+
+                // const button1 = document.createElement('button');
+                // button1.textContent = 'VIEW'; // Set the text content of the button
+
+                // button1.setAttribute('id', 'updateButton1');
+
+                function base64ToPdfDownload1(base64String, filename) {
+
+                    if (base64String == "") {
+                        alert("No Data in Certificate !")
+                    } else {
+                        const link1 = document.createElement('a');
+                        link1.textContent = "View";
+                        link1.className = "btn btn-dark btn-sm"
+                        link1.href = `data:application/pdf;base64,${base64String}`;
+                        link1.download = filename || 'marklist.pdf';
+                        cell11.appendChild(link1);
+                    }
+
+                    // link.click();
+                }
+
+                // Example usage
+                const myBase64String1 = item.CERTIFICATE
+                base64ToPdfDownload1(myBase64String1, 'certificate.pdf');
+
+            });
+
+        }
+
+
+
+
+        function formatDateForAPI(dateString) {
+
+
+            // Split the date string into year, month, and day components
+            const [year, monthString, day] = dateString.split("-");
+            // Convert month string to month number (1-based for readability)
+            const month = parseInt(monthString);
+            // Define an object mapping month numbers to uppercase month names
+            const monthNames = {
+                1: "JAN",
+                2: "FEB",
+                3: "MAR",
+                4: "APR",
+                5: "MAY",
+                6: "JUN",
+                7: "JUL",
+                8: "AUG",
+                9: "SEP",
+                10: "OCT",
+                11: "NOV",
+                12: "DEC",
+            };
+
+            // Check if month is valid (1-12)
+            if (month < 1 || month > 12) {
+                return "Invalid month";
+            }
+
+            // Use template literals and monthNames object for formatted output
+            const formattedDate = `${day.padStart(2, "0")}-${monthNames[month]}-${year}`;
+            return formattedDate;
+        }
+
+
+
+
+
+
+    </script>
+
+    @* table data displaying
+    *@
+
+    <script>
+
+       
+    </script>
+
+
+    <script>
+
+
+        const dateWiseRadio = document.getElementById('dateWise');
+        const employeeWiseRadio = document.getElementById('employeeWise');
+        const dateInput = document.getElementById('date');
+        const employeeInput = document.getElementById('empCode');
+        const dateWiseInput = document.getElementById('DatewiseInput');
+        const employeeWiseInput = document.getElementById('EmployeewiseInput');
+
+        dateWiseRadio.addEventListener('change', () => {
+            if (dateWiseRadio.checked) {
+                dateWiseInput.style.display = 'block';
+                employeeWiseInput.style.display = 'none';
+            }
+        });
+
+        employeeWiseRadio.addEventListener('change', () => {
+            if (employeeWiseRadio.checked) {
+                dateWiseInput.style.display = 'none';
+                employeeWiseInput.style.display = 'block';
+            }
+        });
+
+    </script>
+
+
+
+    <script>
+
+
+        function PostDataAPICall(indata) {
+
+            
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/HRM/postAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/HRM/postAPIData"; }
+
+            var res1 = '';
+            var access_code = '';
+            indata = 'ExternalCourseApply' + '^' + indata;
+
+            const a = "";
+            $.ajax({
+                type: "POST",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    res1 = response;
+                    access_code = JSON.parse(res1);
+                    res1 = access_code[0].RESPONSE;
+
+                },
+                error: function (response) {
+                    check = 0;
+
+                }
+            });
+
+            // Remove html tags and space chars
+            slno = res1;
+        }
+
+        function PostDataAPICallRej(indata) {
+
+
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/HRM/postAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/HRM/postAPIData"; }
+
+
+            indata = 'ExternalCourseRecc_Rej' + '^' + indata;
+            var res1 = '';
+            var access_code = '';
+            const a = "";
+
+            $.ajax({
+                type: "POST",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    res1 = response;
+                    access_code = JSON.parse(res1);
+                    res1 = access_code[0].RESPONSE;
+
+                },
+                error: function (response) {
+                    check = 0;
+                    //   alert("failed");
+                }
+            });
+
+            // Remove html tags and space chars
+            slno = res1;
+
+        }
+
+
+
+
+        function PostData() {
+
+            const dateWiseRadio = document.getElementById('dateWise');
+            const empCodeInput = document.getElementById('empCode');
+            const remarkData = document.getElementById('remarkData');
+            var selectedValue = document.getElementById("userDropdown").value;
+
+
+            if (dateWiseRadio.checked) {
+                const dateInput = document.getElementById('date');
+                if (!dateInput.value) {
+                    alert('Please select a date.');
+                    return;
+                }
+            } else {
+                if (!empCodeInput.value) {
+                    alert('Please enter a Employee code.');
+                    return;
+                }
+            }
+
+            if (selectedValue === "-1") {
+                // Display an alert if the "select" option is chosen
+                alert("Please select a user from the dropdown.");
+                return; // Stop the function execution
+            }
+
+
+            let today = new Date();
+            let dd = today.getDate();
+            let mm = today.getMonth() + 1;
+            let yyyy = today.getFullYear();
+
+
+            if (dd < 10) {
+                dd = '0' + dd;
+
+            }
+            if (mm < 10) {
+                mm = '0' + mm;
+            }
+
+            const formattedToday = yyyy + '-' + mm + '-' + dd;
+
+            Formateddate = formatDateForAPI(formattedToday);
+
+
+            a = document.getElementById('userDropdown');
+
+            const slNo = a.value;
+
+            var user = '@ViewData["EmpCode"]';
+            const indata = user + '~' + 1 + '~' + 1 + '~' + 1 + '~' + 1 + '~' + 1 + '~' + slNo + '~' + 1 + "~" + Formateddate + "~" + 3 + "~" + 1;
+
+            PostDataAPICall(indata);
+
+
+
+            if (slno == 3) {
+
+                // $(".modalApprove").modal("show");
+
+                alert("Approved Successfully");
+                //reloadFunction();
+            }
+
+            reloadFunction();
+        }
+
+        function formatDateForAPI(dateString) {
+
+
+            // Split the date string into year, month, and day components
+            const [year, monthString, day] = dateString.split("-");
+            // Convert month string to month number (1-based for readability)
+            const month = parseInt(monthString);
+            // Define an object mapping month numbers to uppercase month names
+            const monthNames = {
+                1: "JAN",
+                2: "FEB",
+                3: "MAR",
+                4: "APR",
+                5: "MAY",
+                6: "JUN",
+                7: "JUL",
+                8: "AUG",
+                9: "SEP",
+                10: "OCT",
+                11: "NOV",
+                12: "DEC",
+            };
+
+            // Check if month is valid (1-12)
+            if (month < 1 || month > 12) {
+                return "Invalid month";
+            }
+
+            // Use template literals and monthNames object for formatted output
+            const formattedDate = `${day.padStart(2, "0")}-${monthNames[month]}-${year}`;
+            return formattedDate;
+        }
+
+        function validataionSubmit() {
+
+            REMARK = document.getElementById("remarkData").value;
+            if (REMARK.length > 40) {
+                alert("Please Enter Remarks in  40 Characters!!!");
+            } else if (REMARK.length == "") {
+                alert("Please Enter Remarks Field!!!");
+                return;
+            }
+            else {
+                PostDataRej();
+                reloadFunction();
+
+            }
+        }
+
+        function PostDataRej() {
+
+            const dateWiseRadio = document.getElementById('dateWise');
+            const empCodeInput = document.getElementById('empCode');
+            const remarkData = document.getElementById('remarkData');
+
+            var selectedValue = document.getElementById("userDropdown").value;
+            if (selectedValue === "-1" || !selectedValue) {
+                alert("Please select a user from the dropdown.");
+                return;
+
+            }
+
+            if (dateWiseRadio.checked) {
+                const dateInput = document.getElementById('date');
+                if (!dateInput.value) {
+                    alert('Please select a date.');
+                    return;
+                }
+            } else {
+                if (!empCodeInput.value) {
+                    alert('Please enter a Employee code.');
+                    return;
+                }
+            }
+
+            if (!remarkData.value) {
+                alert('Please enter a remark.');
+                return;
+            }
+
+            REMARK = document.getElementById("remarkData").value;
+            let today = new Date();
+            let dd = today.getDate();
+            let mm = today.getMonth() + 1;
+            let yyyy = today.getFullYear();
+
+            if (dd < 10) {
+                dd = '0' + dd;
+            }
+            if (mm < 10) {
+                mm = '0' + mm;
+            }
+
+            const formattedToday = yyyy + '-' + mm + '-' + dd;
+
+            Formateddate = formatDateForAPI(formattedToday);
+
+
+
+            a = document.getElementById('userDropdown');
+
+            const slNo = a.value;
+
+            var user = '@ViewData["EmpCode"]';
+
+
+            const indata = user + '~' + 1 + '~' + 1 + '~' + 1 + '~' + 1 + '~' + 1 + '~' + slNo + '~' + REMARK + "~" + Formateddate + "~" + 5 + "~" + 1;
+
+            PostDataAPICallRej(indata);
+
+            if (slno == 5) {
+
+                // $(".modalReject").modal("show");
+                alert("Rejected Successfully");
+
+            }
+
+        }
+
+
+    </script>
+
+    <script>
+        //----redirect to index page
+
+        function loadIndex() {
+
+            var root = '';
+            var baselink = '@ViewData["baseurl"]';
+            var id = '@ViewData["EmpCode"]';
+
+
+            if (document.location.hostname == 'localhost') {
+                window.location.href = "/HRM/Index?datas=" + id;
+            }
+            else {
+                root = '@ViewData["root"]';
+                domainurl = baselink + root;
+                window.location.href = domainurl + "/HRM/Index?datas=" + id;
+            }
+
+        }
+    </script>
+</body>
+</html>

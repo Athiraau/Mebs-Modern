@@ -1,0 +1,312 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor httpContextAccessor
+@{
+    ViewData["Title"] = "SMA2REPORT";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    @*<meta http-equiv="refresh" content="8" />*@
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="~/css/index.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.4/xlsx.full.min.js"></script>
+
+  
+    
+
+    <style>
+        .pagecontiner {
+            background-color: transparent;
+        }
+
+        .dcontainer1 {
+            width: 65%;
+            height: auto;
+            margin-left: 20%;
+            padding: 6%;
+            border-radius: 5px;
+            background-color: #cfd8dc;
+            box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+            font-size: small;
+        }
+
+        h5 {
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+        }
+
+        label {
+            display: block;
+            font-size: small;
+        }
+
+        input[type="date"],
+        select {
+            width: 100%;
+            padding: 4px;
+            border: 1px solid #ADC;
+            border-radius: 5px;
+        }
+
+
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: initial;
+        }
+
+        .img1 {
+            display: none;
+            cursor: pointer;
+        }
+
+        th,
+        td {
+            border: 1px solid white;
+            text-align: left;
+            padding: 8px;
+            font-size: initial;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            font-size: initial;
+        }
+
+
+
+
+        .btn-grad {
+            background-image: linear-gradient(to right, #4b6cb7 0%, #182848 51%, #4b6cb7 100%);
+            text-transform: uppercase;
+            transition: 0.5s;
+            padding: 10px;
+            background-size: 200% auto;
+            color: white;
+            border-radius: 10px;
+            border: none;
+            display: block;
+        }
+
+
+            .btn-grad:hover {
+                background-position: right center; /* change the direction of the change here */
+                color: #fff;
+                text-decoration: none;
+            }
+
+        .fs-10 {
+            font-size: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="pagecontiner">
+
+        <div>
+            <button type="button" class="btn btn-dark btn-block btn2 fs-10" onclick="exportToExcel();">
+                Export to Excel
+            </button>
+
+        </div>
+
+        <div class="mt-5" id="dcontainer2">
+            <table class="table table-striped table-hover" id="your-table-id">
+                <thead>
+                    <tr>
+                        <th class="table-secondary text-center" style="background-color:#fdd935" colspan="12">
+                            MANAPPURAM FINANCE LIMITED
+                        </th>
+                    </tr>
+
+                    <tr>
+                        <th class="text-center fs-10" colspan="12">
+                            <label style="font-size:x-small">BRANCH NAME : @httpContextAccessor.HttpContext.Session.GetString("BrName")</label><label style="font-size:x-small">BRANCH ID : @httpContextAccessor.HttpContext.Session.GetString("BrID")</label>
+                        </th>
+                    </tr>
+
+                    <tr style="background-color:#808080">
+                        <th colspan="3">
+                            <span id="date" style="font-size:10px; font-weight:bold;"></span>
+                        </th>
+                        <th class="text-center fs-10" colspan="6">
+                            SMA-2 NPA REPORT
+                        </th>
+                        <th colspan="3" class="fs-10">
+                            <span id="time" style="font-size:10px; font-weight:bold;"></span>
+                        </th>
+                    </tr>
+
+                    <tr style="background-color:lightslategray">
+                        <th class="text-center fs-10 text-white">SL.NO</th>
+                        <th class="text-center fs-10 text-white">CUST_ID</th>
+                        <th class="text-center fs-10 text-white">PLEDGE_NO</th>
+                        <th class="text-center fs-10 text-white">SCHEME_NM</th>
+                        <th class="text-center fs-10 text-white">PLEDGE_VAL</th>
+                        <th class="text-center fs-10 text-white">TRA_DT</th>
+                        <th class="text-center fs-10 text-white">PAN_NO</th>
+                        <th class="text-center fs-10 text-white">NAME</th>
+                        <th class="text-center fs-10 text-white">SMA2_DT</th>
+                        <th class="text-center fs-10 text-white">BALANCE</th>
+                        <th class="text-center fs-10 text-white">CLASSIFIED_AS_SMA1</th>
+                        <th class="text-center fs-10 text-white">SMA1_DT</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body1">
+                </tbody>
+                
+            </table>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-12" style="align-items:center;">
+            <button type="button" style="width:30%; height:7%;" class=" btn-grad" onclick="loadIndex()">Exit</button>
+        </div>
+        
+    </div>
+    <script>
+        window.onload = function FetchFunction() {
+            const indata = "1";
+            callAPIResponse(indata);
+        }
+
+        function callAPIResponse(indata) {
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+
+            var dataz;
+            indata = "SMA2REPORT^1";
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url:_link,
+            //    url: "/Loans/getAPIData",
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    const data33 = JSON.parse(response);
+                    populateTable(data33);
+                }
+            });
+        }
+       
+
+        function populateTable(data33) {
+
+            
+            const tableBody = document.getElementById('table-body1');
+            tableBody.innerHTML = '';
+
+            let cell13 = 0;
+            data33.forEach(item => {
+                const row1 = tableBody.insertRow();
+                row1.style.fontSize = "9px";
+
+                const cell1 = row1.insertCell();
+                cell1.style.fontSize = "9px";
+                cell1.innerHTML = ++cell13;
+
+                const cell2 = row1.insertCell();
+                cell2.style.fontSize = "9px";
+                cell2.textContent = item.CUST_ID;
+
+                const cell3 = row1.insertCell();
+                cell3.style.fontSize = "9px";
+                cell3.textContent = item.PLEDGE_NO;
+
+                const cell4 = row1.insertCell();
+                cell4.style.fontSize = "9px";
+                cell4.textContent = item.SCHEME_NM;
+
+                const cell5 = row1.insertCell();
+                cell5.style.fontSize = "9px";
+                cell5.textContent = item.PLEDGE_VAL;
+
+                const cell6 = row1.insertCell();
+                cell6.style.fontSize = "9px";
+                cell6.textContent = item.TO_CHAR_M_TRA_DT_;
+
+                const cell7 = row1.insertCell();
+                cell7.style.fontSize = "9px";
+                cell7.textContent = item.PAN_NO;
+
+                const cell8 = row1.insertCell();
+                cell8.style.fontSize = "9px";
+                cell8.textContent = item.CUST_NAME;
+
+                const cell9 = row1.insertCell();
+                cell9.style.fontSize = "9px";
+                cell9.textContent = item.TO_CHAR_T_SMA2_DT_;
+
+                const cell10 = row1.insertCell();
+                cell10.style.fontSize = "9px";
+                cell10.textContent = item.SMA_BALANCE;
+
+                const cell11 = row1.insertCell();
+                cell11.style.fontSize = "9px";
+                cell11.textContent = item.YES;
+
+                const cell12 = row1.insertCell();
+                cell12.style.fontSize = "9px";
+                cell12.textContent = item.TO_CHAR_T_SMA2_DT_30_;
+
+
+                cell13 = cell13 + 1;
+
+
+
+
+                // Add more cells and populate with data
+            });
+        }
+
+
+        function exportToExcel() {
+            const table = document.getElementById('your-table-id');
+            if (table) {
+                const wb = XLSX.utils.table_to_book(table, { sheet: "Sheet JS" });
+                if (wb) {
+                    XLSX.writeFile(wb, 'SMA2 REPORT.xlsx');
+                } else {
+                    console.error('Workbook is null. Unable to export data.');
+                }
+            } else {
+                console.error('Table element not found. Unable to export data.');
+            }
+        }
+
+
+        function loadIndex() {
+
+            var root = '';
+            var baselink = '@ViewData["baseurl"]';
+            var id = '@ViewData["HeadName"]';
+
+            if (document.location.hostname == 'localhost') {
+                window.location.href = "/loans/Index?datas=" + id;
+            }
+            else {
+                root = '@ViewData["root"]';
+                domainurl = baselink + root;
+                window.location.href = domainurl + "/loans/Index?datas=" + id;
+            }
+
+        }
+    </script>
+
+</body>
+</html>

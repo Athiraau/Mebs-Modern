@@ -1,0 +1,515 @@
+﻿@{
+    ViewData["Title"] = "paidreport";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    @*<meta http-equiv="refresh" content="8" />*@
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="~/css/index.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.4/xlsx.full.min.js"></script>
+
+
+
+
+    <style>
+        .pagecontiner {
+            background-color: transparent;
+        }
+
+        .dcontainer1 {
+            width: 65%;
+            height: auto;
+            margin-left: 20%;
+            padding: 6%;
+            border-radius: 5px;
+            background-color: linen;
+            box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+            font-size: small;
+        }
+
+        #dcontainer2 {
+            display: none;
+            height: 40%;
+            width: 50%;
+        }
+
+
+
+        h5 {
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+        }
+
+        label {
+            display: block;
+            font-size: small;
+        }
+
+        input[type="date"],
+        select {
+            width: 100%;
+            padding: 4px;
+            border: 1px solid #ADC;
+            border-radius: 5px;
+        }
+
+
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: initial;
+        }
+
+        .img1 {
+            display: none;
+            cursor: pointer;
+        }
+
+        th,
+        td {
+            border: 1px solid white;
+            text-align: left;
+            padding: 8px;
+            font-size: 10px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            font-size: 10px;
+        }
+
+
+
+
+        .btn-grad {
+            background-image: linear-gradient(to right, #4b6cb7 0%, #182848 51%, #4b6cb7 100%);
+            text-transform: uppercase;
+            transition: 0.5s;
+            padding: 10px;
+            background-size: 200% auto;
+            color: white;
+            border-radius: 10px;
+            border: none;
+            display: block;
+        }
+
+
+            .btn-grad:hover {
+                background-position: right center; /* change the direction of the change here */
+                color: #fff;
+                text-decoration: none;
+            }
+
+        .fs-10 {
+            font-size: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="pagecontiner">
+        <div class="dcontainer1" style="width:500px; height:250px;margin-left: 187px;">
+
+
+            <form>
+                <div class="secondcontainer">
+                    <p style="font-size:large">SURPLUS PAID DATA REPORT</p>
+                </div>
+
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            <label for="fromDate" style="font-size:12px">FROM DATE:</label>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            <input type="date" id="frmdt" value="" name="fromDate">
+
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            <label for="fromDate" style="font-size:12px">TO DATE:</label>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            <input type="date" id="todt" value="" name="toDate" style="margin-left: 3px;margin-top: 10px;">
+
+                        </div>
+
+                    </div>
+                </div>
+                <div class="row" style="margin-top:20px;font-size:13px;font-weight:800;">
+                    <div class="col-lg-3">
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-sm-12 ">
+                        <button type="button" id="fetch-button" class="btn-grad" onclick="Validate();callAPIResponse();showContainer();">
+                            Proceed
+                        </button>
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-sm-12">
+                        <button type="button" class="btn-grad" onclick="loadIndex()">Exit</button>
+                    </div>
+
+
+
+                </div>
+
+            </form>
+        </div>
+
+
+
+        <div class="mt-5" id="dcontainer2">
+            <div>
+                <button type="button" class="btn btn-dark btn-block btn2 fs-10" onclick="exportToExcel();">
+                    Export to Excel
+                </button>
+
+            </div>
+
+
+            <table class="table table-striped table-hover" id="your-table-id">
+                <thead>
+                    <tr>
+                        <th class="table-secondary text-center" style="background-color:#fdd935" colspan="18">
+                            MANAPPURAM FINANCE LIMITED
+                        </th>
+                    </tr>
+
+
+
+                    <tr style="background-color:lightcoral">
+                        <th colspan="5">
+                            <span id="date" style="font-size:10px; font-weight:bolder"></span>
+                        </th>
+                        <th class="text-center fs-12" colspan="8">
+                            SURPLUS PAID  DATA REPORT
+                        </th>
+                        <th colspan="5" class="fs-10">
+                            <span id="time" style="font-size:10px; font-weight:bold;"></span>
+                        </th>
+                    </tr>
+
+                    <tr style="background-color:darkcyan">
+                        @*   <th class="text-center fs-10 text-white">SL_NO</th> *@
+                        <th class="text-center fs-10 text-white">BRANCH_ID</th>
+                        <th class="text-center fs-10 text-white">BRANCH NAME</th>
+                        <th class="text-center fs-10 text-white">AREA NAME</th>
+                        <th class="text-center fs-10 text-white">REGION NAME</th>
+                        <th class="text-center fs-10 text-white">ZONE NAME</th>
+                        <th class="text-center fs-10 text-white">CUSTOMER ID</th>
+                        <th class="text-center fs-10 text-white">CUSTOMER NAME</th>
+                        <th class="text-center fs-10 text-white">PLEDGE COUNT</th>
+                        <th class="text-center fs-10 text-white">SURPLUS PAYID</th>
+                        <th class="text-center fs-10 text-white">TOTAL SURPLUS AMOUNT</th>
+                        <th class="text-center fs-10 text-white">NETPAY AMOUNT</th>
+                        <th class="text-center fs-10 text-white">SURPLUS GENERATED DATE</th>
+                        <th class="text-center fs-10 text-white">PLEDGE SETTILEMENT DATE</th>
+                        <th class="text-center fs-10 text-white">PAID DATE</th>
+                        <th class="text-center fs-10 text-white">MODE OF PAY</th>
+                        <th class="text-center fs-10 text-white">ESCROW BANK NAME</th>
+                        <th class="text-center fs-10 text-white">1ND CHEQUE SEND DATE</th>
+                        <th class="text-center fs-10 text-white">2ND CHEQUE SEND DATE</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body1">
+                </tbody>
+            </table>
+        </div>
+
+
+    </div>
+    <script>
+
+        function ActiveLoginCheck() {
+            var user = '@ViewData["EmpCode"]';
+            if (user == null || user == '') {
+                alert('INACTIVE SESSION');
+                loadIndex();
+            }
+
+        }
+        window.onload = function OnloadFunction() {
+            ActiveLoginCheck();
+            form_access();
+            alertfunction();
+        }
+        var slno = '0';
+        function form_access() {
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+
+
+            const EmpCode = '@ViewData["EmpCode"]';
+            indata = "Mebs_Auction" + "^" + "PaidRptAccess" + "~" + EmpCode;
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    slno = response;
+
+                },
+                error: function (response) {
+                    // alert("failed");
+                }
+            });
+
+
+            slno = JSON.parse(slno);
+            slno = slno[0].RESULT;
+
+
+        }
+        function alertfunction() {
+
+
+            if (slno == 0) {
+                alert("You Are Not Authorised to View This Page !!");
+                loadIndex();
+                return;
+            }
+
+
+
+
+        }
+    </script>
+    <script>
+
+
+        function showContainer() {
+            var dcontainer2 = document.getElementById('dcontainer2');
+            dcontainer2.style.display = 'block';
+        }
+
+
+        function unshowContainer() {
+            var dcontainer2 = document.getElementById('dcontainer2');
+            dcontainer2.style.display = 'none';
+
+
+
+
+            document.getElementById("frmdt").value = '';
+            document.getElementById("todt").value = '';
+            document.getElementById("dropdown").selectedIndex = 0;
+
+        }
+        //disable futuredate
+        function disableFutureDates(dateInputId) {
+            const dateInput = document.getElementById(dateInputId);
+            const today = new Date();
+            dateInput.setAttribute('max', today.toISOString().split('T')[0]);
+        }
+        disableFutureDates("frmdt");
+        disableFutureDates("todt");
+
+        function Validate() {
+            var from = document.getElementById("frmdt");
+            var to = document.getElementById("todt");
+
+            if (from.value == "") {
+                //If the "Please Select" option is selected display error.
+                alert("Please select fromdate");
+                return false;
+            }
+            if (to.value == "") {
+                alert("Please select a todate");
+                return false;
+            }
+
+        }
+
+
+        function loadIndex() {
+
+            var root = '';
+            var baselink = '@ViewData["baseurl"]';
+            var id = '@ViewData["HeadName"]';
+
+            if (document.location.hostname == 'localhost') {
+                window.location.href = "/loans/Index?datas=" + id;
+            }
+            else {
+                root = '@ViewData["root"]';
+                domainurl = baselink + root;
+                window.location.href = domainurl + "/loans/Index?datas=" + id;
+            }
+
+        }
+
+
+
+        function callAPIResponse() {
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+
+
+            const dt = fetchDate();
+            const dt1 = fetchDate1();
+            var dataz;
+            indata = "Mebs_Auction" + "^" + "paidreport" + "~" + dt + "*" + dt1;
+
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    const data3 = JSON.parse(response);
+                    populateTable(data3)
+                }
+            });
+        }
+
+
+        function fetchDate() {
+            var getdate = document.getElementById('frmdt').value;
+            // alert(getdate);
+
+            const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+            const [year, month, day] = getdate.split("-");
+            const formattedMonth = months[parseInt(month, 10) - 1];
+            const formattedDate = `${day}-${formattedMonth}-${year}`;
+            return formattedDate;
+        }
+
+        function fetchDate1() {
+            var getdate1 = document.getElementById('todt').value;
+            // alert(getdate1);
+
+            const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+
+            const [year, month, day] = getdate1.split("-");
+            const formattedMonth = months[parseInt(month, 10) - 1];
+            const formattedDate = `${day}-${formattedMonth}-${year}`;
+            return formattedDate;
+        }
+
+        function populateTable(data) {
+
+            // Get reference to the table body
+            const tableBody = document.getElementById('table-body1');
+
+            // Clear existing table rows
+            tableBody.innerHTML = '';
+
+
+            // Iterate over the data and create table rows
+            data.forEach(item => {
+                // const cellvalue = parseFloat(item.SL_NO);
+                const cellvalue1 = parseFloat(item.BRANCH_ID);
+                const cellvalue2 = parseFloat(item.BRANCH_NAME);
+                const cellvalue3 = parseFloat(item.AREA_NAME);
+                const cellvalue4 = parseFloat(item.REG_NAME);
+                const cellvalue5 = parseFloat(item.FZM);
+                const cellvalue6 = parseFloat(item.CUST_ID);
+                const cellvalue7 = parseFloat(item.CUST_NAME);
+                const cellvalue8 = parseFloat(item.TOT_PLCOUNT);
+                const cellvalue9 = parseFloat(item.SURPLUS_PAY_ID);
+                const cellvalue10 = parseFloat(item.NET_SURPLUS);
+                const cellvalue11 = parseFloat(item.NET_PAY);
+                const cellvalue12 = parseFloat(item.GEN_DT);
+                const cellvalue13 = parseFloat(item.SETTLE_DATE);
+                const cellvalue14 = parseFloat(item.APP_DT);
+                const cellvalue15 = parseFloat(item.STATUS);
+                const cellvalue16 = parseFloat(item.ACC_STATUS);
+                const cellvalue17 = parseFloat(item.CHEQUE);
+                const cellvalue18 = parseFloat(item.CHEQUE2);
+
+
+                // Create a new row
+                const row = tableBody.insertRow();
+
+                // Insert cells into the row
+                const cell1 = row.insertCell();
+                const cell2 = row.insertCell();
+                const cell3 = row.insertCell();
+                const cell4 = row.insertCell();
+                const cell5 = row.insertCell();
+                const cell6 = row.insertCell();
+                const cell7 = row.insertCell();
+                const cell8 = row.insertCell();
+                const cell9 = row.insertCell();
+                const cell10 = row.insertCell();
+                const cell11 = row.insertCell();
+                const cell12 = row.insertCell();
+                const cell13 = row.insertCell();
+                const cell14 = row.insertCell();
+                const cell15 = row.insertCell();
+                const cell16 = row.insertCell();
+                const cell17 = row.insertCell();
+                const cell18 = row.insertCell();
+
+
+
+
+
+
+                // Add more cells if needed
+
+                // Populate cells with data
+                // cell1.textContent = item.SL_NO;
+                cell1.textContent = item.BRANCH_ID;
+                cell2.textContent = item.BRANCH_NAME;
+                cell3.textContent = item.AREA_NAME;
+                cell4.textContent = item.REG_NAME;
+                cell5.textContent = item.FZM;
+                cell6.textContent = item.CUST_ID;
+                cell7.textContent = item.CUST_NAME;
+                cell8.textContent = item.TOT_PLCOUNT;
+                cell9.textContent = item.SURPLUS_PAY_ID;
+                cell10.textContent = item.NET_SURPLUS;
+                cell11.textContent = item.NET_PAY;
+                cell12.textContent = item.GEN_DT;
+                cell13.textContent = item.SETTLE_DATE;
+                cell14.textContent = item.APP_DT;
+                cell15.textContent = item.STATUS;
+                cell16.textContent = item.ACC_STATUS;
+                cell17.textContent = item.CHEQUE;
+                cell18.textContent = item.CHEQUE2;
+
+            });
+        }
+
+        function exportToExcel() {
+            const table = document.getElementById('your-table-id');
+            if (table) {
+                const wb = XLSX.utils.table_to_book(table, { sheet: "Sheet JS" });
+                if (wb) {
+                    XLSX.writeFile(wb, 'paidreport.xlsx');
+                } else {
+                    console.error('Workbook is null. Unable to export data.');
+                }
+            } else {
+                console.error('Table element not found. Unable to export data.');
+            }
+        }
+
+    </script>
+
+
+</body>
+</html>
+

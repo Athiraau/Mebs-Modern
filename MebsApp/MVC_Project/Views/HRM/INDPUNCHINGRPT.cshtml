@@ -1,0 +1,885 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor httpContextAccessor
+@{
+    ViewData["Title"] = "INDIVIDUALPUNCHREPORT";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    @*<meta http-equiv="refresh" content="8" />*@
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="~/css/index.css">
+
+
+
+    @*  Remove dd-mm-yy format *@
+    @* <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://unpkg.com/gijgo@1.9.14/js/gijgo.min.js" type="text/javascript"></script>
+    <link href="https://unpkg.com/gijgo@1.9.14/css/gijgo.min.css" rel="stylesheet" type="text/css" /> *@
+
+    <style>
+
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .MainDiv {
+            margin-top: 3%;
+            height: 120%;
+            width: 80%;
+            background-color: white;
+            border-radius: 20px;
+            border: 0.1px solid grey;
+            margin-left: 15%;
+        }
+
+        .headDiv {
+            width: 100%;
+            height: 7vh;
+            background-color: #538392;
+            /*text-align: center;*/
+            border-top-right-radius: 18px;
+            border-top-left-radius: 18px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .spanHead {
+            font-size: 18px;
+            color: white;
+        }
+
+
+        .empDiv {
+            width: 100%;
+            height: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 3%;
+        }
+
+        .btnDiv {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-evenly;
+            margin-bottom: 20px;
+            margin-left: 50px;
+        }
+
+        button {
+            width: 100%;
+            margin-left: 10%;
+            background-color: #538392;
+            color: white;
+            border-radius: 10px;
+        }
+
+        .btnHover:hover {
+            background-color: pink;
+        }
+
+
+
+
+        .inputStyle {
+            width: 40%;
+        }
+
+
+        .tableDiv {
+            width: 110%;
+            height: 120%;
+            background-color: white;
+            border-radius: 4px;
+        }
+
+
+        table {
+            border-color: black;
+            text-align: center;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        }
+
+        th {
+            font-size: 12px;
+            border: 1px solid black;
+            font-weight: 400;
+            border-color: black;
+        }
+
+
+
+        #table-body {
+            font-size: 12px;
+        }
+
+        .btn_prt {
+            margin-left: 80%;
+        }
+
+        .btnPntDiv {
+            margin-top: 3%;
+        }
+
+
+        .btn {
+            height: 30px;
+            width: 75px;
+            display: inline-block;
+            padding: 6px 10px;
+            font-size: 10px;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            background-color: #538392;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin: inherit;
+        }
+
+        .buttonclass {
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-left: 10px;
+            margin: 3px;
+        }
+
+        .btn:hover {
+            background-color: black; /* Darker green background on hover */
+            color: white;
+        }
+
+    </style>
+
+
+</head>
+<body>
+    <div class="pagecontiner">
+        <div class="MainDiv">
+            <div class="headDiv">
+                <span class="spanHead">ATTENDANCE REPORT OF SPECIFIED EMPLOYEE</span>
+            </div>
+            <div class=" row empDiv">
+                <div class="col-lg-3 col-md-6">
+                    <label for="EmployeeCode" style="font-size:13px;">Employee Code:</label>&nbsp;&nbsp;
+                </div>
+                <div class="col-lg-5 col-md-6 ">
+                    <input type="text" style="font-size:13px;height:4vh;" class="form-control " id="empCode" maxlength="6" onkeypress="return /[0-9]/i.test(event.key)" required>
+                </div>
+
+            </div>
+            <div class=" row empDiv">
+                <div class="col-lg-2 col-md-6 "><label for="fromDate" style="font-size:13px;">From Date:</label></div>
+                <div class="col-lg-3 col-md-6 "><input type="date" class="form-control form-control-sm" id="datePickerId1" style="font-size:12px;" required></div>
+
+                <div class="col-lg-2 col-md-6"> <label for="todate" style="font-size:13px;">To Date:</label>&nbsp;&nbsp;</div>
+                <div class="col-lg-3 col-md-6 "> <input type="date" class="form-control form-control-sm" id="datePickerId2" style="font-size:12px;" required /></div>
+
+
+            </div>
+
+
+
+            <div class="buttonclass">
+                <button onclick="submitfunction();" class="btn">
+                    Confirm
+                </button>
+                <button class="btn" onclick="loadIndex();">
+                    Exit
+                </button>
+                <button class="btn" onclick="clr(); unshowContainerBtn(); unshowContainer(); ">
+                    Clear
+                </button>
+
+            </div>
+        </div>
+
+        <div style="display:none" id="btnContainer" class="btnPntDiv">
+            <div class="  col-md-3 btn_prt">
+                <button type="button" class="btn " style="background-color: #538392; width:40%; color:white; font-size:15px;font-weight:500;" transition: background-color 0.3s ease; " onmouseover=" this.style.backgroundColor='#f1cbe9' ; " onmouseout=" this.style.backgroundColor='#538392' ;" onclick="printData();">Print</button>
+
+            </div>
+
+        </div>
+
+
+        <div class="tableDiv table-responsive" style="display:none" id="dcontainer2">
+
+            <table class="table table-bordered table-striped" style="border:0.5px solid grey ;" id="punch_table">
+                <thead>
+                    <tr>
+                        <th colspan="5" style="background-color: #538392; border:0.5px solid grey ;color:white; font-size:18px">
+                            MANAPPURAM FINANCE LIMITED
+                        </th>
+                    </tr>
+                    <tr>
+                        <th colspan="5" style="font-weight:400;font-size:15px;">
+                            <span id="branchname"></span><br />
+                            <span id="branchid"></span>
+
+                        </th>
+                    </tr>
+                    <tr>
+                        <td><span id="currentDate" style="font-size:13px;"></span></td>
+                        <td colspan="3" style="font-size:14px;">ATTENDANCE REPORT FROM   <label id="fd_lbl"></label>  TO   <label id="td_lbl"></label> </td>
+                        <td><span id="currentTime" style="font-size:13px;"></span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">
+                            <span id="EmpName" style="font-size:15px;font-weight:600;"></span><br />
+                            <span id="Dept" style="font-size:15px;font-weight:600;"></span>
+
+                        </td>
+                        <td colspan="2">
+                            <span id="Empcode" style="font-size:15px;font-weight:600;"></span><br />
+                            <span id="desig" style="font-size:15px;font-weight:600;"></span>
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <th>Date</th>
+                        <th>MorningTime</th>
+                        <th>EveningTime</th>
+                        <th>Alert</th>
+                        <th>Remarks</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                </tbody>
+
+
+
+
+            </table>
+
+        </div>
+
+
+    </div>
+
+
+                @* fetch employee code and check that feild readonly or not *@
+
+    <script>
+        var userCheck = 0;
+        window.onload = function OnloadFunction() {
+
+            document.getElementById('empCode').value = '@ViewData["EmpCode"]';
+
+            EmpAccessCheckApi();
+
+        }
+
+        function EmpAccessCheckApi() {
+
+            const EmpCode = '@ViewData["EmpCode"]';
+
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/HRM/getAPIData"; }
+
+            else {
+                var root = '@ViewData["root"]';
+
+                _link = "/" + root + "/HRM/getAPIData";
+            }
+
+
+
+            indata = "ATTEN_USERACCESS" + "^" + EmpCode;
+
+
+            var response = '';
+            var result = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    result = response;
+
+                },
+                error: function (response) {
+                    alert("failed");
+                }
+            });
+
+            var access_code = '';
+            var res1 = '';
+
+            res1 = result;
+            access_code = JSON.parse(res1);
+            res1 = access_code[0].RESPONSE;
+
+            if (res1 == 0)
+                document.getElementById('empCode').setAttribute('readonly', true);
+            else {
+                document.getElementById('empCode').setAttribute('readonly');
+
+                userCheck = 1;
+            }
+
+        }
+    </script>
+
+                    @* To block future date *@
+
+    <script>
+
+        datePickerId1.max = new Date().toISOString().split("T")[0];
+        datePickerId2.max = new Date().toISOString().split("T")[0];
+    </script>
+
+                    @* to show current date inside the table *@
+
+    <script>
+        const today = new Date();
+        const day = String(today.getDate()).padStart(2, '0');
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const year = today.getFullYear();
+        document.getElementById("currentDate").textContent = day + '/' + month + '/' + year;
+    </script>
+
+                    @* To show current time inside the table *@
+
+    <script>
+        var t = new Date();
+        var hours = t.getHours();
+
+        var amorpm = hours >= 12 ? 'PM' : 'AM';
+        hours = (hours % 12) || 12;
+        var minute = t.getMinutes();
+
+
+
+
+        if (minute < 10) {
+            var finaltime = hours + ':' + '0' + minute + " " + amorpm;
+
+        }
+        else {
+
+            var finaltime = hours + ':' + minute + " " + amorpm;
+
+        }
+        document.getElementById("currentTime").innerHTML = finaltime;
+
+    </script>
+
+                    @* To validate the fields and fetch data from api *@
+
+    <script>
+
+        function submitfunction() {
+
+            if (validation()) {
+
+                showContainerBtn();
+
+                callAPIResponse();
+
+                showContainer();
+
+                const fdate = document.getElementById('datePickerId1').value;
+                const tdate = document.getElementById('datePickerId2').value;
+
+                const fd = fetchDate(fdate);
+                const td = fetchDate(tdate);
+
+
+                const empcode = document.getElementById('empCode').value;
+
+                const indata = empcode + "~" + fd + "~" + td;     //fromdate & todate
+
+                callAPIDataResponse(indata);
+
+
+            }
+        }
+        function callAPIResponse() {
+
+            const ecode = document.getElementById('empCode').value;
+
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/HRM/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/HRM/getAPIData"; }
+
+            indata = "ATTEN_GETEMPDETAILS" + "^" + ecode;
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    const data2 = JSON.parse(response);
+                    populateTable(data2);
+                },
+                error: function (response) {
+                    alert("failed");
+                }
+            });
+        }
+
+
+        function populateTable(data) {
+
+
+            // Get reference to the employee name,dept,employee code,designation
+            const employeeName = document.getElementById('EmpName');
+            const dept = document.getElementById('Dept');
+            const empCode = document.getElementById('Empcode');
+            const designtn = document.getElementById('desig');
+            const brname = document.getElementById('branchname');
+            const brid = document.getElementById('branchid');
+
+
+            // Clear existing  employee name,dept,employee code,designation
+            employeeName.innerHTML = '';
+            dept.innerHTML = '';
+            empCode.innerHTML = '';
+            designtn.innerHTML = '';
+
+            const ecode = document.getElementById('empCode').value;
+            empCode.textContent = "EMPLOYEE CODE : " + ecode;
+
+
+            // alert(data.EMP_NAME);
+
+            // Iterate over the data
+            data.forEach(item => {
+
+
+                employeeName.textContent = "EMPLOYEE NAME : " + item.EMP_NAME;
+                dept.textContent = "DEPARTMENT : " + item.DEP_NAME;
+                designtn.textContent = "DESIGNATION : " + item.DESIGNATION;
+                brname.textContent = "BRANCH NAME : " + item.BRANCH_NAME;
+                brid.textContent = "BRANCH ID : " + item.BRANCH_ID;
+
+
+            });
+        }
+
+
+        function validation() {
+
+            // validate employee code
+
+            var employeeCode = document.getElementById('empCode').value;
+
+            if (employeeCode == "") {
+                alert('Please enter the employee code');
+                return false;
+            }
+
+
+            //validate fromDate and year
+            var fromDate = document.getElementById('datePickerId1').value;
+            var inputFromDate = new Date(fromDate);
+
+            var toDate = document.getElementById('datePickerId2').value;
+            var inputtoDate = new Date(toDate);
+
+            var today = new Date();
+
+            if (fromDate == "") {
+
+                alert('Please fill the valid date ...');
+                return false;
+            }
+
+            if (toDate == "") {
+
+                alert('Please fill the valid date ...');
+                return false;
+
+            }
+
+            if (toDate < fromDate) {
+                alert('Error...., From date is always lesser than to date');
+                return false;
+            }
+
+
+            //  var wedding = document.getElementById('wedding');
+            const formattedToday = todayformat();
+            if (fromDate > formattedToday) {
+                alert("Please Enter a Valid from date");
+                fromDate = null;
+                return false;
+            }
+
+            if (toDate > formattedToday) {
+                alert("Please Enter a Valid to date");
+                toDate = null;
+                return false;
+            }
+
+
+
+            return true;
+
+
+        }
+
+
+        function todayformat() {
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            let mm = today.getMonth() + 1; // Months start at 0!
+            let dd = today.getDate();
+
+            if (dd < 10) dd = '0' + dd;
+            if (mm < 10) mm = '0' + mm;
+
+            const formattedToday = yyyy + '-' + mm + '-' + dd;
+            return formattedToday;
+        }
+
+
+
+
+        function callAPIDataResponse(indata) {
+
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/HRM/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/HRM/getAPIData"; }
+
+
+            indata = 'ATTEN_GETREPORT' + '^' + indata;
+
+            const a = "";
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    const data3 = JSON.parse(response);
+                    populateTable1(data3)
+
+                },
+                error: function (response) {
+                    check = 0;
+
+                }
+            });
+        }
+
+
+        function populateTable1(data) {
+
+
+            // Get reference to the table body
+            const tableBody1 = document.getElementById('table-body');
+            // tableBody1.style.textAlign = "start";
+
+
+
+            // Clear existing table rows
+            tableBody1.innerHTML = '';
+
+            data.forEach(item => {
+
+
+                const row = tableBody1.insertRow();
+                row.id = "dataRowID";
+
+                document.getElementById('dataRowID').style.height = '10px';
+
+
+
+                // Insert cells into the row
+                const cell1 = row.insertCell();
+                const cell2 = row.insertCell();
+                const cell3 = row.insertCell();
+                const cell4 = row.insertCell();
+                const cell5 = row.insertCell();
+
+
+
+                // Populate cells with data
+                cell1.textContent = item.DAY;
+                cell1.style.fontSize = "12px";
+
+                cell2.textContent = item.MORNING_TIME;
+                cell2.style.fontSize = "12px";
+
+                cell3.textContent = item.EVENING_TIME;
+                cell3.style.fontSize = "12px";
+
+                //  cell5.textContent = item.REMARKS;
+                // cell5.style.fontSize = "12px";
+
+                cell4.textContent = item.ALERT;
+                cell4.style.fontSize = "12px";
+
+                var remarkOption = 0;
+                var re = '';
+
+
+
+                if (item.REMARKS != null) {
+
+                    if (item.REMARKS == 'Absent' || item.REMARKS == '-' || item.REMARKS == 'Non-Marking Evening' || item.REMARKS == 'Non-Marking Morning') {
+
+                        re = callAPIRemarks(item.DAY, '1');
+                        if (re != 0) {
+                            cell5.textContent = re;
+                        }
+                        else
+                            cell5.textContent = item.REMARKS;
+
+
+                        cell5.style.fontSize = "12px";
+
+                    }
+                    else {
+                        if (item.REMARKS == 'Evening-REG' || item.REMARKS == 'BOTH-REG') {
+                            cell5.textContent = item.REMARKS;
+                            cell5.style.fontSize = "12px";
+                        }
+                        else if (item.REMARKS == 'Lag in working hours') {
+                            re = callAPIRemarks(item.DAY, '2');
+                            cell5.textContent = re;
+                            cell5.style.fontSize = "12px";
+                        }
+                        else {
+                            re = callAPIRemarks(item.DAY, '3');
+                            cell5.textContent = re;
+                            cell5.style.fontSize = "12px";
+
+                        }
+                    }
+
+
+                }
+
+                else {
+                    cell5.textContent = item.REMARKS;
+                    cell5.style.fontSize = "12px";
+                }
+
+
+
+                //cell4.textContent = re;
+                //cell4.style.fontSize = "12px";
+
+
+            });
+
+        }
+
+
+
+        function callAPIRemarks(indata, flag) {     //indata: date from response
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/HRM/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/HRM/getAPIData"; }
+
+
+            const fdate = document.getElementById('datePickerId1').value;
+            const tdate = document.getElementById('datePickerId2').value;
+
+            const fd = fetchDate(fdate);
+            const td = fetchDate(tdate);
+
+            //   alert('api call');
+            const empcode = document.getElementById('empCode').value;
+
+            indata = fetchRPTDate(indata);
+            //  alert(indata);
+            indta = toString(indata);
+
+            if (flag == '1')
+                indata = 'ATTEN_GETREMARKS1' + '^' + empcode + '~' + fd + '~' + td + '~' + indata;
+
+              //  indata = 'TEST_ATTEN_GETREMARKS' + '^' + empcode + '~' + fd + '~' + td + '~' + indata;
+            else if (flag == '2')
+                indata = 'ATTEN_GETREMARKS2' + '^' + empcode + '~' + fd + '~' + td + '~' + indata;
+
+            else if (flag == '3')
+                indata = 'ATTEN_GETREMARKS3' + '^' + empcode + '~' + fd + '~' + td + '~' + indata;
+            var result = '';
+            const a = "";
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    result = response;
+                },
+                error: function (response) {
+                    check = 0;
+
+                }
+            });
+
+            var access_code = '';
+            var res1 = '';
+
+            res1 = result;
+            access_code = JSON.parse(res1);
+            res1 = access_code[0].RESULT;
+            return res1;
+        }
+
+
+
+    </script>
+
+                    @* //to Show && unshow table *@
+
+
+    <script>
+
+        //to print the table data
+        //--------------------------------------------------------------------------
+
+
+        function printData() {
+            var divToPrint = document.getElementById("dcontainer2");
+            newWin = window.open("");
+            newWin.document.write(divToPrint.outerHTML);
+            newWin.print();
+            newWin.close();
+        }
+
+
+        //---------------------------------------------------------------------------
+
+        function showContainer() {
+
+            const fdate = document.getElementById('datePickerId1').value;
+            const tdate = document.getElementById('datePickerId2').value;
+
+            const fd = fetchDate(fdate);
+            document.getElementById('fd_lbl').textContent = fd;
+
+            const td = fetchDate(tdate);
+            document.getElementById('td_lbl').textContent = td;
+
+
+            var dcontainer2 = document.getElementById('dcontainer2');
+            dcontainer2.style.display = 'block';
+
+
+
+        }
+
+        function showContainerBtn() {
+            var dcontainer2 = document.getElementById('btnContainer');
+            dcontainer2.style.display = 'block';
+        }
+
+        function unshowContainerBtn() {
+            var dcontainer2 = document.getElementById('btnContainer');
+            dcontainer2.style.display = 'none';
+
+        }
+
+
+        function unshowContainer() {
+            var dcontainer2 = document.getElementById('dcontainer2');
+            dcontainer2.style.display = 'none';
+        }
+
+
+
+        function fetchDate(dt) {
+            var getdate = dt;
+
+            const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+
+            const [year, month, day] = getdate.split("-");
+            const formattedMonth = months[parseInt(month, 10) - 1];
+            const formattedDate = `${day}-${formattedMonth}-${year}`;
+            //   document.getElementById("completionYear").innerHTML = formattedDate;
+            return formattedDate;
+        }
+
+        function fetchRPTDate(dt) {
+            var getdate = dt;
+
+            const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+
+            const [day, month, year] = getdate.split("-");
+            const formattedMonth = months[parseInt(month, 10) - 1];
+            const formattedDate = `${day}-${formattedMonth}-${year}`;
+            //   document.getElementById("completionYear").innerHTML = formattedDate;
+            return formattedDate;
+        }
+    </script>
+
+                    @*  to clear fields *@
+
+    <script>
+
+        function clr() {
+
+            //  const code = document.getElementById('empCode').code;
+
+            if (userCheck == 1)
+                document.getElementById('empCode').value = "";
+            else
+                document.getElementById('empCode').value = '@ViewData["EmpCode"]';
+
+            document.getElementById('datePickerId1').value = ""
+            document.getElementById('datePickerId2').value = ""
+        }
+
+
+    </script>
+
+                    @* //EXIT BUTTON *@
+    <script>
+
+        function loadIndex() {
+
+            var root = '';
+            var baselink = '@ViewData["baseurl"]';
+            var id = '@ViewData["HeadName"]';
+
+            if (document.location.hostname == 'localhost') {
+                window.location.href = "/HRM/Index?datas=" + id;
+            }
+            else {
+                root = '@ViewData["root"]';
+                domainurl = baselink + root;
+                window.location.href = domainurl + "/HRM/Index?datas=" + id;
+            }
+
+        }
+    </script>
+
+
+
+</body>
+</html>

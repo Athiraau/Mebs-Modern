@@ -1,0 +1,676 @@
+﻿
+@{
+    ViewData["Title"] = "TODAYSHIFTCHANGE";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    @*<meta http-equiv="refresh" content="8" />*@
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="~/css/index.css">
+    <style>
+
+        .container-sm {
+            max-width: 850px;
+            box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+            height: auto;
+            border-radius: 7px;
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: #EEEEEE;
+            margin-left:40px;
+        }
+
+        select {
+            width: 80%;
+            font-size: x-small;
+        }
+
+        textarea {
+            width: 80%;
+            font-size: x-small;
+        }
+
+        input {
+            width: 80%;
+            font-size: x-small;
+        }
+
+        .heading {
+            font-size: smaller;
+        }
+
+        .btn {
+            height: 30px;
+            width: 75px;
+            display: inline-block;
+            padding: 6px 10px;
+            font-size: 10px;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            background-color: #538392;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin: inherit;
+            
+        }
+
+        .buttonclass {
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-left: 10px;
+            margin: 3px;
+        }
+
+        .btn:hover {
+            background-color: black; /* Darker green background on hover */
+            color: white;
+        }
+
+        .form-control {
+            height: 30px;
+            font-size: small;
+        }
+
+        .form-label {
+            font-weight: 500;
+            font-size: small;
+            color: #27005D;
+        }
+
+        .label1 {
+            font-size: 12px;
+        }
+
+        .card-header {
+            background-color: #538392;
+            color: white;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+
+        .fw {
+            font-weight: 600;
+        }
+
+        .table {
+            font-size: 10px; /* Reduced font size */
+        }
+
+            .table th, .table td {
+                border: 1px solid;
+                padding: 5px; /* Reduced padding */
+            }
+
+            .table td {
+                vertical-align: middle;
+            }
+
+            .table th {
+                background-color: #538392;
+                color: #ffff;
+            }
+
+        .card-details {
+            color: 2px solid;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+            margin-top: 5px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 6px 10px;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            background-color: #538392;
+            border-radius: 5px;
+            border: none;
+            color: white;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+            font-size: 10px;
+        }
+
+        .btn-group .btn {
+            margin: 0 50 px;
+        }
+
+        .cls_test {
+            font-size: 11px;
+            height: 38px;
+            color: #686D76;
+        }
+
+        .radio {
+            display: none;
+        }
+
+        .swal-wide {
+            width: 370px;
+            height:230px;
+            font-size:13px;
+        }
+    </style>
+</head>
+<body>
+    <div class="pagecontiner">
+        <div class="container-sm ">
+
+            <div class="form-group align-center">
+                <div style="text-align: center;">
+                    <b style="font-size: 19px; color: green;">MANAPPURAM FINANCE LIMITED</b><br />
+                    <b style="font-size: 16px; ">SHIFT CHANGE</b>
+                    <br />
+
+                </div>
+            </div>
+            <br />
+            <div class="card p-3" style="width:100%;">
+                <div class="card-header">
+                    <center>
+                        <label class="col-sm-2 col-form-label form-label fw" style="color:white">Select Employee<span class="required" style="color:red"> *</span></label>
+                        <div class="col-sm-5">
+                            <select id="emp_code" class="form-control fs" style="text-align:center">
+                            </select>
+                        </div>
+                    </center>
+                </div>
+               
+                <div class="form-group row mt-3 fw">
+                    <label class="col-sm-2 col-form-label form-label fw">Emp Name</label>
+                    <div class="col-sm-4">
+                        <input type="text" id="emp_name" class="form-control" readonly />
+                    </div>
+                    <label class="col-sm-2 col-form-label form-label fw">Department</label>
+                    <div class="col-sm-4">
+                        <input type="text" id="department" class="form-control" readonly />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label form-label fw">Post</label>
+                    <div class="col-sm-4">
+                        <input type="text" id="post" class="form-control" readonly />
+                    </div>
+                    <label class="col-sm-2 col-form-label form-label fw">Designation</label>
+                    <div class="col-sm-4">
+                        <input type="text" id="designation" class="form-control" readonly />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label form-label fw">Shift</label>
+                    <div class="col-sm-4">
+                        <input type="text" id="shift" class="form-control" readonly />
+                    </div>
+                    <label class="col-sm-2 col-form-label form-label fw">Date</label>
+                    <div class="col-sm-4">
+                        <input type="text" id="date" class="form-control" readonly />
+                    </div>
+                </div>
+                <div>
+                    <br />
+                </div>
+                <div class="form-group row">
+                    <div class="form-group col-md-2">
+                        <label class="lbl form-label fw">Change Shift</label>
+                    </div>
+
+                    <div class="form-group col-md-10 ">
+                        <select id="shiftchange" class="form-control fs" style="text-align:center">
+                        </select>
+                    </div>
+                </div>
+               
+            </div>
+            <div class="buttonclass">
+                <button onclick="submitfunction();" class="btn">
+                    Confirm
+                </button>
+                <button class="btn" onclick="loadIndex();">
+                    Exit
+                </button>
+
+            </div>
+
+        </div>
+    </div>
+    
+    <script>
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script>
+        window.onload = function OnloadFunction() {
+
+            callAPIauthorization();
+
+        }
+
+        function callAPIauthorization() {
+
+
+
+            const EmpCode = '@ViewData["EmpCode"]';
+            var brid = '@ViewData["BrID"]';
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/HRM/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/HRM/getAPIData"; }
+
+            indata = "PROC_HRMS_COMMON_MVC" + "^" + 1 + "~" + 5 + "~" + EmpCode + "~" + brid;
+
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    result = JSON.parse(response);
+                    result = result[0].RESULT;
+
+
+                    if (result == '111') {
+
+                        callAPIResponse();
+                        callAPIResponse1();
+                    }
+                    else {
+
+                        Swal.fire({
+                            text: 'You are not authorized to change Shift.!!!',
+                            icon: 'error',
+                            confirmButtonText: 'OK',
+                            customClass: 'swal-wide'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                loadIndex();
+                            }
+                        });
+                    }
+                },
+                error: function (response) {
+                    alert("failed");
+                }
+            });
+        }
+
+        function callAPIResponse() {
+
+           
+
+            const EmpCode = '@ViewData["EmpCode"]';
+            var brid = '@ViewData["BrID"]';
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/HRM/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/HRM/getAPIData"; }
+
+            indata = "PROC_HRMS_COMMON_MVC" + "^" + 1 + "~" + 1 + "~" + EmpCode + "~" + brid;
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    const data = JSON.parse(response);
+                    LoadDropDown(data);
+                },
+                error: function (response) {
+                    alert("failed");
+                }
+            });
+        }
+        function LoadDropDown(data) {
+            var selectemp = document.getElementById('emp_code');
+
+            const options = formatDataAsArray1(data);
+            selectemp.innerHTML = '';
+            options.forEach(option => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option.value;
+                optionElement.text = option.label;
+                selectemp.add(optionElement);
+            });
+
+        }
+        function formatDataAsArray1(data) {
+            if (Array.isArray(data) && data.length > 0) {
+                return data.map(item => ({
+                    value: item["EID"],
+                    label: item["ENAME"]
+                }));
+            } else {
+                return [];
+            }
+
+
+        }
+
+        function callAPIResponse1() {
+
+            var EmpCode = '@ViewData["EmpCode"]';
+            var brid = '@ViewData["BrID"]';
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/HRM/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/HRM/getAPIData"; }
+
+
+            indata = "PROC_HRMS_COMMON_MVC" + "^" + 1 + "~" + 3 + "~" + EmpCode + "~" + brid;
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    const data2 = JSON.parse(response);
+                    LoadDropDown1(data2);
+                },
+                error: function (response) {
+                    alert("failed");
+                }
+            });
+
+        }
+        function LoadDropDown1(data) {
+            var ShiftDrop = document.getElementById('shiftchange');
+
+            const options = formatDataAsArray2(data);
+            ShiftDrop.innerHTML = '';
+            options.forEach(option => {
+                const optionElement = document.createElement('option');
+
+                optionElement.value = option.value;
+                optionElement.text = option.label;
+                ShiftDrop.add(optionElement);
+            });
+        }
+        function formatDataAsArray2(data) {
+            if (Array.isArray(data) && data.length > 0) {
+                return data.map(item => ({
+                    value: item["IN_TIME"],
+                    label: item["SNAME"]
+                }));
+            } else {
+                return [];
+            }
+        }
+
+
+        var selectemp = document.getElementById('emp_code');
+        var a = "";
+        selectemp.onchange = function () {
+
+            a = document.getElementById('emp_code').value;
+
+            if (a == "-1") {
+
+                document.getElementById('emp_name').value = "";
+                document.getElementById('department').value = "";
+                document.getElementById('designation').value = "";
+                document.getElementById('post').value = "";
+                document.getElementById('date').value = "";
+                document.getElementById('shift').value = "";
+
+            } else {
+                callAPIResponse2();
+
+            }
+
+
+
+        }
+        function callAPIResponse2() {
+
+            const session = '@ViewData["EmpCode"]';
+            var brid = '@ViewData["BrID"]';
+
+
+
+            var EmpCode = document.getElementById('emp_code').value;
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/HRM/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/HRM/getAPIData"; }
+
+            indata = "PROC_HRMS_COMMON_MVC" + "^" + 1 + "~" + 2 + "~" + EmpCode + "~" + brid;
+           
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+                    const Edetails = JSON.parse(response);
+                    LoadEmployeeDetails(Edetails);
+                },
+                error: function (response) {
+                }
+            });
+        }
+        function LoadEmployeeDetails(Edetails) {
+            // initializing Values to the variables
+
+            EmployeeName = Edetails[0].EMP_NAME;
+            Department = Edetails[0].DEP_NAME;
+            Post = Edetails[0].POST_NAME;
+            Designation = Edetails[0].DESIGNATION;
+            shift = Edetails[0].SHIFT;
+            v_date = Edetails[0].V_DATE;
+
+            // initializing Values to the textbox
+
+            document.getElementById('emp_name').value = EmployeeName;
+            document.getElementById('designation').value = Designation;
+            document.getElementById('department').value = Department;
+            document.getElementById('post').value = Post;
+            document.getElementById('shift').value = shift;
+            document.getElementById('date').value = v_date;
+
+        }
+
+
+        function submitfunction() {
+
+
+            if (!validates()) {
+                return false;
+            }
+
+            const Session_emp = '@ViewData["EmpCode"]';
+            var brid = '@ViewData["BrID"]';
+
+            var EmpCode = document.getElementById('emp_code').value;
+            var shift_id = document.getElementById('shiftchange').value;
+            var indata = EmpCode + "~" + shift_id + "~" + Session_emp;
+            
+            PostDataAPICall(indata);
+          
+
+        }
+        function PostDataAPICall(indata) {
+
+
+            indata = "PROC_HRMS_COMMON_MVC" + "^" + 1 + "~" + 4 + "~" + indata;
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/HRM/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/HRM/getAPIData"; }
+
+            const a = "";
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+
+                    result = JSON.parse(response);
+                    result = result[0].RESULT;
+                    v_alert(result);
+
+                },
+                error: function (response) {
+                    check = 0;
+                    alert("failed");
+                }
+            });
+        }
+        function resetForm() {
+            var root = '';
+            var baselink = '@ViewData["baseurl"]';
+            var id = '@ViewData["HeadName"]';
+
+            if (document.location.hostname == 'localhost') {
+                window.location.href = "/HRM/TODAYSHIFTCHANGE?datas=" + id;
+            }
+            else {
+                root = '@ViewData["root"]';
+                domainurl = baselink + root;
+                window.location.href = domainurl + "/HRM/TODAYSHIFTCHANGE?datas=" + id;
+            }
+
+
+        }
+
+
+        //---------alert----------------------//
+
+        function v_alert(res) {
+
+            if (res == "SUCESSFULLY UPDATED TO CHANGE SHIFT") {
+
+                Swal.fire({
+                    text: 'SUCCESSFULLY UPDATED TO CHANGE SHIFT..!!!',
+                    icon: 'success',
+                    confirmButtonText: 'OK',
+                    customClass: 'swal-wide'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        resetForm();
+                    }
+                });
+            }
+
+            if (res == "Already in same Shift..") {
+
+                Swal.fire({
+                    text: 'Already in same Shift...!!!',
+                    icon: 'warning',
+                    confirmButtonText: 'OK',
+                    customClass: 'swal-wide'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        resetForm();
+                    }
+                });
+            }
+            if (res == "YOU ARE NOT ALLOWED TO CHANGE SHIFT ON THIS DATE") {
+
+                Swal.fire({
+                    text: 'YOU ARE NOT ALLOWED TO CHANGE SHIFT ON THIS DATE..!!!',
+                    icon: 'warning',
+                    confirmButtonText: 'OK',
+                    customClass: 'swal-wide'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        resetForm();
+                    }
+                });
+            }
+
+        }
+
+        //---------VALIDATION----------------------//
+
+
+        function validates() {
+            //  DTValidation();
+            var selectemp = document.getElementById('emp_code');
+            var selectshift = document.getElementById('shiftchange');
+           
+
+            if (!validateSelect(selectemp)) {
+                Swal.fire({
+                    text: 'Please select an Employee..!!!',
+                    icon: 'warning',
+                    confirmButtonText: 'OK',
+                    customClass: 'swal-wide'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        return false;
+                    }
+                });
+               
+            }
+            else if (!validateSelect(selectshift)) {
+               
+                Swal.fire({
+                    text: 'Please select a shift..!!!',
+                    icon: 'warning',
+                    confirmButtonText: 'OK',
+                    customClass: 'swal-wide'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        return false;
+                    }
+                });
+              
+            }
+            else{
+                return true;
+            }
+            
+        }
+
+        function validateSelect(select) {
+            if (select.selectedIndex === 0) {
+                return false;
+            }
+            return true;
+        }
+
+        
+        //--------------------Exit--------------------//
+
+        function loadIndex() {
+
+            var root = '';
+            var baselink = '@ViewData["baseurl"]';
+            var id = '@ViewData["HeadName"]';
+
+            if (document.location.hostname == 'localhost') {
+                window.location.href = "/HRM/Index?datas=" + id;
+            }
+            else {
+                root = '@ViewData["root"]';
+                domainurl = baselink + root;
+                window.location.href = domainurl + "/HRM/Index?datas=" + id;
+            }
+
+        }
+    </script>
+</body>
+
+</html>

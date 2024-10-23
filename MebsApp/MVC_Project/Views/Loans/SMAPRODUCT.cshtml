@@ -1,0 +1,821 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor httpContextAccessor
+@{
+    ViewData["Title"] = "SMAPRODUCT";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Wise Report </title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.6/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.4/xlsx.full.min.js"></script>
+    <link rel="stylesheet" href="~/css/index.css">
+    <link rel="stylesheet" href="~/css/sma_product.css">
+    <script src="~/js/site.js"></script>
+
+</head>
+
+<body>
+    <div class="pagecontiner">
+    <div class="dcontainer1">
+
+
+        <form>
+                <div class="secondcontainer">
+                <p style="font-size:large">SMA PRODUCT REPORT</p>
+            </div>
+
+            <div class="form-group">
+                <div class="row">
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            <label for="fromDate" style="font-size:12px">FROM DATE:</label>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12">
+                        <input type="date" id="fromDate" value="" name="fromDate">
+
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="margin-top:20px;font-size:13px;font-weight:800;">
+                <div class="col-lg-3">
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-12 ">
+                    <button type="button" id="fetch-button" class=" btn-grad" onclick="Validate();showContainer();cleart();">
+                        Proceed
+                    </button>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-12">
+                        <button type="button" class=" btn-grad" onclick="loadIndex()">Exit</button>
+                </div>
+
+                <!-- <button id="exportExcel" style=" width: 20px;">Export to Excel</button> -->
+
+            </div>
+                <div class="row" style="margin-top:8px; align-content:center; margin:4px;margin-bottom:4px;">
+                <div class="col-lg-4">
+                    <button type="button" id="fetch-button1" class=" btn-grad1" style="width:100%; font-size:small;">
+                        Export To Excel NONNPA
+                    </button>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-12 ">
+                    <button type="button" id="fetch-button2" class=" btn-grad1" style="width:100%; font-size:small;">
+                        Export To Excel Summary
+                    </button>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                        <button type="button" id="fetch-button3" class=" btn-grad1" style="width:100%; font-size:small;">
+                        Export To Excel NPA
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+    <!-- Table -->
+    <div class="mt-5" id="dcontainer2">
+        <div class="col">
+            <table class="table   table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th class="table-secondary text-center" colspan="25">
+                            MANAPPURAM FINANCE LIMITED
+                        </th>
+                    </tr>
+                    <tr>
+                        <th colspan="2">
+                            <span id="date" style="font-size:10px; font-weight:bold;"></span>
+                        </th>
+                        <th class="text-center fs-10" colspan="21">
+                                <label style="font-size:x-small">BRANCH NAME : @httpContextAccessor.HttpContext.Session.GetString("BrName")</label><label style="font-size:x-small">BRANCH ID : @httpContextAccessor.HttpContext.Session.GetString("BrID")</label>
+
+
+                        </th>
+
+                        <th colspan="2" class="fs-10">
+                            <span id="time" style="font-size:10px; font-weight:bold;"></span>
+                        </th>
+
+                    </tr>
+
+                    <tr>
+                        <th colspan="2">
+                        </th>
+                        <th class="text-center fs-10" colspan="21">
+                            PRODUCTWISE SMA REPORT AS ON <span id="FromDateSpan"></span>
+                        </th>
+
+                        <th colspan="2" class="fs-10">
+                            <span id="time" style="font-size:10px; font-weight:bold;"></span>
+                        </th>
+
+                    </tr>
+
+                    <tr>
+                        <th class="text-center fs-10" colspan="3">
+                            SMA CLASSIFICATION REPORT
+                        </th>
+                        <th class="text-center fs-10" colspan="3">
+                            NO DUES ACCOUNTS
+                        </th>
+                        <th class="text-center fs-10" colspan="3">
+                            DUES ACCOUNTS
+                        </th>
+                        <th class="text-center fs-10" colspan="16">
+                            BUCKETWISE DUE ACCOUNTS
+                        </th>
+                    </tr>
+
+                    <tr>
+                        <th class="fs-10">Product</th>
+                        <th class="fs-15">LOAN COUNT</th>
+                        <th class="fs-10">LOAN O/S</th>
+
+                        <th class="fs-10">LOAN COUNT</th>
+                        <th class="fs-10" colspan="2    ">LOAN O/S</th>
+
+                        <th class="fs-10"> LOAN COUNT </th>
+                        <th class="fs-10" colspan="2">LOAN O/S</th>
+
+                        <th class="fs-10" colspan="2" style="background-color: #A5DD9B">SMA-0</th>
+                        <th class="fs-10" colspan="2" style="background-color: #FFDF00;">SMA-1</th>
+                        <th class="fs-10" colspan="2" style="background-color: #ffa500;">SMA-2</th>
+                        <th class="fs-10" colspan="3" style="background-color: #f65d3f;">NPA</th>
+                        <th class="fs-10 p-red" colspan="2">NON-NPA</th>
+                        <th class="fs-10" colspan="2">NON-NPA CROSS</th>
+                        <th class="fs-10">NON-NPA TOTAL</th>
+                        <th class="fs-10" colspan="2">Total</th>
+                    </tr>
+
+                    <tr>
+                        <th class="fs-15"></th>
+                        <th class="fs-15">Number</th>
+                        <th class="fs-15">Crore</th>
+
+                        <th class="fs-15">Number</th>
+                        <th class="fs-15">Crore</th>
+
+                        <th class="fs-15">%</th>
+                        <th class="fs-15">Number</th>
+
+                        <th class="fs-15">Crore</th>
+                        <th class="fs-15">%</th>
+                        <th class="fs-15" style="background-color: #A5DD9B">Count</th>
+                        <th class="fs-15" style="background-color: #A5DD9B">Amt-Cr</th>
+                        <th class="fs-15" style="background-color: #FFDF00;">Count</th>
+                        <th class="fs-15" style="background-color: #FFDF00;">Amt-Cr</th>
+                        <th class="fs-15" style="background-color: #ffa500;">Count</th>
+                        <th class="fs-15" style="background-color: #ffa500;">Amt-Cr</th>
+
+                        <th class="fs-15" style="background-color: #f65d3f;">Count</th>
+                        <th class="fs-15" style="background-color: #f65d3f;">Amt-Cr</th>
+                        <th class="fs-15" style="background-color: #f65d3f;">%</th>
+
+                        <th class="fs-15">Count</th>
+                        <th class="fs-15">Amt-Cr</th>
+
+                        <th class="fs-15">Count</th>
+                        <th class="fs-15">Amt-Cr</th>
+
+                        <th class="fs-15">Amt-Cr</th>
+
+                        <th class="fs-15">Amt-Cr</th>
+                        <th class="fs-15">%</th>
+                    </tr>
+
+                </thead>
+                <tbody id="table-body">
+                </tbody>
+            </table>
+        </div>
+    </div>
+    </div>
+
+    <script>
+        function loadIndex() {
+
+            var root = '';
+            var baselink = '@ViewData["baseurl"]';
+            var id = '@ViewData["HeadName"]';
+
+            if (document.location.hostname == 'localhost') {
+                window.location.href = "/loans/Index?datas=" + id;
+            }
+            else {
+                root = '@ViewData["root"]';
+                domainurl = baselink + root;
+                window.location.href = domainurl + "/loans/Index?datas=" + id;
+            }
+
+        }
+
+
+        function updateDate() {
+            var today = new Date();
+            var formattedDate = today.toLocaleDateString();
+            document.getElementById("date").innerHTML = formattedDate;
+        }
+        // Function to disable future dates
+        function disableFutureDates(dateInputId) {
+            const dateInput = document.getElementById(dateInputId);
+            const today = new Date();
+            dateInput.setAttribute('max', today.toISOString().split('T')[0]);
+        }
+        disableFutureDates("fromDate");
+
+        //fucntion to clear datas
+        function cleart() {
+            const tableBody = document.getElementById('table-body');
+            tableBody.innerHTML = '';
+        }
+
+        //function to change formate of data from yy-mm-dd to dd-FEB-yy
+        function formatDateForAPI(dateString) {
+            // Split the date string into year, month, and day components
+            const [year, monthString, day] = dateString.split("-");
+            // Convert month string to month number (1-based for readability)
+            const month = parseInt(monthString);
+            // Define an object mapping month numbers to uppercase month names
+            const monthNames = {
+                1: "JAN",
+                2: "FEB",
+                3: "MAR",
+                4: "APR",
+                5: "MAY",
+                6: "JUN",
+                7: "JUL",
+                8: "AUG",
+                9: "SEP",
+                10: "OCT",
+                11: "NOV",
+                12: "DEC",
+            };
+
+            // Check if month is valid (1-12)
+            if (month < 1 || month > 12) {
+                return "Invalid month";
+            }
+
+            // Use template literals and monthNames object for formatted output
+            const formattedDate = `${day.padStart(2, "0")}-${monthNames[month]}-${year}`;
+            return formattedDate;
+        }
+
+        //function to round of the total values
+        function roundToTwoDecimals(number) {
+            return Math.round(number * 100) / 100;
+        }
+
+        // Function to create and populate table with data
+        function populateTable(data) {
+            // Get reference to the table body
+            const tableBody = document.getElementById('table-body');
+
+            // Clear existing table rows
+            tableBody.innerHTML = '';
+
+            //initialize varable into zero
+
+            let totalNetWeight = 0;
+            let totalLoanAmount = 0;
+            let totalNoDueCount = 0;
+            let totalNoDueAmount = 0;
+            let totalNoDuePercentage = 0;
+            let totalduenumber = 0;
+            let totaldueamount = 0;
+            let totalduepercentage = 0;
+            let totalSma0Count = 0;
+            let totalSma0Amount = 0;
+            let totalSma1Count = 0;
+            let totalSma1Amount = 0;
+            let totalSma2Count = 0;
+            let totalSma2Amount = 0;
+            let totalNpaCount = 0;
+            let totalNpaAmount = 0;
+            let totalNpaPercentage = 0;
+            let totalNonNpaCount = 0;
+            let totalNonNpaAmount = 0;
+            let totalNonNpaCrossCount = 0;
+            let totalNonNpaCrossAmount = 0;
+            let totalNonNpa = 0;
+            let totalAmount = 0;
+            let totalPercentage = 0;
+            let cellValue24 = 0;
+            let cellValue25 = 0;
+            let cellValue26 = 0;
+            let cellValue27 = 0;
+
+            let total = {
+                TOTAL_PERCENTAGE: 0, TOTAL_PERCENTAGE1: 0, TOTAL_PERCENTAGE2: 0, TOTAL_PERCENTAGE3: 0
+            };
+
+            // Initialize a variable to store the sum
+            const slicedData = data.slice(1);
+            // Iterate over the data and create table rows
+
+            slicedData.forEach(item => {
+
+                const cellValue = parseFloat(item.LOANCOUNT);
+                const cellValue1 = parseFloat(item.LOANAMOUNT);
+                const cellValue2 = parseFloat(item.NODUECOUNT);
+                const cellValue3 = parseFloat(item.NODUEAMOUNT);
+                const cellValue4 = parseFloat(item.NODUEPERCENTAGE);
+                const cellValue5 = parseFloat(item.DUESCOUNT);
+                const cellValue6 = parseFloat(item.DUESAMOUNT);
+                const cellValue7 = parseFloat(item.DUESPERCENTAGE);
+                const cellValue8 = parseFloat(item.SMA0COUNT);
+                const cellValue9 = parseFloat(item.SMA0AMOUNT);
+                const cellValue10 = parseFloat(item.SMA1COUNT);
+                const cellValue11 = parseFloat(item.SMA1AMOUNT);
+                const cellValue12 = parseFloat(item.SMA2COUNT);
+                const cellValue13 = parseFloat(item.SMA2AMOUNT);
+                const cellValue14 = parseFloat(item.NPACOUNT);
+                const cellValue15 = parseFloat(item.NPAAMOUNT);
+                const cellValue16 = parseFloat(item.NPAPERCENTAGE);
+                const cellValue17 = parseFloat(item.NON_NPACOUNT);
+                const cellValue18 = parseFloat(item.NON_NPABALANCE);
+                const cellValue19 = parseFloat(item.NON_NPACONSOLIDATEDCOUNT);
+                const cellValue20 = parseFloat(item.NON_NPACONSOLIDATEDBALANCE);
+                const cellValue21 = parseFloat(item.TOTALNON_NPA);
+                const cellValue22 = parseFloat(item.TOTAL);
+                const cellValue23 = parseFloat(item.TOTALPERCENTAGE);
+
+
+
+
+
+                // Create a new row
+                const row = tableBody.insertRow();
+                row.style.fontSize = "9px";
+                // Insert cells into the row
+                const cell1 = row.insertCell();
+                cell1.style.fontSize = "9px";
+                const cell2 = row.insertCell();
+                cell2.style.fontSize = "9px";
+                const cell3 = row.insertCell();
+                cell3.style.fontSize = "9px";
+                const cell4 = row.insertCell();
+                cell4.style.fontSize = "9px";
+                const cell5 = row.insertCell();
+                cell5.style.fontSize = "9px";
+                const cell6 = row.insertCell();
+                cell6.style.fontSize = "9px";
+                const cell7 = row.insertCell();
+                cell7.style.fontSize = "9px";
+                const cell8 = row.insertCell();
+                cell8.style.fontSize = "9px";
+                const cell9 = row.insertCell();
+                cell9.style.fontSize = "9px";
+                const cell10 = row.insertCell();
+                cell10.style.fontSize = "9px";
+                cell10.style.background = "#A5DD9B";
+                const cell11 = row.insertCell();
+                cell11.style.fontSize = "9px";
+                cell11.style.background = "#A5DD9B";
+                const cell12 = row.insertCell();
+                cell12.style.fontSize = "9px";
+                cell12.style.background = "#F6F192";
+                const cell13 = row.insertCell();
+                cell13.style.fontSize = "9px";
+                cell13.style.background = "#F6F192";
+                const cell14 = row.insertCell();
+                cell14.style.fontSize = "9px";
+                cell14.style.background = "#ffa500";
+                const cell15 = row.insertCell();
+                cell15.style.fontSize = "9px";
+                cell15.style.background = "#ffa500";
+                const cell16 = row.insertCell();
+                cell16.style.fontSize = "9px";
+                cell16.style.background = "#f65d3f";
+                const cell17 = row.insertCell();
+                cell17.style.background = "#f65d3f";
+                cell17.style.fontSize = "9px";
+                const cell18 = row.insertCell();
+                cell18.style.fontSize = "9px";
+                cell18.style.background = "#f65d3f";
+                const cell19 = row.insertCell();
+                cell19.style.fontSize = "9px";
+                const cell20 = row.insertCell();
+                cell20.style.fontSize = "9px";
+                const cell21 = row.insertCell();
+                cell21.style.fontSize = "9px";
+                const cell22 = row.insertCell();
+                cell22.style.fontSize = "9px";
+                const cell23 = row.insertCell();
+                cell23.style.fontSize = "9px";
+                const cell24 = row.insertCell();
+                cell24.style.fontSize = "9px";
+                const cell25 = row.insertCell();
+                cell25.style.fontSize = "9px";
+
+
+                // Add more cells if needed
+
+                // Populate cells with data
+                cell1.textContent = item.PRODUCTNAME;
+                cell2.textContent = item.LOANCOUNT;
+                cell3.textContent = item.LOANAMOUNT;
+
+                cell4.textContent = item.NODUECOUNT;
+                cell5.textContent = item.NODUEAMOUNT;
+                cell6.textContent = item.NODUEPERCENTAGE + "%";
+
+                cell7.textContent = item.DUESCOUNT;
+                cell8.textContent = item.DUESAMOUNT;
+                cell9.textContent = item.DUESPERCENTAGE + "%";
+
+                cell10.textContent = item.SMA0COUNT;
+                cell11.textContent = item.SMA0AMOUNT;
+                cell12.textContent = item.SMA1COUNT;
+                cell13.textContent = item.SMA1AMOUNT;
+                cell14.textContent = item.SMA2COUNT;
+                cell15.textContent = item.SMA2AMOUNT;
+
+                cell16.textContent = item.NPACOUNT;
+                cell17.textContent = item.NPAAMOUNT;
+                cell18.textContent = item.NPAPERCENTAGE + "%";
+
+                cell19.textContent = item.NON_NPACOUNT;
+                cell20.textContent = item.NON_NPABALANCE;
+                cell21.textContent = item.NON_NPACONSOLIDATEDCOUNT;
+                cell22.textContent = item.NON_NPACONSOLIDATEDBALANCE;
+                cell23.textContent = item.TOTALNON_NPA;
+                cell24.textContent = item.TOTAL;
+                cell25.textContent = item.TOTALPERCENTAGE + "%";
+
+                // Update total sum with each item's NET_WEIGHT
+                totalNetWeight += cellValue;
+                totalLoanAmount += cellValue1;
+                totalNoDueCount += cellValue2;
+                totalNoDueAmount += cellValue3;
+                totalNoDuePercentage += cellValue4;
+                totalduenumber += cellValue5;
+                totaldueamount += cellValue6;
+                totalduepercentage += cellValue7;
+                totalSma0Count += cellValue8;
+                totalSma0Amount += cellValue9;
+                totalSma1Count += cellValue10;
+                totalSma1Amount += cellValue11;
+                totalSma2Count += cellValue12;
+                totalSma2Amount += cellValue13;
+                totalNpaCount += cellValue14;
+                totalNpaAmount += cellValue15;
+                totalNpaPercentage += cellValue16;
+                totalNonNpaCount += cellValue17;
+                totalNonNpaAmount += cellValue18;
+                totalNonNpaCrossCount += cellValue19;
+                totalNonNpaCrossAmount += cellValue20;
+                totalNonNpa += cellValue21;
+                totalAmount += cellValue22;
+                totalPercentage += cellValue23;
+
+            });
+
+            total.TOTAL_PERCENTAGE = parseFloat(
+                ((totalNoDueAmount / totalLoanAmount) * 100).toFixed(2)
+            );
+
+            total.TOTAL_PERCENTAGE1 = parseFloat(
+                ((totaldueamount / totalLoanAmount) * 100).toFixed(2));
+
+            total.TOTAL_PERCENTAGE2 = parseFloat(
+                ((totalNpaAmount / totalLoanAmount) * 100).toFixed(2));
+
+            total.TOTAL_PERCENTAGE3 = parseFloat(
+                ((totalAmount / totalLoanAmount) * 100).toFixed(2));
+
+
+
+
+
+            const row1 = tableBody.insertRow();
+            row1.style.fontSize = "9px";
+            const cell1 = row1.insertCell();
+            cell1.style.fontSize = "9px";
+            const cell2 = row1.insertCell();
+            cell2.style.fontSize = "9px";
+            const cell3 = row1.insertCell();
+            cell3.style.fontSize = "9px";
+            const cell4 = row1.insertCell();
+            cell4.style.fontSize = "9px";
+            const cell5 = row1.insertCell();
+            cell5.style.fontSize = "9px";
+            const cell6 = row1.insertCell();
+            cell6.style.fontSize = "9px";
+            const cell7 = row1.insertCell();
+            cell7.style.fontSize = "9px";
+            const cell8 = row1.insertCell();
+            cell8.style.fontSize = "9px";
+            const cell9 = row1.insertCell();
+            cell9.style.fontSize = "9px";
+            const cell10 = row1.insertCell();
+            cell10.style.fontSize = "9px";
+            const cell11 = row1.insertCell();
+            cell11.style.fontSize = "9px";
+            const cell12 = row1.insertCell();
+            cell12.style.fontSize = "9px";
+            const cell13 = row1.insertCell();
+            cell13.style.fontSize = "9px";
+            const cell14 = row1.insertCell();
+            cell14.style.fontSize = "9px";
+            const cell15 = row1.insertCell();
+            cell15.style.fontSize = "9px";
+            const cell16 = row1.insertCell();
+            cell16.style.fontSize = "9px";
+            const cell17 = row1.insertCell();
+            cell17.style.fontSize = "9px";
+            const cell18 = row1.insertCell();
+            cell18.style.fontSize = "9px";
+            const cell19 = row1.insertCell();
+            cell19.style.fontSize = "9px";
+            const cell20 = row1.insertCell();
+            cell20.style.fontSize = "9px";
+            const cell21 = row1.insertCell();
+            cell21.style.fontSize = "9px";
+            const cell22 = row1.insertCell();
+            cell22.style.fontSize = "9px";
+            const cell23 = row1.insertCell();
+            cell23.style.fontSize = "9px";
+            const cell24 = row1.insertCell();
+            cell24.style.fontSize = "9px";
+            const cell25 = row1.insertCell();
+            cell25.style.fontSize = "9px";
+
+
+
+
+            cell1.textContent = "TOTAL:";
+            cell1.style.fontWeight = "900";
+            cell2.textContent = totalNetWeight;
+            cell3.textContent = roundToTwoDecimals(totalLoanAmount);
+            cell4.textContent = roundToTwoDecimals(totalNoDueCount);
+            cell5.textContent = roundToTwoDecimals(totalNoDueAmount);
+            cell6.textContent = total.TOTAL_PERCENTAGE + "%";
+            cell7.textContent = roundToTwoDecimals(totalduenumber);
+            cell8.textContent = roundToTwoDecimals(totaldueamount);
+            cell9.textContent = total.TOTAL_PERCENTAGE1 + "%";
+            cell10.textContent = roundToTwoDecimals(totalSma0Count);
+            cell10.style.background = "#A5DD9B";
+            cell11.textContent = roundToTwoDecimals(totalSma0Amount);
+            cell11.style.background = "#A5DD9B";
+            cell12.textContent = roundToTwoDecimals(totalSma1Count);
+            cell12.style.background = "#F6F192";
+            cell13.textContent = roundToTwoDecimals(totalSma1Amount);
+            cell13.style.background = "#F6F192";
+            cell14.textContent = roundToTwoDecimals(totalSma2Count);
+            cell14.style.background = "#ffa500";
+            cell15.textContent = roundToTwoDecimals(totalSma2Amount);
+            cell15.style.background = "#ffa500";
+            cell16.textContent = roundToTwoDecimals(totalNpaCount);
+            cell16.style.background = "#f65d3f";
+            cell17.textContent = roundToTwoDecimals(totalNpaAmount);
+            cell17.style.background = "#f65d3f";
+            cell18.textContent = total.TOTAL_PERCENTAGE2 + "%";
+            cell18.style.background = "#f65d3f";
+            cell19.textContent = roundToTwoDecimals(totalNonNpaCount);
+            cell20.textContent = roundToTwoDecimals(totalNonNpaAmount);
+            cell21.textContent = roundToTwoDecimals(totalNonNpaCrossCount);
+            cell22.textContent = roundToTwoDecimals(totalNonNpaCrossAmount);
+            cell23.textContent = roundToTwoDecimals(totalNonNpa);
+            cell24.textContent = roundToTwoDecimals(totalAmount);
+            cell25.textContent = total.TOTAL_PERCENTAGE3 + "%";
+        }
+
+        function fetchData(flag,fDate,exportoption)
+        {
+            Fdate = document.getElementById("FromDateSpan");
+            Fdate.innerHTML = fDate;
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+            var indata = flag+'^'+fDate;
+            var data;
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    data = JSON.parse(response);
+                }
+
+            });
+            if (exportoption == '0') {
+                genereateProductReport(data);
+            }
+            else if (exportoption == '1') {
+                genereateExcelNonNPA(data);
+            }
+            else if (exportoption == '2') {
+                genereateExcelSummary(data);
+            }
+            else if (exportoption == '3') {
+                genereateExcelNPA(data);
+            }
+
+        }
+
+        function genereateExcelSummary(data)
+        {
+            const extractedData = data.map(post => [post.PRODUCTNAME, post.LOANCOUNT, post.LOANAMOUNT, post.NODUECOUNT, post.NODUEAMOUNT, post.NODUEPERCENTAGE, post.DUESCOUNT, post.DUESAMOUNT, post.DUESPERCENTAGE, post.SMA0COUNT, post.SMA0AMOUNT, post.SMA1COUNT, post.SMA1AMOUNT, post.SMA2COUNT, post.SMA2AMOUNT, post.NPACOUNT, post.NPAAMOUNT, post.NPAPERCENTAGE, post.NON_NPACOUNT, post.NON_NPABALANCE, post.NON_NPACONSOLIDATEDCOUNT, post.NON_NPACONSOLIDATEDBALANCE, post.TOTALNON_NPA, post.TOTAL, post.TOTALPERCENTAGE]);
+
+            const workbook = XLSX.utils.book_new();
+
+            const worksheet = XLSX.utils.aoa_to_sheet(
+                [['', '', ''], ...extractedData],
+                {
+                    '!cols': [
+                        { autoWidth: true, max: 150 }, // Column A (ID) auto-fit with max 150px
+                        { autoWidth: true, max: 450 }, // Column B (Title) auto-fit with max 450px
+                        { autoWidth: true, max: 750 }  // Column C (Body) auto-fit with max 750px
+                    ],
+                    '!rows': [
+                        { hpx: 90 } // Row 1 (header) height set to 20 pixels
+                    ]
+                }
+            );
+
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'Posts');
+
+            XLSX.writeFile(workbook, 'Summary.xlsx');
+
+            Fdate = document.getElementById("FromDateSpan");
+            Fdate.innerHTML = fDate;
+        }
+        function genereateExcelNonNPA(data)
+        {
+
+                    const extractedData = data.map(post => [post.CUSTOMERID, post.LOANNO, post.LOANBALANCE, post.OVERDUE, post.ACCRUED, post.DUEDATE, post.CATEGORY, post.PRODUCT, post.DPDDAYS, post.PROCESSDATE, post.CROSSPRODUCT, post.MAXNPADT, post.MAXDPD]);
+                    const workbook = XLSX.utils.book_new();
+
+                    const worksheet = XLSX.utils.aoa_to_sheet(
+                        [['', '', ''], ...extractedData],
+                        {
+                            '!cols': [
+                                { autoWidth: true, max: 150 }, // Column A (ID) auto-fit with max 150px
+                                { autoWidth: true, max: 450 }, // Column B (Title) auto-fit with max 450px
+                                { autoWidth: true, max: 750 }  // Column C (Body) auto-fit with max 750px
+                            ],
+                            '!rows': [
+                                { hpx: 90 } // Row 1 (header) height set to 20 pixels
+                            ]
+                        }
+                    );
+
+                    XLSX.utils.book_append_sheet(workbook, worksheet, 'Posts');
+                    XLSX.writeFile(workbook, 'NonNpa.xlsx');
+                    Fdate = document.getElementById("FromDateSpan");
+                    Fdate.innerHTML = fDate;
+        
+        }
+        function genereateExcelNPA(data) {
+            const extractedData = data.map(post => [post.CUSTOMERID, post.LOANNO, post.LOANBALANCE, post.OVERDUE, post.ACCRUED, post.DUEDATE, post.CATEGORY, post.PRODUCT, post.DPDDAYS, post.PROCESSDATE, post.CROSSPRODUCT, post.MAXNPADT, post.MAXDPD]);
+
+            const workbook = XLSX.utils.book_new();
+
+            const worksheet = XLSX.utils.aoa_to_sheet(
+                [['', '', ''], ...extractedData],
+                {
+                    '!cols': [
+                        { autoWidth: true, max: 150 }, // Column A (ID) auto-fit with max 150px
+                        { autoWidth: true, max: 450 }, // Column B (Title) auto-fit with max 450px
+                        { autoWidth: true, max: 750 }  // Column C (Body) auto-fit with max 750px
+                    ],
+                    '!rows': [
+                        { hpx: 90 } // Row 1 (header) height set to 20 pixels
+                    ]
+                }
+            );
+
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'Posts');
+
+            XLSX.writeFile(workbook, 'Npa.xlsx');
+
+            Fdate = document.getElementById("FromDateSpan");
+            Fdate.innerHTML = fDate;
+        }
+        function  genereateProductReport(data)
+             {                          
+                    populateTable(data);
+             }
+
+
+        // Event Listerner For Button Click
+
+        document.getElementById('fetch-button').addEventListener('click', function () {
+            
+            const dateString1 = document.getElementById("fromDate").value;
+            const fDate = formatDateForAPI(dateString1);
+            const flag = 'SMACLASSPRODRPT2';
+            fetchData(flag,fDate,'0');
+        });
+
+        document.getElementById('fetch-button1').addEventListener('click', function () {
+            const dateString1 = document.getElementById("fromDate").value;
+            const fDate = formatDateForAPI(dateString1);
+
+            const flag = 'SMACLASSPRODRPTNONNPA';
+            fetchData(flag, fDate, '1');
+        });
+
+        document.getElementById('fetch-button2').addEventListener('click', function () {
+            const dateString1 = document.getElementById("fromDate").value;
+            const fDate = formatDateForAPI(dateString1);
+
+            const flag = 'SMACLASSPRODRPT2';
+            fetchData(flag, fDate, '2');
+        });
+
+        document.getElementById('fetch-button3').addEventListener('click', function () {
+            const dateString1 = document.getElementById("fromDate").value;
+            const fDate = formatDateForAPI(dateString1);
+
+            const flag = 'SMACLASSPRODRPTNPA';
+            fetchData(flag, fDate, '3');
+        });
+
+
+        //code for validation
+
+        function Validate() {
+
+            var from = document.getElementById("fromDate");
+            if (from.value == "") {
+                //If the "Please Select" option is selected display error.
+                alert("Please select a date");
+                return false;
+            }
+            // img.style.display = "block";
+            return true;
+        }
+
+        //code for showing the table container
+
+        function showContainer() {
+            var dcontainer2 = document.getElementById('dcontainer2');
+            dcontainer2.style.display = 'block';
+
+            var buttonSummary = document.getElementById('fetch-button1');
+            buttonSummary.style.display = "block";
+
+            var buttonNpa = document.getElementById('fetch-button2');
+            buttonNpa.style.display = "block";
+
+
+            var buttonNonNpa = document.getElementById('fetch-button3');
+            buttonNonNpa.style.display = "block";
+        }
+
+        //Code for Exit Button (for hidding the table)
+
+        function unshowContainer() {
+            var dcontainer2 = document.getElementById('dcontainer2');
+            dcontainer2.style.display = 'none';
+
+            var buttonSummary = document.getElementById('fetch-button1');
+            buttonSummary.style.display = "none";
+
+            var buttonNpa = document.getElementById('fetch-button2');
+            buttonNpa.style.display = "none";
+
+
+            var buttonNonNpa = document.getElementById('fetch-button3');
+            buttonNonNpa.style.display = "none";
+
+
+            document.getElementById("fromDate").value = '';
+            document.getElementById("toDate").value = '';
+            document.getElementById("dropdown").selectedIndex = 0;
+
+        }
+
+       //function for getting real time
+
+        function updateTime() {
+
+            const date = new Date();
+            const hours = date.getHours().toString().padStart(2, '0');
+            const minutes = date.getMinutes().toString().padStart(2, '0');
+            const seconds = date.getSeconds().toString().padStart(2, '0');
+            const currentTime = `${hours}:${minutes}:${seconds}`;
+            document.getElementById("time").textContent = currentTime;
+
+        }
+
+        setInterval(updateTime, 1000);
+
+    </script>
+    <script>updateDate();</script>
+
+</body>
+
+</html>

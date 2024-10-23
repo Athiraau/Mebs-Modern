@@ -1,0 +1,633 @@
+﻿@{
+    ViewData["Title"] = "UNPAIDREPORT";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    @*<meta http-equiv="refresh" content="8" />*@
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="~/css/index.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.4/xlsx.full.min.js"></script>
+
+
+
+
+
+
+
+    <style>
+        .pagecontiner {
+            background-color: transparent;
+        }
+
+        .dcontainer1 {
+            background-color: #CADCFC;
+            margin-top: 30px;
+            height: 100%;
+            width: 65%;
+            border-radius: 25px;
+            /* border: 5px solid #132136; */
+            font-size: small;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+            padding: 0;
+        }
+
+        .secondcontainer {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            height: 50%;
+            border-radius: 15px 15px 0px 0px;
+            background-color: #00246B;
+            color: white;
+        }
+
+
+        h5 {
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+            padding: 20px;
+            padding: 20px 110px;
+        }
+
+        label {
+            display: block;
+            /*        font-weight: bold;
+                                                              */
+            font-size: initial;
+        }
+
+        input[type="date"],
+        select {
+            width: 100%;
+            padding: 4px;
+            cursor: pointer;
+            border: 1px solid #ADC;
+            border-radius: 5px;
+        }
+
+
+
+        table {
+            width: 80%;
+            border-collapse: collapse;
+        }
+
+
+
+        th,
+        td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+            font-size: 10px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            font-size: 10px;
+        }
+
+
+        #dcontainer2 {
+            display: none;
+            height: 40%;
+            width: 50%;
+        }
+
+        .btn-grad {
+            background-image: linear-gradient(to right, #4b6cb7 0%, #182848 51%, #4b6cb7 100%);
+            text-transform: uppercase;
+            transition: 0.5s;
+            width: 100px;
+            padding: 6px;
+            background-size: 200% auto;
+            color: white;
+            border-radius: 10px;
+            cursor: pointer;
+            border: none;
+            display: block;
+        }
+
+        .btn-grad1 {
+            background-image: linear-gradient(to right, #4b6cb7 0%, #182848 51%, #4b6cb7 100%);
+            padding: 6px;
+            transition: 0.5s;
+            background-size: 200% auto;
+            cursor: pointer;
+            color: white;
+            border-radius: 10px;
+            border: none;
+            display: none;
+            font-size: 8px;
+        }
+
+
+        .btn-grad:hover {
+            background-position: right center;
+            /* change the direction of the change here */
+            color: #fff;
+            text-decoration: none;
+        }
+
+
+        .fs-10 {
+            font-size: 9px;
+        }
+
+        .fs-15 {
+            font-size: 9px;
+        }
+
+        .p-red {
+            background-color: red;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="pagecontiner">
+        <div class="dcontainer1">
+
+
+            <form>
+                <div class="secondcontainer">
+                    <p style="font-size:large">SURPLUS UNPAID REPORT</p>
+                </div>
+
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            <label for="fromDate" style="font-size:12px">FROM DATE:</label>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            <input type="date" id="frmDate" value="" name="fromDate">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="margin-top:20px;font-size:13px;font-weight:800;">
+                    <div class="col-lg-3">
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-sm-12 ">
+                        <button type="button" id="fetch-button" class="btn-grad"
+                                onclick="Validate();fetchData();showContainer();">
+
+                            SUBMIT
+                        </button>
+                        @* onclick="Validate();();showContainer();cleart();"> *@
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-sm-12">
+                        <button type="button" class=" btn-grad" onclick="loadindex()">EXIT</button>
+                    </div>
+
+                    <!-- <button id="exportExcel" style=" width: 20px;">Export to Excel</button> -->
+
+                </div>
+
+            </form>
+        </div>
+
+
+        <!-- Table -->
+        <div class="mt-5" id="dcontainer2" style="margin-left:272px;">
+
+            <div style="margin-top: 24px;">
+                <button type="button" id="fetchbb" class="btn btn-dark" onclick="">
+                    Export To Excel
+                </button>
+
+            </div>
+
+            <div class="mt-5">
+                <table class="table table-striped table-hover" id="your-table-id">
+                    <thead>
+                        <tr>
+                            <th class="table-secondary text-center text-white" style="background-color: #00246B" colspan="8">
+                                MANAPPURAM FINANCE LIMITED
+                            </th>
+                        </tr>
+
+                        <tr>
+                            <th class="table-secondary text-center" style="background-color:#CADCFC" colspan="8">
+                                SURPLUS UNPAID REPORT
+                            </th>
+                        </tr>
+
+                        @* <tr style="background-color:#808080">
+                        <th colspan="3">
+                        <span id="date" style="font-size:10px; font-weight:bold;"></span>
+                        </th>
+                        <th class="text-center fs-10" colspan="6">
+                        UNPAID REPORT
+                        </th>
+                        <th colspan="3" class="fs-10">
+                        <span id="time" style="font-size:10px; font-weight:bold;"></span>
+                        </th>
+                        </tr> *@
+
+                        <tr style="background-color: #f4f8ff">
+                            <th class="text-center fs-10 text-black">REGION NAME</th>
+                            <th class="text-center fs-10 text-black">CUSTOMER COUNT</th>
+                            <th class="text-center fs-10 text-black">PLEDGE COUNT</th>
+                            <th class="text-center fs-10 text-black">SURPLUS PAYID COUNT</th>
+                            <th class="text-center fs-10 text-black">TOTAL SURPLUS SUM</th>
+                            <th class="text-center fs-10 text-black">SURPLUS AMT SUM</th>
+                            <th class="text-center fs-10 text-black">NET PAY SUM</th>
+                            <th class="text-center fs-10 text-black">ESCROW BANK NAME</th>
+
+                        </tr>
+                    </thead>
+                    <tbody id="table-body1">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+
+
+        //exit
+        function loadindex() {
+
+            var root = '';
+            var baselink = '@ViewData["baseurl"]';
+            var id = '@ViewData["HeadName"]';
+
+            if (document.location.hostname == 'localhost') {
+                window.location.href = "/loans/Index?datas=" + id;
+            }
+            else {
+                root = '@ViewData["root"]';
+                domainurl = baselink + root;
+                window.location.href = domainurl + "/loans/Index?datas=" + id;
+            }
+
+        }
+        //disable futuredate
+        function disableFutureDates(dateInputId) {
+            const dateInput = document.getElementById(dateInputId);
+            const today = new Date();
+            dateInput.setAttribute('max', today.toISOString().split('T')[0]);
+        }
+        disableFutureDates("frmDate");
+
+
+        function ActiveLoginCheck() {
+            var user = '@ViewData["EmpCode"]';
+            if (user == null || user == '') {
+                alert('INACTIVE SESSION');
+                loadindex();
+            }
+
+        }
+        //ACCESSIBILITY
+        window.onload = function OnloadFunction() {
+            ActiveLoginCheck();
+            EmpAccess();
+
+        }
+        function EmpAccess() {
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+
+            const EmpCode = '@ViewData["EmpCode"]';
+
+            indata = "Mebs_Auction" + "^" + "Unpaid_EmpAccess" + "~" + EmpCode;
+
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+                    reqs = response;
+
+
+
+                }
+
+            });
+
+
+            reqs = JSON.parse(reqs);
+            reqs = reqs[0].RESULT;
+
+
+
+
+            if (reqs > 0) {
+                callAPIResponse();
+
+            }
+            else {
+
+                alert("You are not Authorised to do this Job");
+                loadindex();
+            }
+        }
+
+        //code for validation
+
+        function Validate() {
+            var from = document.getElementById("frmDate");
+            if (from.value == "") {
+                //If the "Please Select" option is selected display error.
+                alert("Please select a Fromdate");
+                return false;
+            }
+            // img.style.display = "block";
+            return true;
+        }
+        //code for showing the table container
+
+        function showContainer() {
+            var dcontainer2 = document.getElementById('dcontainer2');
+            dcontainer2.style.display = 'block';
+
+
+        }
+
+        //Code for Exit Button (for hidding the table)
+
+        function unshowContainer() {
+            var dcontainer2 = document.getElementById('dcontainer2');
+            dcontainer2.style.display = 'none';
+
+
+
+
+
+
+        }
+
+        //date fetch
+        function fetchDate() {
+            var getdate = document.getElementById('frmDate').value;
+            // alert(getdate);
+
+            const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+
+            const [year, month, day] = getdate.split("-");
+            const formattedMonth = months[parseInt(month, 10) - 1];
+            const formattedDate = `${day}-${formattedMonth}-${year}`;
+            /// document.getElementById("processDate").innerHTML = formattedDate;
+            return formattedDate;
+        }
+
+        //API
+        function callAPIResponse() {
+
+
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+
+            const dt = fetchDate();
+
+            var dataz;
+            indata = "Mebs_Auction" + "^" + "unpaidreport" + "~" + dt + "*" + 1;
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    const data3 = JSON.parse(response);
+                    populateTable(data3)
+                }
+            });
+        }
+        function fetchData() {
+
+
+            var baselink = '@ViewData["baseurl"]';
+            callAPIResponse();
+
+
+        }
+
+
+        // Function to create and populate table with data
+        function populateTable(data) {
+
+            // Get reference to the table body
+            const tableBody = document.getElementById('table-body1');
+
+            // Clear existing table rows
+            tableBody.innerHTML = '';
+
+
+
+            // Iterate over the data and create table rows
+            data.forEach(item => {
+
+                const cellvalue = parseFloat(item.REG_NAME);
+                const cellvalue1 = parseFloat(item.CUST_ID_COUNT);
+                const cellvalue2 = parseFloat(item.PL_COUNT);
+                const cellvalue3 = parseFloat(item.SURPLUS_PAYID_COUNT);
+                const cellvalue4 = parseFloat(item.TOTAL_SURPLUS_SUM);
+                const cellvalue5 = parseFloat(item.SURPLUS_AMT_SUM);
+                const cellvalue6 = parseFloat(item.NET_PAY_SUM);
+                const cellvalue7 = parseFloat(item.ACC_STATUS);
+
+
+
+
+
+
+
+                // Create a new row
+                const row = tableBody.insertRow();
+
+                // Insert cells into the row
+                const cell1 = row.insertCell();
+                const cell2 = row.insertCell();
+                const cell3 = row.insertCell();
+                const cell4 = row.insertCell();
+                const cell5 = row.insertCell();
+                const cell6 = row.insertCell();
+                const cell7 = row.insertCell();
+                const cell8 = row.insertCell();
+                //const cell9 = row.insertCell();
+
+
+
+                // Add more cells if needed
+
+                // Populate cells with data
+
+                cell1.textContent = item.REG_NAME;
+                cell2.textContent = item.CUST_ID_COUNT;
+                cell3.textContent = item.PL_COUNT;
+                cell4.textContent = item.SURPLUS_PAYID_COUNT;
+                cell5.textContent = item.TOTAL_SURPLUS_SUM;
+                cell6.textContent = item.SURPLUS_AMT_SUM;
+                cell7.textContent = item.NET_PAY_SUM;
+                cell8.textContent = item.ACC_STATUS;
+
+
+            });
+
+        }
+
+
+    </script>
+    <script>
+        document.getElementById('fetchbb').addEventListener('click', function () {
+            //const dateString1 = '@ViewData["SelectedDate"]';
+            // const AId = '@ViewData["Areaid"]';
+            // const fDate = dateString1;
+            dt = fetchDate();
+
+            var fdate = dt;
+            callAPIExcelResponse(fdate);
+        });
+
+
+        function callAPIExcelResponse(fdate) {
+
+            var baselink = '@ViewData["baseurl"]';
+
+            //const input = fdate + '~1';
+
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+
+
+            var dataz;
+            // const data3='';
+            indata = "Mebs_Auction" + "^" + "unpaidreport_excel" + "~" + fdate;
+
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    const data3 = JSON.parse(response);
+                    populateExcel(data3);
+                    // showContainer();
+                }
+            });
+            //return data3;
+        }
+
+
+        function populateExcel(data) {
+
+
+            // Loop and apply regex to each key, also replacing hyphens with underscores
+            const cleanData = data.map(obj => {
+                const newObj = {};
+                Object.keys(obj).forEach(key => {
+                    const cleanedKey = removeQuotesAndHyphens(key).replace(/-/g, '_');
+                    newObj[cleanedKey] = obj[key];
+                });
+                return newObj;
+            });
+
+            const dataStr = JSON.stringify(cleanData); // Stringify with indentation
+            console.log(dataStr);
+
+
+            // Remove hyphens from top-level object keys (if needed)
+            const dataWithoutHyphens = cleanData.map(obj => {
+                const newObj = {};
+                for (const key in obj) {
+                    const cleanedKey = key.replace(/-/g, '_');
+                    newObj[cleanedKey] = obj[key];
+                }
+                return newObj;
+            });
+
+            // Convert to JSON string (optional)
+            const dataString = JSON.stringify(dataWithoutHyphens); // Stringify with indentation
+
+            const data33 = JSON.parse(dataString);
+
+            console.log(data33);
+
+            function removeQuotesRegex(str) {
+                return str.replace(/^'([^']+)'$/, '$1');
+            }
+
+            // Loop and apply regex to each key
+            const clData = data33.map(obj => {
+                const newObj = {};
+                Object.keys(obj).forEach(key => {
+                    newObj[removeQuotesRegex(key)] = obj[key];
+                });
+                return newObj;
+            });
+            const data4 = JSON.stringify(clData);
+
+            console.log(data4);
+
+            const dataWithoutHyphenandQoutes = JSON.parse(data4);
+
+            console.log(data4);
+
+
+
+            const extractedData = dataWithoutHyphenandQoutes.map(post => [post.CUST_ID, post.PL_COUNT, post.SURPLUS_PAY_ID, post.TOTAL_SURPLUS, post.SURPLUS_AMT, post.NET_PAY, post.PLEDGE_SETTLE_DT, post.GEN_DT, post.CUST_NAME, post.BRANCH_ID, post.BRANCH_NAME, post.REG_NAME, post.AREA_NAME, post.ZONE_NAME, post.STATE_NAME, post.REPORT_DT, post.ESCROW_BANK_NAME, post.SURPLUS_STATUS]);
+
+            const workbook = XLSX.utils.book_new();
+
+            const worksheet = XLSX.utils.aoa_to_sheet(
+                [['', '', ''], ...extractedData],
+                {
+                    '!cols': [
+                        { wch: 90 },  // Column A (ID) width set to 10 characters
+                        { wch: 90 }, // Column B (Title) width set to 30 characters
+                        { wch: 90 }  // Column C (Body) width set to 50 characters
+                    ],
+                    '!rows': [
+                        { hpx: 90 } // Row 1 (header) height set to 20 pixels
+                    ]
+                }
+            );
+
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'Posts');
+
+            XLSX.writeFile(workbook, 'surplus unpaid report.xlsx');
+            function removeQuotesRegex(str) {
+                return str.replace(/^'([^']+)'$/, '$1');
+            }
+
+            function removeQuotesAndHyphens(str) {
+                return str.replace(/^'([^']+)-([^']+)'$/, '$1_$2'); // Combine quote and hyphen removal with underscore
+            }
+
+
+        }
+
+    </script>
+</body>
+</html>
+

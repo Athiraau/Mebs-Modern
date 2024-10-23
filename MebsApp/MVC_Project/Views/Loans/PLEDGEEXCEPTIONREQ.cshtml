@@ -1,0 +1,563 @@
+﻿
+@{
+    ViewData["Title"] = "PLEDGEEXCEPTIONREQ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="~/css/index.css">
+    <script src="~/js/site.js"></script>
+
+    <style>
+        .border {
+            background-color: #a3e4d7;
+            width: 782px;
+            height: 776px;
+        }
+
+        .d-flex {
+            background-color: #ba4a00;
+            font-weight: 500;
+            color: white;
+            height: 50px;
+            width: 780px;
+        }
+
+        .row {
+            margin-top: 27px;
+            width: 780px;
+            font-size: 15px
+        }
+
+        .col-md-6 {
+            font-display: auto;
+            font-weight: 500;
+            font-family: Arial;
+            font-size: medium;
+        }
+
+        .form-group {
+            margin-left: 165px;
+            margin-top: 44px;
+            width: 780px;
+            margin-left: 3px;
+            margin-top: 70px;
+        }
+
+        .alert-info {
+            background-color: #d6dbdf;
+            width: 150px;
+        }
+
+        .form-group1 {
+            margin-left: 170px;
+        }
+
+        .btn {
+            /*   background-image: linear-gradient(to right, #7C8363 0%, #31473A 51%, #EDF4F2 100%); */
+            background-color: #ba4a00;
+            text-transform: uppercase;
+            transition: 0.5s;
+            padding: 10px;
+            background-size: 200% auto;
+            color: white;
+            border-radius: 10px;
+            border: none;
+            display: block;
+            width: 191px;
+        
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        }
+
+        .subrow {
+            margin-top: 20px;
+            font-size: 13px;
+            font-weight: 800;
+            margin-left: -155px;
+        }
+        #pledge
+        {
+            width: 266px;
+            margin-left: -20px;
+        }
+
+        #pls
+        {
+            margin-left: 74px;
+            width: 257px;
+        }
+        .col-sm-4
+        {
+            margin-left: 24px;
+        
+            font-size: 13px;
+        }
+        .col-sm-5
+        {
+            margin-left: -179px;
+            font-size: 13px;
+        }
+        #remks
+        {
+            margin-left: 36px;
+            width: 264px;
+        }
+        .col-sm-6
+        {
+            margin-left: -18px;
+        }
+
+       
+    </style>
+
+</head>
+
+
+
+<body>
+    <div class="border">
+        <div class="d-flex justify-content-center align-items-center">
+            <span class="text-center">PLEDGE EXCEPTION REMOVAL-REQUEST </span>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md-6  text-center">
+                <label for="pledges" >Enter Pledge Number :</label>
+            </div>
+            <div class="col-md-3 col-12 text-center">
+                <input type="text" id="pledge" class="alert-info" onkeypress="return isnumeric(event)" onchange="callAPIResponse3()" MaxLength="16" />
+            </div>
+        </div>
+        <div class="form-group row" align="center">
+            <span class="col-sm-3 col-form-label form-label">Own Branch:</span>
+            <div class="col-sm-3">
+                <input type="text" id="ownbr" class="alert-info" readonly="readonly"   />
+            </div>
+
+            <span class="col-sm-3 col-form-label form-label">Received Branch:</span>
+            <div class="col-sm-3">
+                <input type="text" id="recbr" class="alert-info" readonly="readonly" />
+            </div><br />
+
+        </div>
+
+        <div class="form-group row" align="center">
+            <span class="col-sm-3 col-form-label form-label">Gross weight:</span>
+            <div class="col-sm-3">
+                <input type="text" id="gwt" class="alert-info" readonly="readonly" />
+            </div>
+            <span class="col-sm-3 col-form-label form-label">Stone weight:</span>
+            <div class="col-sm-3">
+                <input type="text" id="swt" class="alert-info" readonly="readonly" />
+            </div>
+        </div>
+
+        <div class="form-group row" align="center">
+            <span class="col-sm-3 col-form-label form-label">Net weight:</span>
+            <div class="col-sm-3">
+                <input type="text" id="nwt" class="alert-info" readonly="readonly" />
+            </div>
+            <span class="col-sm-3 col-form-label form-label">Standard  weight:</span>
+            <div class="col-sm-3">
+                <input type="text" id="st" class="alert-info" readonly="readonly" />
+            </div>
+
+            </div>
+            <div class="form-group row" align="center">
+                <span class="col-sm-4 col-form-label form-label">Pledge  Current Status:</span>
+                <div class="col-sm-3">
+                    <input type="text" id="pls" class="alert-info" readonly="readonly" />
+                </div>
+
+                <div class="form-group1 row" align="center">
+                <span class="col-sm-5 col-form-label form-label" style="margin-left: -179px;">Enter Removal Remarks:</span>
+                    <div class="col-sm-3">
+                    <input type="text" id="remks" class="alert-info" MaxLength="1000" />
+                    </div>
+
+
+                    <div class="form-container">
+                        <div class="form-group row">
+                            <div class="col-sm-5" id="data" style="margin-left: -144px;">
+                            <button class="btn" onclick="SubmitForm() ">Request</button>
+                            </div>
+                            <div class="col-sm-6" id="app">
+                            <button class="btn" onclick="loadIndex()">Exit</button>
+                            </div>
+                        
+                        </div>
+                    </div>
+                </div>
+            <script>
+
+
+                function ActiveLoginCheck() {
+                    var user = '@ViewData["EmpCode"]';
+                    if (user == null || user == '') {
+                        alert('INACTIVE SESSION');
+                        loadIndex();
+                    }
+
+                }
+
+
+                window.onload = function OnloadFunction() {
+                    ActiveLoginCheck();
+                    checkUserAccess();
+                }
+
+
+
+                function checkUserAccess() {
+
+                    var ecode = '@ViewData["EmpCode"]';
+                    var _link = '';
+                    if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+                    else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+
+
+                    var indata = 'Mebs_Auction' + '^' + 'pldexaccess' + '~' + ecode;
+
+                    const a = "";
+                    $.ajax({
+                        type: "GET",
+                        url: _link,
+                        data: { datas: indata },
+                        async: false,
+                        success: function (response) {
+                            res = response;
+
+
+                        },
+                        error: function (response) {
+
+
+                        }
+                    });
+
+                    res = JSON.parse(res);
+                    res = res[0].RESULT;
+
+                    if (res != 1) {
+                        alert("You are not authorized to view this page...");
+                        loadIndex();
+                    }
+
+
+                }
+
+
+                function isnumeric(event) {
+                    
+                    var keyCode = (event.which) ? event.which : event.keyCode
+                    if ((keyCode >= 48 && keyCode <= 57) || keyCode == 8 || keyCode == 127 || keyCode == 46) {
+                        return true;
+                    }
+                    else {
+                        return false;
+                    }
+                }
+
+            function validatefunction()
+            {
+                    var pledgeno = document.getElementById("pledge").value;
+                    var removal = document.getElementById("remks").value;
+                    if (pledgeno === "") {
+                        alert("Please Enter a PledgeNumber.");
+                        return 0;
+                    }
+
+                    if (removal === "") {
+                        alert("Please Enter Removal Reason.");
+                        return 0;
+                    }
+
+                return 1;
+             }
+
+                function loadIndex() {
+
+                    var root = '';
+                    var baselink = '@ViewData["baseurl"]';
+                    var id = '@ViewData["HeadName"]';
+
+                    if (document.location.hostname == 'localhost') {
+                        window.location.href = "/loans/Index?datas=" + id;
+                    }
+                    else {
+                        root = '@ViewData["root"]';
+                        domainurl = baselink + root;
+                        window.location.href = domainurl + "/loans/Index?datas=" + id;
+                    }
+
+                }
+
+                function callAPIResponse3()
+                {
+                    var _link = '';
+                    if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+                    else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+                    var pledgeno = document.getElementById("pledge").value;
+                    const Empcode = '@ViewData["Empcode"]';
+                    indata = 'Mebs_Auction' + '^' +'pldalr'+ '~' + pledgeno;
+                    var response = '';
+                    $.ajax({
+                        type: "GET",
+                        url: _link,
+                        data: { datas: indata },
+                        async: false,
+                        success: function (response) {
+                            reqs = response;
+
+                            
+                            
+                        }
+
+                    });
+                    reqs = JSON.parse(reqs);
+                    reqs = reqs[0].RESULT;
+                   
+                   
+
+                    if (reqs ==1)
+                    {
+                       
+                        alert('Already Requested');
+                        pledgeRemove();
+                      
+                    }
+
+                   
+                    else if (reqs == 2) 
+                    {
+                        callAPIResponse();
+                    }
+                    else 
+                    {
+                        alert('Not Eligible for this removal process');
+                        pledgeRemove();
+
+                    }
+                }
+
+
+                
+
+
+
+                function callAPIResponse() {
+                    var _link = '';
+                    if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+                    else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+                    var pledgeno = document.getElementById("pledge").value;
+                    const Empcode = '@ViewData["Empcode"]';
+          
+                     
+
+                    var dataz;
+                    indata = 'Mebs_Auction'+ '^' +"pldexreq" + "~" + pledgeno + "*" + Empcode ;
+                    var response = '';
+                    $.ajax({
+                        type: "GET",
+                        url: _link,
+                        data: { datas: indata },
+                        async: false,
+                        success: function (response) {
+
+                            const data3 = JSON.parse(response);
+                           
+                           
+                            loadDatadd(data3);
+                             callAPIResponse1();
+                        },
+                            error: function (response) {
+                               
+                            }
+                        });
+                   
+
+                   
+                }
+
+                function loadDatadd(data) {
+
+
+
+
+                    data.forEach(item => {
+
+
+                       
+                        document.getElementById('ownbr').value = item.OWNBR;
+                        document.getElementById('recbr').value = item.RECBR;
+                        document.getElementById('gwt').value = item.GROSSWT;
+                        document.getElementById('swt').value = item.STONEWT;
+                        document.getElementById('nwt').value = item.NETWT;
+                        document.getElementById('st').value = item.STDWT;
+                       
+              
+
+
+
+
+
+
+                    });
+
+
+                }
+
+               
+
+
+
+
+                function callAPIResponse1() {
+                    var _link = '';
+                    if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+                    else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+
+                    var pledgeno = document.getElementById("pledge").value;
+                  
+
+
+                    var dataz;
+
+                    indata = 'Mebs_Auction' + '^' +"pldexrem" + "~" + pledgeno;
+                    var response = '';
+                    $.ajax({
+                        type: "GET",
+                        url: _link,
+                        data: { datas: indata },
+                        async: false,
+                        success: function (response) {
+
+                          
+                            
+                            rem = response;
+                           
+                        },
+                        error: function (response) {
+                            
+                        }
+                    });
+
+                    rem = JSON.parse(rem);
+                    rem = rem[0].RESULT;
+                    
+                  
+                    document.getElementById('pls').value = rem;
+                  
+                }
+
+                
+
+
+
+
+                function SubmitForm() 
+                {
+                     var s1 = validatefunction();
+
+                    if (!s1 == 1) {
+
+                        return;
+                    }
+
+
+                    const EmpCode = '@ViewData["EmpCode"]';
+
+                    const brID = '@ViewData["BrID"]';
+
+
+                    var pledgeno = document.getElementById("pledge").value;
+
+                    var removal = document.getElementById("remks").value;
+
+                    var rem = document.getElementById('pls').value
+
+
+
+                    var indata = EmpCode + "~" + brID + "~" + pledgeno + "~" + removal + "~" + rem;
+
+                    PostDataAPICall(indata);
+                }
+
+                   
+
+                   function PostDataAPICall(indata) {
+
+                   
+                   
+                   var _link = '';
+                    if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+                    else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+
+
+                    indata = 'pldexsubmit' + '^' + indata;
+                    
+                    const a = "";
+                    $.ajax({
+                        type: "GET",
+                        url: _link,
+                        data: { datas: indata },
+                        async: false,
+                        success: function (response) 
+                        {
+
+
+                            sl = response;
+                            
+
+                        },
+                        error: function (response) 
+                        {
+                           
+                        }
+                    });
+                   
+                    sl = JSON.parse(sl);
+                    sl = sl[0].RESULT;
+                    
+                        alert(sl);
+                        resetForm();
+                    
+
+                 
+                }
+
+                function pledgeRemove()
+                {
+                        document.getElementById("pledge").value = "";
+                }
+
+
+
+                function resetForm() {
+                    var root = '';
+                    var baselink = '@ViewData["baseurl"]';
+                    var id = '@ViewData["HeadName"]';
+
+                    if (document.location.hostname == 'localhost') {
+                        window.location.href = "/Loans/PLEDGEEXCEPTIONREQ?datas=" + id;
+                    }
+                    else {
+                        root = '@ViewData["root"]';
+                        domainurl = baselink + root;
+                        window.location.href = domainurl + "/Loans/PLEDGEEXCEPTIONREQ?datas=" + id;
+                    }
+
+
+                }
+
+            
+               
+
+
+</script>
+</body>
+</html>
+
+

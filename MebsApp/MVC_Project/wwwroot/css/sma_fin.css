@@ -1,0 +1,129 @@
+﻿
+.first-div {
+    background-color: #cfd8dc;
+    margin-top: 30px;
+    height: 180px;
+    width: 65%;
+    border-radius: 25px;
+    /* border: 5px solid #132136; */
+    font-size: small;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+}
+.btn-grad {
+    background-image: linear-gradient(to right, #4b6cb7 0%, #182848 51%, #4b6cb7 100%);
+    text-transform: uppercase;
+    transition: 0.5s;
+    padding: 6px;
+    background-size: 200% auto;
+    color: white;
+    border-radius: 10px;
+    border: none;
+    display: block;
+    width: 15%;
+    font-size:12px;
+}
+
+.platypi {
+    font-family: "Platypi", serif;
+    font-optical-sizing: auto;
+    font-weight: bold;
+    font-style: normal;
+    border: 5px solid red;
+}
+
+
+
+table {
+    /*  border: 1px solid black; */
+    /* font-size: 6px; */
+    border-color: black;
+    text-align: center;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+}
+
+th {
+    font-size: 12px;
+    border: 1px solid black;
+    font-weight: 400;
+    border-color: black;
+}
+
+
+.secondcontainer {
+    display: flex;
+    justify-content: center;    
+    width: auto;
+    height: 50px;
+    border-radius: 15px 15px 0px 0px;
+    background-color: #1e3657;
+    color: white;
+}
+
+
+.h3 {
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-left: auto;
+    font-size: 16px;
+}
+
+.thirdcontainer {
+    display: flex;
+    margin-top: 20px;
+    align-items: center;
+    justify-content: center;
+}
+
+/*      button {
+                    margin: 10px;
+                    width: 110px;
+                    border-radius: 10px;
+                    color: white;
+                    background-color: #132136;
+                }
+        */
+
+input[type="date"] {
+    margin-top: 20px;
+    align-items: center;
+    justify-content: center;
+    margin-left: 20px;
+}
+
+.text1 {
+    font-size: 10px;
+    text-align: center;
+    font-weight: bold;
+}
+
+/*     .con {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    margin-top: 20px;
+                }
+        */
+.maindiv {
+    margin-top: 100px;
+}
+
+#firstdate {
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-right: auto;
+}
+
+.c1 {
+    background-color: #dbe2ef;
+}
+
+#showfloat {
+    position: fixed;
+    bottom: 100px;
+    right: 100px;
+    border-radius: 25px;
+}
+
+#table-body {
+    font-size: 12px;
+}

@@ -1,0 +1,813 @@
+﻿@{
+    ViewData["Title"] = "BAREPORT";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    @*<meta http-equiv="refresh" content="8" />*@
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="~/css/index.css">
+
+    <style>
+
+
+        .card {
+            width: 100%;
+            max-width: 500px;
+            margin: auto;
+            height: 250px;
+            box-shadow: 3px 4px 8px;
+            border-radius: 8px;
+            background-color: #EDF1D6;
+        }
+
+        .card-header {
+            background: #44A08D; /* fallback for old browsers */
+            background: -webkit-linear-gradient(to left, #093637, #44A08D); /* Chrome 10-25, Safari 5.1-6 */
+            background: linear-gradient(to left, #093637, #44A08D); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+            color: white;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .card-body {
+            display: flex;
+            align-items: center;
+        }
+
+        .main {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-evenly;
+        }
+
+        .inner {
+            width: 100%;
+            max-width: 400px;
+            height: 180px;
+            margin: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+        }
+
+        input {
+            width: 180px;
+            height: 25px;
+        }
+
+        select {
+            width: 180px;
+            height: 25px;
+            appearance: none;
+            border: none;
+            border: 1px solid #adaaaa;
+            border-radius: 2px;
+            background-color: white;
+        }
+
+        .form-control {
+            font-size: 11px;
+        }
+
+
+        .label1 {
+            font-size: 12px;
+            width: 100px;
+        }
+
+        .btn1 {
+            width: 75px;
+            height: 30px;
+            border: none;
+            border-radius: 35px;
+            background-color: #44A08D;
+            background-image: linear-gradient(90deg, #44A08D, #093637);
+            color: white;
+            transition: 0.5s;
+        }
+
+
+            .btn1:hover {
+                background-color: #EDF1D6;
+                background: #EDF1D6;
+                color: #44A08D;
+                border: 1px solid #44A08D;
+                width: 90px;
+            }
+
+
+
+
+        .btn2 {
+            width: 130px;
+            height: 33px;
+            border: none;
+            border-radius: 35px;
+            background-color: #131842;
+            color: white;
+            transition: 0.5s;
+            font-size: 13px;
+        }
+
+            .btn2:hover {
+                background-color: transparent;
+                color: #131842;
+                border: 1px solid #131842;
+                width: 150px;
+            }
+
+        .button_div {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .scd {
+            margin-right: 25px;
+        }
+
+
+        .dcontainerone {
+            width: 890px;
+            display: none;
+        }
+
+        .dcontainertwo {
+            width: 890px;
+            display: none;
+        }
+
+        th {
+            font-size: 11px;
+        }
+
+        #excel_exit {
+            display: none;
+        }
+
+        .fs {
+            font-size: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="pagecontiner">
+        <div class="container">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h6>BA REPORT</h6>
+
+                </div>
+                <div class="card-body">
+                    <div class="inner">
+
+                        <div class="row main">
+
+                            <div class="col-auto">
+                                <label for="from" class="label1"> FROM</label>
+                            </div>
+
+                            <div class="col-12 col-sm-6">
+                                <input type="date" class="form-control" id="from" />
+                            </div>
+
+                        </div>
+
+                        <div class="row main">
+                            <div class="col-auto">
+                                <label for="to" class="label1">TO</label>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <input type="date" class="form-control" id="to" />
+                            </div>
+                        </div>
+                        <div class="row main">
+                            <div class="col-auto">
+                                <label class="label1">TYPE</label>
+
+                            </div>
+
+                            <div class="col-12 col-sm-6">
+                                <select class="form-control" id="type">
+                                    <option value="">Select Option</option>
+                                    <option value="1" id="1">BA Details</option>
+                                    <option value="2" id="2">Customer</option>
+                                </select>
+                            </div>
+                        </div><br /><br />
+
+                        <div class="button_div">
+                            <button class="btn1 scd" onclick="ConfirmFunction()"> Confirm</button>
+                            <button class="btn1" onclick=" loadIndex()"> Exit</button>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <br />
+
+        <div class="text-center" id="excel_exit">
+            @*  <div class="col-lg-6 col-md-6 mb-3"> *@
+            <button class="btn2 scd" id="excel" onclick="ExportToExcel();">Export to Excel</button>
+            <button class="btn2" id="exit" onclick="UnshowContainer()">Exit</button>
+
+            @*  </div> *@
+
+        </div>
+
+        <br /><br />
+
+        <div class="dcontainerone" id="tcontainer1" style="overflow: auto;">
+            <table class="table  table-striped table-hover fs" id="ba_table">
+                <thead>
+                    <tr>
+                        <th class="text-center" style="background-color: #55AD9B; font-size:15px" colspan="10">MANAPPURAM FINANCE LIMITED</th>
+                    </tr>
+                    <tr id="tr_row">
+
+                        <th class="text-center" colspan="10" style="background-color:  #95D2B3; ">
+                            <span id="branch_name"></span> --  <span id="branch_id"></span>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th class="text-center" colspan="10" style="background-color:  #D8EFD3;">
+                            BA DETAILS REPORT FROM  : <span id="FromDateSpan" style="margin-right: 15px;"></span>   TO  :
+                            <span id="ToDateSpan"></span>
+                        </th>
+                    </tr>
+
+                    <tr style="background-color: #95D2B3;">
+                        <th>BRID</th>
+                        <th>BRANCH NAME</th>
+                        <th>BA CODE</th>
+                        <th>BA NAME</th>
+                        <th>PHONE</th>
+                        <th>AREA NAME</th>
+                        <th>REG NAME</th>
+                        <th>ENTER DATE</th>
+                        <th>BACAT</th>
+                        <th>BAINCV</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody1">
+                </tbody>
+            </table>
+
+        </div>
+
+        <div class="dcontainertwo" id="tcontainer2" style="overflow: auto;">
+            <table class="table  table-striped table-hover fs" id="cus_table">
+                <thead>
+                    <tr>
+                        <th style="background-color:#61BBA2; font-size:15px" class="text-center" colspan="14">MANAPPURAM FINANCE LIMITED</th>
+                    </tr>
+                    <tr>
+                        <th class="text-center" colspan="14" style="background-color:  #9CDBA6; ">
+                            <span id="br_name"></span> --  <span id="br_id"></span>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th class="text-center" colspan="14" style="background-color:  #DEF9C4;">
+                            BA CUSTOMER REPORT FROM  : <span id="FromDate" style="margin-right: 15px;"></span>   TO  :
+                            <span id="ToDate"></span>
+                        </th>
+                    </tr>
+
+                    <tr style="background-color: #9CDBA6;">
+                        <th>BRID</th>
+                        <th>BRANCH NAME</th>
+                        <th>BA CODE</th>
+                        <th>BA NAME</th>
+                        <th>CUSTOMER ID</th>
+                        <th>NAME</th>
+                        <th>CONVERT DATE</th>
+                        <th>LEAD DATE</th>
+                        <th>AVGLEAD CONVERTED DAYS</th>
+                        <th>NET WEIGHT</th>
+                        <th>AREA NAME</th>
+                        <th>REG NAME</th>
+                        <th>BACAT</th>
+                        <th>BAINCV</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody2">
+                </tbody>
+            </table>
+
+        </div>
+
+
+    </div>
+    <script>
+
+
+        function ConfirmFunction() {
+
+
+            var type = document.getElementById("type");
+            var res = Validate();
+
+            if (res == true) {
+                fetchDate();
+                fetchDate1();
+
+
+                if (type.value === "1") {
+
+                    callAPIResponse1();
+                    callAPIResponse3();
+
+                }
+                else {
+                    callAPIResponse2();
+                    callAPIResponse3();
+                }
+
+
+            }
+
+        }
+
+
+        window.onload = function OnloadFunction() {
+
+            var a = callAPIResponse();
+
+            if (a == 0) {
+
+                alert('YOU ARE NOT AUTHORIZED TO VIEW THIS PAGE.. ');
+
+                loadIndex();
+            }
+
+
+        }
+
+
+    </script>
+
+    <script>
+
+        function callAPIResponse3() {
+
+            //USER CHECK-----------------------
+            const EmpCode = '@ViewData["EmpCode"]';
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/LOANS/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/LOANS/getAPIData"; }
+
+            var result;
+
+            indata = "GETEMPDETAILS" + "^" + EmpCode;
+
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    const data2 = JSON.parse(response);
+                    populateRow(data2)
+
+                    // result = response;
+                },
+                error: function (response) {
+                    alert("failed");
+                }
+            });
+
+
+        }
+
+
+        function populateRow(data) {
+
+            const branch_name = document.getElementById('branch_name');
+            const branch_id = document.getElementById('branch_id');
+
+            const br_name = document.getElementById('br_name');
+            const br_id = document.getElementById('br_id');
+
+
+            // Clear existing value
+
+            branch_name.innerHTML = '';
+            branch_id.innerHTML = '';
+
+            br_name.innerHTML = '';
+            br_id.innerHTML = '';
+
+
+            data.forEach(item => {
+                // Create a new item
+
+                branch_name.textContent = "Branch Name : " + item.BRANCH_NAME;
+                branch_id.textContent = "Branch ID : " + item.BRANCH_ID;
+
+                br_name.textContent = "Branch Name : " + item.BRANCH_NAME;
+                br_id.textContent = "Branch ID : " + item.BRANCH_ID;
+
+
+            });
+        }
+
+
+        function callAPIResponse() {
+
+            //USER CHECK-----------------------
+            const EmpCode = '@ViewData["EmpCode"]';
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/LOANS/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/LOANS/getAPIData"; }
+
+            var result;
+            indata = "BARPT_USERACCESS" + "^" + EmpCode;
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                
+                    result = response;
+                },
+                error: function (response) {
+                    alert("failed");
+                }
+            });
+
+            result = result.replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, ''); 
+            result = result.replace("]", " ");
+            result = result.replace("[", " ");
+            result = result.replace("RESP", "");
+
+            return result;
+        }
+
+
+        function callAPIResponse1() {
+
+
+            //USER CHECK-----------------------
+            const EmpCode = '@ViewData["EmpCode"]';
+
+           
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/LOANS/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/LOANS/getAPIData"; }
+
+
+            var fromdate = document.getElementById("from");
+            var todate = document.getElementById("to");
+
+            var fdate = fetchDate(fromdate);
+            var tdate = fetchDate1(todate);
+
+
+            var result;
+
+            indata = "BAREPORT_LOAD" + "^" + EmpCode + "~" + 1 + "~" + fdate + "~" + tdate; 
+
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    const data = JSON.parse(response);
+                    populateTable1(data);
+                    result = response;
+                },
+                error: function (response) {
+                    alert("failed");
+                }
+            });
+
+
+        }
+
+        function callAPIResponse2() {
+
+            //USER CHECK-----------------------
+            const EmpCode = '@ViewData["EmpCode"]';
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/LOANS/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/LOANS/getAPIData"; }
+
+            var fromdate = document.getElementById("from");
+            var todate = document.getElementById("to");
+            var fdate = fetchDate(fromdate);
+            var tdate = fetchDate1(todate);
+             var result;
+
+            indata = "BAREPORT_LOAD" + "^" + EmpCode + "~" + 2 + "~" + fdate + "~" + tdate;  // 2 - customer
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    const data = JSON.parse(response);
+                    // 
+                    populateTable2(data);
+                    result = response;
+                },
+                error: function (response) {
+                    alert("failed");
+                }
+            });
+
+
+        }
+
+        function UnshowContainer() {
+            var dcontainer2 = document.getElementById('tcontainer1');
+            dcontainer2.style.display = 'none';
+            var dcontainer2 = document.getElementById('tcontainer2');
+            dcontainer2.style.display = 'none';
+            var EXCEL_EXIT = document.getElementById('excel_exit');
+            EXCEL_EXIT.style.display = 'none';
+
+        }
+
+
+        var currentDate = new Date();
+
+        var dateInput = document.getElementById("from");
+        var dateInput1 = document.getElementById("to");
+        dateInput.max = currentDate.toISOString().slice(0, 10);
+        dateInput1.max = currentDate.toISOString().slice(0, 10);
+
+
+
+        //-------------validation---------------//
+
+        function Validate() {
+            var from = document.getElementById("from");
+            var to = document.getElementById("to");
+            var type = document.getElementById("type");
+
+            if (from.value === "") {
+                alert("Please select a From date");
+                return false;
+            } else {
+                var fromDate = new Date(from.value);
+                var currentDate = new Date();
+
+                if (fromDate > currentDate) {
+                    alert("From date must be less than or equal to the current date");
+                    return false;
+                } else if (to.value === "") {
+                    alert("Please select a To date");
+                    return false;
+                } else {
+                    var toDate = new Date(to.value);
+
+                    if (toDate < fromDate) {
+                        alert("To date must be greater than or equal to From date");
+                        return false;
+                    } else if (toDate > currentDate) {
+                        alert("To date must be less than or equal to the current date");
+                        return false;
+                    } else if (type.value === "") {
+                        alert("Please select an option!");
+                        return false;
+                    } else {
+                        if (type.value === "1") {
+                            var dcontainer1 = document.getElementById('tcontainer1');
+                            dcontainer1.style.display = 'block';
+                            var dcontainer2 = document.getElementById('tcontainer2');
+                            dcontainer2.style.display = 'none';
+                            var EXCEL_EXIT = document.getElementById('excel_exit');
+                            EXCEL_EXIT.style.display = 'block';
+
+
+                        } else if (type.value === "2") {
+                            var dcontainer1 = document.getElementById('tcontainer1');
+                            dcontainer1.style.display = 'none';
+                            var dcontainer2 = document.getElementById('tcontainer2');
+                            dcontainer2.style.display = 'block';
+                            var EXCEL_EXIT = document.getElementById('excel_exit');
+                            EXCEL_EXIT.style.display = 'block';
+                        }
+                        return true;
+                    }
+                }
+            }
+        }
+
+        // BA details table
+
+        function populateTable1(data) {
+
+            // Get reference to the table body
+            const tableBody = document.getElementById('tbody1');
+
+            // Clear existing table rows
+            tableBody.innerHTML = '';
+
+            data.forEach((item, index) => {
+                // Create a new row
+
+                const row = tableBody.insertRow();
+
+                if (index % 2 === 0) {
+                    row.style.backgroundColor = '#D8EFD3'; // Even rows
+                } else {
+                    row.style.backgroundColor = '#F1F8E8'; // Odd rows
+                }
+
+                // Insert cells into the row
+                const cell1 = row.insertCell();
+                const cell2 = row.insertCell();
+                const cell3 = row.insertCell();
+                const cell4 = row.insertCell();
+                const cell5 = row.insertCell();
+                const cell6 = row.insertCell();
+                const cell7 = row.insertCell();
+                const cell8 = row.insertCell();
+                const cell9 = row.insertCell();
+                const cell10 = row.insertCell();
+
+
+                cell1.innerHTML = item.BRID;
+                cell2.innerHTML = item.BRANCH_NAME;
+                cell3.innerHTML = item.BA_CODE;
+                cell4.innerHTML = item.BA_NAME;
+                cell5.innerHTML = item.PHONE;
+                cell6.innerHTML = item.AREA_NAME;
+                cell7.innerHTML = item.REG_NAME;
+                cell8.innerHTML = item.ENTER_DATE;
+                cell9.innerHTML = item.BACAT;
+                cell10.innerHTML = item.BAINCV;
+
+            });
+        }
+
+
+        // BA customer table
+
+        function populateTable2(data) {
+            // 
+            // Get reference to the table body
+            const tableBody = document.getElementById('tbody2');
+
+            // Clear existing table rows
+            tableBody.innerHTML = '';
+
+            data.forEach((item, index) => {
+                // Create a new row
+
+                const row = tableBody.insertRow();
+
+
+                if (index % 2 === 0) {
+                    row.style.backgroundColor = '#ddffe1'; // Even rows
+                } else {
+                    row.style.backgroundColor = '#edfff0'; // Odd rows
+                }
+
+
+                // Insert cells into the row
+                const cell1 = row.insertCell();
+                const cell2 = row.insertCell();
+                const cell3 = row.insertCell();
+                const cell4 = row.insertCell();
+                const cell5 = row.insertCell();
+                const cell6 = row.insertCell();
+                const cell7 = row.insertCell();
+                const cell8 = row.insertCell();
+                const cell9 = row.insertCell();
+                const cell10 = row.insertCell();
+                const cell11 = row.insertCell();
+                const cell12 = row.insertCell();
+                const cell13 = row.insertCell();
+                const cell14 = row.insertCell();
+
+
+                cell1.innerHTML = item.BRANCH_ID;
+                cell2.innerHTML = item.BRANCH_NAME;
+                cell3.innerHTML = item.BA_CODE;
+                cell4.innerHTML = item.BA_NAME;
+                cell5.innerHTML = item.CUSTOMER_ID;
+                cell6.innerHTML = item.NAME;
+                cell7.innerHTML = item.CONVERT_DATE;
+                cell8.innerHTML = item.LEAD_DATE;
+                cell9.innerHTML = item.AVG_LEADS_CONVERTED_DAYS;
+                cell10.innerHTML = item.NET_WEIGHT;
+                cell11.innerHTML = item.AREA_NAME;
+                cell12.innerHTML = item.REG_NAME;
+                cell13.innerHTML = item.BACAT;
+                cell14.innerHTML = item.BAINCV;
+
+            });
+        }
+
+
+
+
+        //  Export to Excel
+
+
+
+        function ExportToExcel() {
+            
+            selectedType = document.getElementById("type").value;
+            a = selectedType;
+            if (selectedType === "1") {
+                var elt = document.getElementById('ba_table');
+                var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
+                XLSX.writeFile(wb, 'BA DETAILS REPORT.xlsx');
+            }
+            else if (selectedType === "2") {
+                var elt = document.getElementById('cus_table');
+                var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
+                XLSX.writeFile(wb, 'BA CUSTOMER REPORT.xlsx');
+            }
+        }
+
+
+        function fetchDate() {
+            var frommdate = document.getElementById('from').value;
+
+            const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+
+            const [year, month, day] = frommdate.split("-");
+            const formattedMonth = months[parseInt(month, 10) - 1];
+            const fromdate = `${day}-${formattedMonth}-${year}`;
+
+            document.getElementById("FromDateSpan").innerHTML = fromdate;
+            document.getElementById("FromDate").innerHTML = fromdate;
+
+            return fromdate;
+        }
+
+
+        function fetchDate1() {
+
+            var toodate = document.getElementById('to').value;
+
+
+            const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+
+            const [year, month, day] = toodate.split("-");
+            const formattedMonth = months[parseInt(month, 10) - 1];
+            const todate = `${day}-${formattedMonth}-${year}`;
+
+            document.getElementById("ToDateSpan").innerHTML = todate;
+            document.getElementById("ToDate").innerHTML = todate;
+            return todate;
+        }
+
+        function loadIndex() {
+
+            var root = '';
+            var baselink = '@ViewData["baseurl"]';
+            var id = '@ViewData["HeadName"]';
+
+            if (document.location.hostname == 'localhost') {
+                window.location.href = "/Loans/Index?datas=" + id;
+            }
+            else {
+                root = '@ViewData["root"]';
+                domainurl = baselink + root;
+                window.location.href = domainurl + "/Loans/Index?datas=" + id;
+            }
+
+        }
+
+    </script>
+
+    <script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.8/xlsx.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.0/FileSaver.min.js"></script>
+
+</body>
+
+
+</html>

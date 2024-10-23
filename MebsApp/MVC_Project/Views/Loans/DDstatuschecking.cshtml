@@ -1,0 +1,471 @@
+﻿@{
+    ViewData["Title"] = "DDstatuschecking";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="~/css/index.css">
+    <script src="~/js/site.js"></script>
+
+
+    <style>
+
+        .completionyear {
+            width: 30%;
+        }
+
+
+        .form-container {
+            border-radius: 8px;
+            padding: 5px;
+            background-color: #ffff;
+            /*box-shadow: 0 2px 5px rgba(17,45,78,1);*/
+        }
+
+        .form-control {
+            height: 30px;
+            font-size: small;
+        }
+
+        .form-label {
+            font-weight: 500;
+            font-size: small;
+            color: #27005D;
+        }
+
+        .label1 {
+            font-size: small;
+            color: #27005D;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 6px 10px;
+            font-size: 10px;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            background-color: #538392;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 130px;
+        }
+
+            .btn:hover {
+                background-color: pink;
+            }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            margin-top: 12px;
+        }
+
+            .btn-group .btn {
+                margin: 0 10px;
+            }
+
+        #app {
+            margin-left: 300px;
+            margin-top: 12px;
+        }
+    </style>
+
+</head>
+
+
+
+<body>
+
+
+    <div class="pagecontiner">
+        <div class="d-flex justify-content-center align-items-center" style="background-color:#538392; font-weight: 600; color:white;height:50px">
+            <span class="text-center">DD SEND CUSTOMER DETAILS</span>
+        </div>
+
+        <div id="search" style="display:block">
+            <div class="form-group row">
+                <span class="col-sm-4 col-form-label form-label">Search with Surplus PayID/Customer ID</span>
+                <div class="col-sm-3">
+                    <div class="radio-group">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="rad" id="surrad" checked value="surrad" onclick="cust()">
+                            <label class="form-check-label  label1" for="surrad">Surplus Pay ID</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="radio-group">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="rad" id="custrad" value="custrad" onclick="cust()">
+                            <label class="form-check-label  label1" for="custrad">Customer ID</label>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+        <div id="surplusid" style="display:block">
+            <div class="form-group row">
+                <span class="col-sm-3 col-form-label form-label">Enter surplus payid</span>
+                <div class="col-sm-4">
+                    <input type="text" id="surpluspayid" class="form-control" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" maxlength="8" />
+                </div>
+                <div class="col-sm-4">
+                    <button class="btn" onclick="callAPIResponse1();">view</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="custid" style="display:none">
+            <div class="form-group row">
+                <span class="col-sm-3 col-form-label form-label">Enter Customer ID</span>
+                <div class="col-sm-4">
+                    <input type="text" id="customerid" class="form-control" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" maxlength="14" />
+                </div>
+                <div class="col-sm-4">
+                    <button class="btn" onclick="callAPIResponse2();">view</button>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="paymentid1" style="display:block">
+            <div class="form-group row">
+                <span class="col-sm-3 col-form-label form-label">Payment id</span>
+                <div class="col-sm-4">
+                    <input type="text" id="paymentid" class="form-control" readonly />
+                </div>
+            </div>
+        </div>
+
+
+        <div id="netamt1" Style="display:block">
+            <div class="form-group row">
+                <span class="col-sm-3 col-form-label form-label">Net Amount</span>
+                <div class="col-sm-4">
+                    <input type="text" id="netamt" class="form-control" readonly />
+                </div>
+            </div>
+        </div>
+
+
+        <div id="cust1" style="display:block">
+            <div class="form-group row">
+                <span class="col-sm-3 col-form-label form-label">Customer id</span>
+                <div class="col-sm-4">
+                    <input type="text" id="cust" class="form-control" readonly />
+                </div>
+            </div>
+        </div>
+
+
+
+        <div id="date1" style="display:block">
+            <div class="form-group row">
+                <span class="col-sm-3 col-form-label form-label">Send Date</span>
+                <div class="col-sm-4">
+                    <input type="text" id="date" class="form-control" readonly />
+                </div>
+            </div>
+        </div>
+
+        <div id="st" style="display:block">
+            <div class="form-group row">
+                <span class="col-sm-3 col-form-label form-label">Status</span>
+                <div class="col-sm-4">
+                    <input type="text" id="sts" class="form-control" readonly />
+                </div>
+            </div>
+        </div>
+
+        <div id="bank1" style="display:block">
+            <div class="form-group row">
+                <span class="col-sm-3 col-form-label form-label">Bank</span>
+                <div class="col-sm-4">
+                    <input type="text" id="bank" class="form-control" readonly />
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="col-sm-6" id="app">
+            <button class="btn" onclick="loadIndex()">Exit</button>
+        </div>
+
+
+
+
+
+        @* <div class="col-sm-2"  >
+
+        <button class="btn1" onclick="loadIndex()">Exit</button>
+        </div> *@
+
+
+
+
+    </div>
+
+
+
+    <script>
+
+
+
+
+        const surrad = document.getElementById('surrad');
+        const custrad = document.getElementById('custrad');
+
+
+
+        const custid = document.getElementById('custid');
+        const surplusid = document.getElementById('surplusid');
+
+
+
+        surrad.addEventListener('change', () => {
+
+            surplusid.style.display = 'block';
+        });
+        surrad.addEventListener('change', () => {
+
+            custid.style.display = 'none';
+        });
+        custrad.addEventListener('change', () => {
+
+            custid.style.display = 'block';
+        });
+        custrad.addEventListener('change', () => {
+
+            surplusid.style.display = 'none';
+        });
+
+
+    </script>
+
+
+    <script>
+
+
+        function loadIndex() {
+
+            var root = '';
+            var baselink = '@ViewData["baseurl"]';
+            var id = '@ViewData["HeadName"]';
+
+            if (document.location.hostname == 'localhost') {
+                window.location.href = "/LOANS/Index?datas=" + id;
+            }
+            else {
+                root = '@ViewData["root"]';
+                domainurl = baselink + root;
+                window.location.href = domainurl + "/LOANS/Index?datas=" + id;
+            }
+
+        }
+    </script>
+
+
+
+    <script>
+
+
+        $('input[name="rad"]').change(function () {
+            if ($(this).val() === 'surrad') {
+                $('#custid').hide();
+            } else {
+                $('#custid').show();
+            }
+        });
+
+        $('input[name="rad"]').change(function () {
+            if ($(this).val() === 'custrad') {
+                $('#surplusid').hide();
+            } else {
+                $('#surplusid').show();
+            }
+        });
+
+
+        $('input[name="rad"]').trigger('change');
+                                    });
+
+
+    </script>
+
+    <script>
+
+
+
+
+
+        function cust() {
+            document.getElementById('surpluspayid').value = "";
+            document.getElementById('customerid').value = "";
+            document.getElementById('paymentid').value = "";
+            document.getElementById('netamt').value = "";
+            document.getElementById('cust').value = "";
+            document.getElementById('date').value = "";
+            document.getElementById('sts').value = "";
+            document.getElementById('bank').value = "";
+
+        }
+    </script>
+
+
+    <script>
+
+
+        function resetForm() {
+            var root = '';
+            var baselink = '@ViewData["baseurl"]';
+            var id = '@ViewData["HeadName"]';
+
+            if (document.location.hostname == 'localhost') {
+                window.location.href = "/LOANS/DDstatuschecking?datas=" + id;
+            }
+            else {
+                root = '@ViewData["root"]';
+                domainurl = baselink + root;
+                window.location.href = domainurl + "/LOANS/DDstatuschecking?datas=" + id;
+            }
+
+
+        }
+    </script>
+    <script>
+        function callAPIResponse1() {
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+
+            
+
+            var surpluspayid = document.getElementById("surpluspayid").value;
+
+            indata = "Mebs_Auction" + "^" + "DDsurplus" + "~" + surpluspayid;
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    const data3 = JSON.parse(response);
+
+                    loadDataAuc(data3);
+
+
+
+                },
+                error: function (response) {
+
+                }
+            });
+        }
+        function loadDataAuc(data) {
+
+
+
+
+            data.forEach(item => {
+
+
+                document.getElementById('paymentid').value = item.SURPLUS_PAY_ID;
+                document.getElementById('netamt').value = item.NET_PAY;
+                document.getElementById('cust').value = item.CUST_ID;
+                document.getElementById('date').value = item.SEND_DT;
+                document.getElementById('sts').value = item.BK_STS;
+                document.getElementById('bank').value = item.ACC_STATUS;
+
+
+
+
+            });
+
+
+        }
+
+
+
+    </script>
+    <script>
+        function callAPIResponse2() {
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+
+            
+
+            var customerid = document.getElementById("customerid").value;
+
+            indata = "Mebs_Auction" + "^" + "DDCUST" + "~" + customerid;
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    const data3 = JSON.parse(response);
+
+                    loadDatauc(data3);
+
+
+
+                },
+                error: function (response) {
+
+                }
+            });
+        }
+        function loadDatauc(data) {
+
+
+
+
+            data.forEach(item => {
+
+
+                document.getElementById('paymentid').value = item.SURPLUS_PAY_ID;
+                document.getElementById('netamt').value = item.NET_PAY;
+                document.getElementById('cust').value = item.CUST_ID;
+                document.getElementById('date').value = item.SEND_DT;
+                document.getElementById('sts').value = item.BK_STS;
+                document.getElementById('bank').value = item.ACC_STATUS;
+
+
+
+
+            });
+
+
+        }
+
+    </script>
+
+
+
+
+
+
+
+
+</body>
+
+
+</html>
+

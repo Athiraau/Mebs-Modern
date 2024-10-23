@@ -1,0 +1,431 @@
+﻿
+@{
+    ViewData["Title"] = "SMAPLEDGE";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    @*<meta http-equiv="refresh" content="8" />*@
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="~/css/index.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.4/xlsx.full.min.js"></script>
+
+    <style>
+        .pagecontiner {
+            background-color: transparent;
+        }
+
+        .dcontainer1 {
+            width: 65%;
+            height: auto;
+            margin-left: 20%;
+            padding: 6%;
+            border-radius: 5px;
+            background-color: #cfd8dc;
+            box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+            font-size: small;
+        }
+
+        h5 {
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+        }
+
+        label {
+            display: block;
+            font-size: small;
+        }
+
+        input[type="date"],
+        select {
+            width: 100%;
+            padding: 4px;
+            border: 1px solid #ADC;
+            border-radius: 5px;
+        }
+
+
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: initial;
+        }
+
+        .img1 {
+            display: none;
+            cursor: pointer;
+        }
+
+        th,
+        td {
+            border: 1px solid white;
+            text-align: left;
+            padding: 8px;
+            font-size: initial;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            font-size: initial;
+        }
+
+
+
+
+        .btn-grad {
+            background-image: linear-gradient(to right, #4b6cb7 0%, #182848 51%, #4b6cb7 100%);
+            text-transform: uppercase;
+            transition: 0.5s;
+            padding: 10px;
+            background-size: 200% auto;
+            color: white;
+            border-radius: 10px;
+            border: none;
+            display: block;
+        }
+
+
+            .btn-grad:hover {
+                background-position: right center; /* change the direction of the change here */
+                color: #fff;
+                text-decoration: none;
+            }
+
+        .fs-10 {
+            font-size: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="pagecontiner">
+        <div>
+            <button type="button" id="fetchpp" class="btn btn-dark" onclick="">
+                Excel Pledge
+            </button>
+        </div>
+        <!-- Table -->
+        <div class="mt-5" id="dcontainer2">
+            <table class="table  table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th class="table-secondary text-center" colspan="21">
+                            PLEDGEWISE REPORT
+
+                        </th>
+                    </tr>
+
+                    <tr>
+                        <th class="fs-10">BRANCH ID</th>
+                        <th class="fs-10">BRANCH NAME</th>
+                        <th class="fs-10">AREA NAME</th>
+
+                        <th class="fs-10">REGION NAME</th>
+                        <th class="fs-10">ZONE NAME</th>
+
+                        <th class="fs-10"> STATE NAME </th>
+                        <th class="fs-10">PLEDGE NO</th>
+
+                        <th class="fs-10">CUSTOMER ID</th>
+                        <th class="fs-10">TRANSACTION DATE</th>
+                        <th class="fs-10">PLEDGE VALUE</th>
+                        <th class="fs-10">NET WEIGHT</th>
+                        <th class="fs-10">SCHEME</th>
+
+                        <th class="fs-10">INTREST RATE</th>
+                        <th class="fs-10">BALANCE</th>
+                        <th class="fs-10">INTREST ACCURED</th>
+                        <th class="fs-10">INTREST RECEIVED</th>
+                        <th class="fs-10">DUE DATE</th>
+                        <th class="fs-10">AUCTION STATUS</th>
+                        <th class="fs-10">INTREST PAID STATUS</th>
+                        <th class="fs-10">PLEDGE CATEGORY</th>
+                        <th class="fs-10">SMA STATUS</th>
+
+
+                    </tr>
+
+
+
+                </thead>
+                <tbody id="table-body">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+    <script>
+        function cleart() {
+            const tableBody = document.getElementById('table-body');
+            tableBody.innerHTML = '';
+        }
+    </script>
+
+    <script>
+        document.getElementById('fetchpp').addEventListener('click', function () {
+            const dateString1 = '@ViewData["SelectedDate"]';
+            const BId = '@ViewData["Branchid"]';
+            const fDate = dateString1;
+            var flag = "SMACLASSRPTPLEDGE_EXCEL";
+            fetchExcel(fDate, BId, flag);
+        });
+
+        function fetchExcel(fDate, BId, flag) {
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+
+            var data;
+            indata = flag + "^" + fDate + "~" + BId;
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    data = JSON.parse(response);
+
+                }
+            });
+
+            fetchExcelpledge(data);
+           
+        }
+
+        function fetchExcelpledge(data) {
+                    const extractedData = data.map(post => [post.BRANCHID, post.BRANCHNAME, post.AREANAME, post.REGIONNAME, post.ZONALNAME, post.STATENAME, post.PLEDGENO, post.CUSTOMERID, post.TRANSACTIONDATE, post.PLEDGEVALUE, post.NETACCRUED, post.SCHEME, post.INTRESTRATE, post.BALANCE, post.NETACCRUED, post.INTRESTRECEIVED, post.DUEDATE, post.AUCTIONSTATUS, post.INTRESTPAIDSTATUS, post.PLEDGECATEGORY, post.SMASTATUS]);
+
+                    const workbook = XLSX.utils.book_new();
+
+                    const worksheet = XLSX.utils.aoa_to_sheet(
+                        [['', '', ''], ...extractedData],
+                        {
+                            '!cols': [
+                                { wch: 90 },  // Column A (ID) width set to 10 characters
+                                { wch: 90 }, // Column B (Title) width set to 30 characters
+                                { wch: 90 }  // Column C (Body) width set to 50 characters
+                            ],
+                            '!rows': [
+                                { hpx: 90 } // Row 1 (header) height set to 20 pixels
+                            ]
+                        }
+                    );
+
+                    XLSX.utils.book_append_sheet(workbook, worksheet, 'pledge');
+
+                    XLSX.writeFile(workbook, 'pledge.xlsx');
+
+            Fdate = document.getElementById("FromDateSpan");
+            Fdate.innerHTML = fDate;
+        }
+
+
+    </script>
+
+    <script>
+        function formatDateForAPI(dateString) {
+            // Split the date string into year, month, and day components
+            const [year, month, day] = dateString.split("-");
+
+            // Pad the month and day with leading zeros if necessary (optional)
+            const paddedMonth = month.padStart(2, "0");
+            const paddedDay = day.padStart(2, "0");
+
+            // Reassemble the date in the desired format
+            return `${paddedDay}-${paddedMonth}-${year}`;
+        }
+
+
+    </script>
+
+    <script>
+
+        // Function to create and populate table with data
+        function populateTable(data3) {
+            // Get reference to the table body
+            const tableBody = document.getElementById('table-body');
+            // Clear existing table rows
+            tableBody.innerHTML = '';
+
+            // Iterate over the data and create table rows
+            data3.forEach(item => {
+                // Create a new row
+                const row = tableBody.insertRow();
+                
+                // Insert cells into the row
+                const cell1 = row.insertCell();
+                const cell2 = row.insertCell();
+                const cell3 = row.insertCell();
+                const cell4 = row.insertCell();
+                const cell5 = row.insertCell();
+                const cell6 = row.insertCell();
+                const cell7 = row.insertCell();
+                const cell8 = row.insertCell();
+                const cell9 = row.insertCell();
+                const cell10 = row.insertCell();
+                const cell11 = row.insertCell();
+                const cell12 = row.insertCell();
+                const cell13 = row.insertCell();
+                const cell14 = row.insertCell();
+                const cell15 = row.insertCell();
+                const cell16 = row.insertCell();
+                const cell17 = row.insertCell();
+                const cell18 = row.insertCell();
+                const cell19 = row.insertCell();
+
+                const cell20 = row.insertCell();
+                const cell21 = row.insertCell();
+
+
+
+
+
+                // Add more cells if needed
+
+                // Populate cells with data
+                // cell1.textContent = item.FZM;
+                cell1.innerHTML = item.BRANCH_ID;
+                cell2.textContent = item.BRANCH_NAME;
+                cell3.textContent = item.AREA_NAME;
+                cell4.textContent = item.REG_NAME;
+                cell5.textContent = item.ZONAL_NAME;
+                cell6.textContent = item.STATE_NAME;
+                cell7.textContent = item.PLEDGE_NO;
+                cell8.textContent = item.CUST_ID;
+                cell9.textContent = item.TRA_DT;
+                cell10.textContent = item.PLEDGE_VAL;
+                cell11.textContent = item.NET_WEIGHT;
+                cell12.textContent = item.SCHEME_NM;
+                cell13.textContent = item.INT_RATE;
+                cell14.textContent = item.BALANCE;
+                cell15.textContent = item.NET_ACCRUED;
+                cell16.textContent = item.INTEREST_RCVD;
+                cell17.textContent = item.MATURITY_DT;
+                cell18.textContent = item.AUC_ATT_STATUS;
+                cell19.textContent = item.INT_STATUS;
+
+                cell20.textContent = item.PLEDGE_CATEGORY;
+                cell21.textContent = item.SMA_CATEGORY;
+
+
+
+            });
+        }
+
+
+        // Function to fetch data from API
+        function fetchData(id) {
+                       
+            let SelectedDate = '@ViewData["SelectedDate"]';
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+
+            let SelectedDate = '@ViewData["SelectedDate"]';
+            //  const dt = fetchDate();
+            var dataz;
+            indata = "SMACLASSRPTPLEDGE" + "^" + SelectedDate + "~" + id;
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    const data3 = JSON.parse(response);
+
+                    populateTable(data3)
+                }
+            });
+                      
+        }
+
+    </script>
+
+
+    <script type="text/javascript">
+        function Validate() {
+            var from = document.getElementById("fromDate");
+            var to = document.getElementById("toDate");
+            var dropdown = document.getElementById("dropdown");
+            if (dropdown.value == "") {
+                //If the "Please Select" option is selected display error.
+                alert("Please select an option!");
+                return false;
+            } else if (from.value == "") {
+                alert("please select  Fromdate");
+                return false;
+            } else if (to.value == "") {
+                alert("please select  Todate");
+                return false;
+            }
+            img.style.display = "block";
+            return true;
+        }
+    </script>
+
+    <script>
+
+        function showContainer() {
+            
+            var dcontainer2 = document.getElementById('dcontainer2');
+            dcontainer2.style.display = 'block';
+        }
+
+        function unshowContainer() {
+            var dcontainer2 = document.getElementById('dcontainer2');
+            dcontainer2.style.display = 'none';
+
+            var img2 = document.getElementById("img");
+            img2.style.display = "none";
+
+            document.getElementById("fromDate").value = '';
+            document.getElementById("toDate").value = '';
+            document.getElementById("dropdown").selectedIndex = 0;
+        }
+    </script>
+
+
+    <script>
+        function updateTime() {
+            const date = new Date();
+            const hours = date.getHours().toString().padStart(2, '0');
+            const minutes = date.getMinutes().toString().padStart(2, '0');
+            const seconds = date.getSeconds().toString().padStart(2, '0');
+
+            const currentTime = `${hours}:${minutes}:${seconds}`;
+
+            // document.getElementById("time").textContent = currentTime;
+        }
+        setInterval(updateTime, 1000);
+
+    </script>
+
+
+    <script>
+        window.onload = function exampleFunction() {
+
+            var id = '@ViewData["Branchid"]';
+            fetchData(id);
+        }
+    </script>
+
+</body>
+</html>

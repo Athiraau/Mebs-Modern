@@ -1,0 +1,476 @@
+﻿@{
+    ViewData["Title"] = "BIDDERR";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    @*<meta http-equiv="refresh" content="8" />*@
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="~/css/index.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.4/xlsx.full.min.js"></script>
+
+    <style>
+        .pagecontiner {
+            background-color: transparent;
+        }
+
+        .dcontainer1 {
+            background-color: #ffdce1;
+            margin-top: 30px;
+            height: 100%;
+            width: 65%;
+            border-radius: 25px;
+            /* border: 5px solid #132136; */
+            font-size: small;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+            padding: 0;
+        }
+
+        .secondcontainer {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            height: 50%;
+            border-radius: 15px 15px 0px 0px;
+            background-color: #de706b;
+            color: white;
+        }
+
+
+        h5 {
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+            padding: 20px;
+            padding: 20px 110px;
+        }
+
+        label {
+            display: block;
+            /*        font-weight: bold;
+                                                                                      */
+            font-size: initial;
+        }
+
+        input[type="date"],
+        select {
+            width: 100%;
+            padding: 4px;
+            cursor: pointer;
+            border: 1px solid #999cb7;
+            border-radius: 5px;
+        }
+
+
+
+        table {
+            width: 80%;
+            border-collapse: collapse;
+        }
+
+
+
+        th,
+        td {
+            border: 1px solid #99d6db;
+            text-align: left;
+            padding: 8px;
+            font-size: initial;
+        }
+
+        th {
+            background-color: #99d6db;
+            font-size: initial;
+        }
+
+
+        #dcontainer2 {
+            display: none;
+            height: 40%;
+            width: 50%;
+        }
+
+        .btn-grad {
+            background-image: linear-gradient(to right, #e19e7c 0%, #e1d17c 51%, #e17c8d 100%);
+            text-transform: uppercase;
+            transition: 0.5s;
+            width: 100px;
+            padding: 6px;
+            background-size: 200% auto;
+            color: white;
+            border-radius: 10px;
+            cursor: pointer;
+            border: none;
+            display: block;
+        }
+
+        .btn-grad1 {
+            background-image: linear-gradient(to right, #e19e7c 0%, #e1d17c 51%, #e17c8d 100%);
+            padding: 6px;
+            transition: 0.5s;
+            background-size: 200% auto;
+            cursor: pointer;
+            color: white;
+            border-radius: 10px;
+            border: none;
+            display: none;
+            font-size: 8px;
+        }
+
+
+        .btn-grad:hover {
+            background-position: right center;
+            /* change the direction of the change here */
+            color: #da5c56;
+            text-decoration: none;
+        }
+
+
+        .fs-10 {
+            font-size: 9px;
+        }
+
+        .fs-15 {
+            font-size: 9px;
+        }
+
+        .p-red {
+            background-color: #da5c56;
+        }
+    </style>
+
+</head>
+
+
+
+<body>
+    <div class="pagecontiner">
+        <div class="dcontainer1">
+
+
+            <form>
+                <div class="secondcontainer">
+                    <p style="font-size:large">BIDDER PUNCHING REPORT</p>
+                </div>
+
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            <label for="fromDate" style="font-size:10px">FROM DATE:</label>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            <input type="date" id="frmDate" value="" name="fromDate">
+
+                        </div>
+                    </div><br /><br />
+                    <div class="row">
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            <label for="toDate" style="font-size:10px">TO DATE:</label>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            <input type="date" id="toDate" value="" name="toDate">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="margin-top:10px;font-size:10px;font-weight:500;">
+                    <div class="col-lg-3">
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-sm-12 ">
+                        <button type="button" id="fetch-button" class="btn-grad"
+                                onclick="Validate();fetchData();showContainer();">
+
+                            SUBMIT
+                        </button>
+                        @* onclick="Validate();();showContainer();cleart();"> *@
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-sm-12">
+                        <button type="button" class=" btn-grad" onclick="loadindex()">EXIT</button>
+                    </div>
+
+                    <!-- <button id="exportExcel" style=" width: 20px;">Export to Excel</button> -->
+
+                </div>
+
+            </form>
+        </div>
+
+
+        <!-- Table -->
+        <div class="text-center m-3" id="dcontainer2" style="margin-right:272px;">
+
+            <div>
+                <button type="button" class="btn btn-dark btn-block btn2 fs-10" onclick="exportToExcel();">
+                    Export to Excel
+                </button>
+
+            </div>
+
+            <div class="mt-5">
+                <table class="table table-striped table-hover" id="your-table-id">
+                    <thead>
+                        <tr>
+                            <th class="table-secondary text-center text-white" style="background-color: #e19e7c" colspan="11">
+                                MANAPPURAM FINANCE LIMITED
+                            </th>
+                        </tr>
+
+                        <tr>
+                            <th class="table-secondary text-center" style="background-color:#e1d17c" colspan="11">
+                                BIDDER PUNCHING REPORT
+                            </th>
+                        </tr>
+
+
+
+                        <tr style="background-color:#e17c8d">
+                            <th class="text-center fs-10 text-white">SL_NO</th>
+
+                            <th class="text-center fs-10 text-white">BIDDER-ID</th>
+                            <th class="text-center fs-10 text-white">ADDRESS</th>
+                            <th class="text-center fs-10 text-white">PHONE NUMBER</th>
+                            <th class="text-center fs-10 text-white">AUTHORIZED-ID</th>
+                            <th class="text-center fs-10 text-white">LOT-ID</th>
+                            <th class="text-center fs-10 text-white">REPRESENTATIVE NAME</th>
+                            <th class="text-center fs-10 text-white">PUNCH DATE AND TIME</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body1">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+
+        function ActiveLoginCheck() {
+            var user = '@ViewData["EmpCode"]';
+            if (user == null || user == '') {
+                alert('INACTIVE SESSION');
+                loadindex();
+            }
+
+        }
+        window.onload = function OnloadFunction() {
+            ActiveLoginCheck();
+           
+        }
+       </script>
+    <script>
+        function loadindex() {
+
+            var root = '';
+            var baselink = '@ViewData["baseurl"]';
+            var id = '@ViewData["HeadName"]';
+
+            if (document.location.hostname == 'localhost') {
+                window.location.href = "/loans/Index?datas=" + id;
+            }
+            else {
+                root = '@ViewData["root"]';
+                domainurl = baselink + root;
+                window.location.href = domainurl + "/loans/Index?datas=" + id;
+            }
+
+        }
+
+        //disable futuredate
+        function disableFutureDates(dateInputId) {
+            const dateInput = document.getElementById(dateInputId);
+            const today = new Date();
+            dateInput.setAttribute('max', today.toISOString().split('T')[0]);
+        }
+        disableFutureDates("frmDate");
+        disableFutureDates("toDate");
+
+        function Validate() {
+            var from = document.getElementById("frmDate").value;
+            var to = document.getElementById("toDate").value;
+
+
+            if (from == "") {
+                alert("please select from date");
+                return false;
+            } else if (to == "") {
+                alert("please select  to date");
+                return false;
+            }
+            return true;
+        }
+
+
+        function showContainer() {
+            var dcontainer2 = document.getElementById('dcontainer2');
+            dcontainer2.style.display = 'block';
+        }
+
+        function unshowContainer() {
+            var dcontainer2 = document.getElementById('dcontainer2');
+            dcontainer2.style.display = 'none';
+        }
+
+
+        function fetchDate() {
+            var getdate = document.getElementById('frmDate').value;
+            //alert(getdate);
+
+            const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+
+            const [year, month, day] = getdate.split("-");
+            const formattedMonth = months[parseInt(month, 10) - 1];
+            const formattedDate = `${day}-${formattedMonth}-${year}`;
+            /// document.getElementById("processDate").innerHTML = formattedDate;
+            return formattedDate;
+        }
+
+        function fetchDate1() {
+            var getdate = document.getElementById('toDate').value;
+            //alert(getdate);
+
+            const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+
+            const [year, month, day] = getdate.split("-");
+            const formattedMonth = months[parseInt(month, 10) - 1];
+            const formattedDate = `${day}-${formattedMonth}-${year}`;
+            /// document.getElementById("processDate").innerHTML = formattedDate;
+            return formattedDate;
+        }
+
+
+
+        function callAPIResponse() {     //CALLAPIRESPONSE
+
+            dt = fetchDate();
+            dt1 = fetchDate1();
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+
+
+            var dataz;
+
+            indata = "Mebs_Auction" + "^" + "bidder" + "~" + dt + "*" + dt1;
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    const data3 = JSON.parse(response);
+                    populateTable(data3)
+                }
+            });
+        }
+
+
+
+        function fetchData() {
+            //alert("fetch");
+            
+            var baselink = '@ViewData["baseurl"]';
+            callAPIResponse();
+
+
+        }
+
+
+
+
+
+        // Function to create and populate table with data
+        function populateTable(data) {
+
+            // Get reference to the table body
+            const tableBody = document.getElementById('table-body1');
+
+            // Clear existing table rows
+            tableBody.innerHTML = '';
+
+
+
+            // Iterate over the data and create table rows
+            data.forEach(item => {
+                const cellvalue = parseFloat(item.SLNO);
+
+                const cellvalue1 = parseFloat(item.BIDDER_ID);
+                const cellvalue2 = parseFloat(item.ADDRESS);
+                const cellvalue3 = parseFloat(item.PHONE_NUMBER);
+                const cellvalue4 = parseFloat(item.AUTH_ID);
+                const cellvalue5 = parseFloat(item.LOTID);
+                const cellvalue6 = parseFloat(item.REP_NAME);
+                const cellvalue7 = parseFloat(item.TRA_DT);
+
+
+
+
+                // Create a new row
+                const row = tableBody.insertRow();
+
+                // Insert cells into the row
+                const cell1 = row.insertCell();
+                const cell2 = row.insertCell();
+                const cell3 = row.insertCell();
+                const cell4 = row.insertCell();
+                const cell5 = row.insertCell();
+                const cell6 = row.insertCell();
+                const cell7 = row.insertCell();
+                const cell8 = row.insertCell();
+
+
+
+
+                // Add more cells if needed
+
+                // Populate cells with data
+                cell1.textContent = item.SLNO;
+
+                cell2.textContent = item.BIDDER_ID;
+                cell3.textContent = item.ADDRESS;
+                cell4.textContent = item.PHONE_NUMBER;
+                cell5.textContent = item.AUTH_ID;
+                cell6.textContent = item.LOTID;
+                cell7.textContent = item.REP_NAME;
+                cell8.textContent = item.TRA_DT;
+
+
+
+
+            });
+
+        }
+
+        function exportToExcel() {
+            const table = document.getElementById('your-table-id');
+            if (table) {
+                const wb = XLSX.utils.table_to_book(table, { sheet: "Sheet JS" });
+                if (wb) {
+                    XLSX.writeFile(wb, 'BIDDER.xlsx');
+                } else {
+                    console.error('Workbook is null. Unable to export data.');
+                }
+            } else {
+                console.error('Table element not found. Unable to export data.');
+            }
+        }
+
+    </script>
+</body>
+</html>

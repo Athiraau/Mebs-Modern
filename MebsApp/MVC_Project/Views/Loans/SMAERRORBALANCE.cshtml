@@ -1,0 +1,530 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor httpContextAccessor
+@{
+    ViewData["Title"] = "SMAERRORBALANCE";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    @*<meta http-equiv="refresh" content="8" />*@
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="~/css/index.css">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.4/xlsx.full.min.js"></script>
+
+    <style>
+        .pagecontiner {
+            background-color: transparent;
+        }
+
+        .dcontainer1 {
+            width: 65%;
+            height: auto;
+            margin-left: 20%;
+            padding: 6%;
+            border-radius: 5px;
+            background-color: #cfd8dc;
+            box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+            font-size: small;
+        }
+
+        h5 {
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+        }
+
+        label {
+            display: block;
+            font-size: small;
+        }
+
+        input[type="date"],
+        select {
+            width: 100%;
+            padding: 4px;
+            border: 1px solid #ADC;
+            border-radius: 5px;
+        }
+
+
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: initial;
+        }
+
+        .img1 {
+            display: none;
+            cursor: pointer;
+        }
+
+        th,
+        td {
+            border: 1px solid white;
+            text-align: left;
+            padding: 8px;
+            font-size: initial;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            font-size: initial;
+        }
+
+
+
+
+        .btn-grad {
+            background-image: linear-gradient(to right, #4b6cb7 0%, #182848 51%, #4b6cb7 100%);
+            text-transform: uppercase;
+            transition: 0.5s;
+            padding: 10px;
+            background-size: 200% auto;
+            color: white;
+            border-radius: 10px;
+            border: none;
+            display: block;
+        }
+
+
+            .btn-grad:hover {
+                background-position: right center; /* change the direction of the change here */
+                color: #fff;
+                text-decoration: none;
+            }
+
+        .fs-10 {
+            font-size: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="pagecontiner">
+       
+    <div>
+            <button type="button" id="fetch-Error1" class="btn btn-dark" onclick="" style="font-size:smaller">
+            Excel Branch
+        </button>
+
+            <button type="button" id="fetch-Error2" class="btn btn-dark" onclick="" style="font-size:smaller">
+            Excel Pledge
+        </button>
+            <button type="button" id="fetch-Error2" class="btn btn-secondary" onclick="loadIndex()" style="font-size:smaller">
+                EXIT
+            </button>
+
+    </div>
+
+    <div class="mt-5" id="dcontainer2">
+        <table class="table  table-striped table-hover">
+            <thead>
+                <tr>
+                    <th class="table-secondary text-center" style="background-color:#fdd935;font-size:small;" colspan="7">
+                        MANAPPURAM FINANCE LIMITED
+                    </th>
+                </tr>
+                <tr style="background-color:lightslategray">
+                    <th class="text-center fs-10 text-white">
+                        sl.no
+                    </th>
+                    <th class="text-center fs-10 text-white">
+                        Ledger.no
+                    </th>
+                    <th class="text-center fs-10 text-white">
+                        Ledger head
+                    </th>
+                    <th class="text-center fs-10 text-white">
+                        sma balance
+                    </th>
+                    <th class="text-center fs-10 text-white">
+                        Ledger balance
+                    </th>
+                    <th class="text-center fs-10 text-white">
+                        difference
+                    </th>
+                    <th class="text-center fs-10 text-white">
+                        Lag Date
+                    </th>
+            </thead>
+            <tbody id="table-body1">
+            </tbody>
+        </table>
+    </div>
+
+    <div class="mt-5" id="dcontainer2">
+        <table class="table  table-striped table-hover">
+            <thead style="background-color:lightslategray">
+                <tr>
+                    <th class="table-secondary text-center" style="background-color:#fdd935;font-size:small" colspan="7">
+                        DEPARTMENT WISE
+                    </th>
+                </tr>
+                <tr>
+                    <th class="text-center fs-10 text-white">
+                        Account no
+                    </th>
+                    <th class="text-center fs-10 text-white">
+                        Amount
+                    </th>
+                    <th class="text-center fs-10 text-white">
+                        User id
+                    </th>
+                    <th class="text-center fs-10 text-white">
+                        Dep id
+                    </th>
+                    <th class="text-center fs-10 text-white">
+                        Dep name
+                    </th>
+                    <th class="text-center fs-10 text-white">
+                        Dep head
+                    </th>
+            </thead>
+            <tbody id="table-body2">
+            </tbody>
+        </table>
+    </div>
+    </div>
+    <script>
+
+        function callAPIResponse(indata) {
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+
+            var dataz;
+            var response = '';
+            $.ajax({
+                type: "GET",
+              url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    const data3 = JSON.parse(response);
+                    populateTable(data33);
+                }
+            });
+        }
+
+        function callAPIResponse1(indata) {
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+
+
+            var dataz;
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    const ndata3 = JSON.parse(response);
+                    populateTable1(ndata3);
+                }
+            });
+        }
+       
+
+        function loadIndex() {
+
+            var root = '';
+            var baselink = '@ViewData["baseurl"]';
+            var id = '@ViewData["HeadName"]';
+
+            if (document.location.hostname == 'localhost') {
+                window.location.href = "/loans/Index?datas=" + id;
+            }
+            else {
+                root = '@ViewData["root"]';
+                domainurl = baselink + root;
+                window.location.href = domainurl + "/loans/Index?datas=" + id;
+            }
+
+        }
+        document.getElementById('fetch-Error1').addEventListener('click', function () {
+            
+            fetchDataExcelbranch();
+        });
+
+        //Excel1
+
+
+
+        function fetchDataExcelbranch() {
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+            var indata = 'ERRORBALANCE_EXCEL1^1';
+            var data;
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    data = JSON.parse(response);
+
+                  
+                  //  createExcelFile(data, 'smaerrorbalance_branch.xlsx');
+                  genereateExcel1(data);
+                }
+
+                       
+            });
+            
+            }
+
+       
+
+            function genereateExcel1(data)
+            {
+
+               function removeQuotesAndHyphens(str) {
+                return str.replace(/^'([^']+)-([^']+)'$/, '$1_$2'); // Combine quote and hyphen removal with underscore
+            }
+           
+            const extractedData = data.map(post => [post.SL_NO, post.LEDGER_NO, post.LEDGER_HEAD, post.SMA_BALANCE, post.LEDGER_BALANCE, post.DIFFERENCE, post.LAG_DAY]);
+
+               
+                const workbook = XLSX.utils.book_new();
+
+                const worksheet = XLSX.utils.aoa_to_sheet(
+                    [['', '', ''], ...extractedData],
+                    {
+                        '!cols': [
+                            { wch: 90 },  // Column A (ID) width set to 10 characters
+                            { wch: 90 }, // Column B (Title) width set to 30 characters
+                            { wch: 90 }  // Column C (Body) width set to 50 characters
+                        ],
+                        '!rows': [
+                            { hpx: 90 } // Row 1 (header) height set to 20 pixels
+                        ]
+                    }
+                );
+
+                XLSX.utils.book_append_sheet(workbook, worksheet, 'Posts');
+
+                XLSX.writeFile(workbook, 'posts.xlsx');
+
+                date = document.getElementById("FromDateSpan");
+            
+
+            Fdate.innerHTML = fDate;
+
+        }
+            
+
+        //EXCEL2
+        document.getElementById('fetch-Error2').addEventListener('click', function () {
+            
+            fetchDataExcelPledge();
+        });
+
+
+
+
+        function fetchDataExcelPledge()
+            {
+                var _link = '';
+                if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+                else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+                var indata = 'ERRORBALANCE_EXCEL2^1';
+                var data;
+                var response = '';
+                $.ajax({
+                    type: "GET",
+                    url: _link,
+                    data: { datas: indata },
+                    async: false,
+                    success: function (response) {
+
+                        data = JSON.parse(response);
+
+                        genereateExcel2(data);
+                    }
+
+
+                });
+
+            }
+
+            function genereateExcel2(data)
+            {
+            const extractedData = data.map(post => [post.ACCOUNT_NO, post.AMOUNT, post.USER_ID, post.DEPARTMENT_ID, post.DEP_NAME, post.DEP_HEAD]);
+
+                    const workbook = XLSX.utils.book_new();
+
+                    const worksheet = XLSX.utils.aoa_to_sheet(
+                        [['', '', ''], ...extractedData],
+                        {
+                            '!cols': [
+                                { wch: 90 },  // Column A (ID) width set to 10 characters
+                                { wch: 90 }, // Column B (Title) width set to 30 characters
+                                { wch: 90 }  // Column C (Body) width set to 50 characters
+                            ],
+                            '!rows': [
+                                { hpx: 90 } // Row 1 (header) height set to 20 pixels
+                            ]
+                        }
+                    );
+
+                    XLSX.utils.book_append_sheet(workbook, worksheet, 'Posts');
+
+                    XLSX.writeFile(workbook, 'posts.xlsx');
+
+            Fdate = document.getElementById("FromDateSpan");
+            // Tdate = document.getElementById("ToDateSpan");
+
+            Fdate.innerHTML = fDate;
+            // Tdate.innerHTML = tDate;
+
+        
+        }
+
+
+    </script>
+    <script>
+        window.onload = function exampleFunction() {
+
+           fetchData();
+           fetchData2();
+        }
+
+        // Function to fetch data from API
+        function fetchData() {
+           
+            var baselink = '@ViewData["baseurl"]';
+             const indata = "ERRORBALANCE^1";
+             callAPIResponse(indata);
+            
+        }
+
+        function populateTable(data3) {
+            // Get reference to the table body
+            const tableBody = document.getElementById('table-body1');
+
+            // Clear existing table rows
+            tableBody.innerHTML = '';
+
+            console.log(data3);
+
+            // Iterate over the data and create table rows
+            data3.forEach(item => {
+                // Create a new row
+                const row = tableBody.insertRow();
+
+                // Insert cells into the row
+                const cell1 = row.insertCell();
+                cell1.style.fontSize = "11px";
+                const cell2 = row.insertCell();
+                cell2.style.fontSize = "11px";
+                const cell3 = row.insertCell();
+                cell3.style.fontSize = "11px";
+                const cell4 = row.insertCell();
+                cell4.style.fontSize = "11px";
+                const cell5 = row.insertCell();
+                cell5.style.fontSize = "11px";
+                const cell6 = row.insertCell();
+                cell6.style.fontSize = "11px";
+                const cell7 = row.insertCell();
+                cell7.style.fontSize = "11px";
+
+
+                // Add more cells if needed
+
+                // Populate cells with data
+                // cell1.textContent = item.FZM;
+                cell1.innerHTML = item.SLNO;
+                cell2.textContent = item.LEDGER;
+                cell3.textContent = item.LEDGER_HEAD;
+                cell4.textContent = item.SMA_BALANCE;
+                cell5.textContent = item.LEDGER_BALANCE;
+                cell6.textContent = item.DIFFERENCE;
+                cell7.textContent = item.LAGDAYS;
+
+            });
+
+        }
+
+        function populateTable1(ndata3) {
+            // Get reference to the table body
+            const tableBody = document.getElementById('table-body2');
+
+            // Clear existing table rows
+            tableBody.innerHTML = '';
+
+            console.log(ndata3);
+
+            // Iterate over the data and create table rows
+            ndata3.forEach(item => {
+                // Create a new row
+                const row = tableBody.insertRow();
+
+                // Insert cells into the row
+                const cell1 = row.insertCell();
+                cell1.style.fontSize = "11px";
+                const cell2 = row.insertCell();
+                cell2.style.fontSize = "11px";
+                const cell3 = row.insertCell();
+                cell3.style.fontSize = "11px";
+                const cell4 = row.insertCell();
+                cell4.style.fontSize = "11px";
+                const cell5 = row.insertCell();
+                cell5.style.fontSize = "11px";
+                const cell6 = row.insertCell();
+                cell6.style.fontSize = "11px";
+
+
+
+                // Add more cells if needed
+
+                // Populate cells with data
+                // cell1.textContent = item.FZM;
+                cell1.innerHTML = item.ACCOUNT_NO;
+                cell2.textContent = item.AMOUNT;
+                cell3.textContent = item.USER_ID;
+                cell4.textContent = item.DEPARTMENT_ID;
+                cell5.textContent = item.DEP_NAME;
+                cell6.textContent = item.DEP_HEAD;
+
+
+            });
+
+        }
+
+        //DEPARTMENT WISE
+
+        function fetchData2() {
+          
+            
+            var baselink = '@ViewData["baseurl"]';
+            const indata = "ERRORBALANCE_DEPT^1";
+
+            callAPIResponse1(indata);
+
+           
+              
+        }
+    </script>
+
+</body>
+</html>

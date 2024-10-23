@@ -1,0 +1,30 @@
+Procedure:
+
+proc_mebs_loans_get
+proc_mebs_HRM_get
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+sample inputs
+
+Get:-
+FLAG: SMACLASSRPTZONE
+PAGEVALUE : 24-AUG-2022
+PARAVALUE : 1
+
+-------------------
+FLAG: INSTRUMENT_ONLOAD
+PAGEVALUE : 2~18906~0~43152
+PARAVALUE : 1
+
+
+
+
+Post:-SURRENDER_POST
+4025?~1~18906
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+API 
+
+GET: https://uatapp.manappuram.net/smareportsapi/api/SMAModule/GetSMAData/INSTRUMENT_ONLOAD/2~18906~0~43152/1
+
+POST: 

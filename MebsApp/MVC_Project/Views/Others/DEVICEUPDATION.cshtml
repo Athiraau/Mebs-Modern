@@ -1,0 +1,390 @@
+﻿@{
+    ViewData["Title"] = "DEVICEUPDATION";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    @*<meta http-equiv="refresh" content="8" />*@
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="~/css/index.css">
+    <link rel="stylesheet" href="~/css/sma.css">
+    <script src="~/js/projectscript.js"></script>
+    <style>
+        /* Global Styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        .pagecontiner {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .device_container {
+            max-width:fit-content;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #table-container {
+            overflow-x: auto;
+        }
+
+        #table1 {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+            #table1 th, #table1 td {
+                border: 1px solid #ddd;
+                padding: 10px;
+                text-align: left;
+                font-size: xx-small;
+            }
+
+            #table1 th {
+                background-color: #cfd8dc;
+                font-size:x-small;
+                
+            }
+
+        .btn {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+      
+    </style>
+    </style>
+</head>
+<body>
+    <div class="pagecontiner">
+        <div class="device_container">
+            <div id="table-container">
+                <h5 style="font-size:medium;margin-left:290px;font-weight:600;font-size:small;">DEVICE UPDATION</h5>
+
+                <table id="table1" class="table table-bordered table-striped table-hover">
+                    <!-- <thead style="color:#0E46A3; background-color: #AAD7D9;"> -->
+                    <thead>
+                        <tr>
+                            <th class="new text-center">DEVICE NO</th>
+                            <th class="new text-center">DEVICENAME</th>
+                            <th class="new">DEVICE DETAILS</th>
+                            <th class="new">WORK STAUS</th>
+                            <th class="new">REMARK</th>
+                            <th class="new">CATEGORY</th>
+                            <th></th>
+
+                        </tr>
+                    </thead>
+                    <tbody id="table-body1">
+                    </tbody>
+                </table>
+
+                <div class="btn">
+                    <button id="reloadBtn" onclick="loadIndex()" style="font-size:13px; width:160%">EXIT</button>
+                </div>
+            </div>
+           
+        </div>
+    </div>
+
+
+    <script>
+        function cleardata() {
+            $("div.pagecontiner").remove();
+        }
+
+        function reloadFunction() {
+            window.location.reload();
+        }
+
+      
+
+    </script>
+
+
+    <script>
+
+        window.onload = function OnloadFunction()
+        { fetchData();    }
+
+       
+
+        function fetchData() {
+                      
+            var user = '@ViewData["EmpCode"]';
+            var baselink = '@ViewData["baseurl"]';
+           const indata = user;
+            callAPIResponse(indata);
+           
+
+        }
+
+        function callAPIResponse(indata) {
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Others/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Others/getAPIData"; }
+             
+            indata = "IND_DEVICE_UPDATION_LOAD" + "^" + indata;
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    const data2 = JSON.parse(response);
+                    populateTable(data2);
+                }
+            });
+        }
+
+
+        //populate table
+        function populateTable(data2) {
+             
+            // Get reference to the table body
+            const tableBody = document.getElementById('table-body1');
+
+            // Clear existing table rows
+            tableBody.innerHTML = '';
+
+
+
+            data2.forEach(item => {
+                // Create a new row
+                const row = tableBody.insertRow();
+
+                // Insert cells into the row
+                const cell1 = row.insertCell();
+                const cell2 = row.insertCell();
+                const cell3 = row.insertCell();
+                const cell4 = row.insertCell();
+                const cell5 = row.insertCell();
+                const cell6 = row.insertCell();
+                const cell7 = row.insertCell();
+
+
+                cell1.innerHTML = item.DEVICE_NO;
+                cell2.textContent = item.DEVICENAME;
+                cell3.textContent = item.DEV_DETAILS;
+
+
+                const textField = document.createElement('input');
+                textField.type = 'text';
+                textField.id = 'remarksData';
+
+                cell5.appendChild(textField);
+
+
+
+
+                const dropdown1 = document.createElement('select');
+                dropdown1.id = 'myDropdown1';
+
+                // Create and add options to the select element
+                const opt1 = document.createElement('option');
+                opt1.text = '--SELECT DROPDOWN--';
+                opt1.value = '0';
+                dropdown1.appendChild(opt1);
+
+
+                const opt2 = document.createElement('option');
+                opt2.text = 'WORKING';
+                opt2.value = '1';
+                dropdown1.appendChild(opt2);
+
+                const opt3 = document.createElement('option');
+                opt3.text = 'NOT WORKING';
+                opt3.value = '2';
+                dropdown1.appendChild(opt3);
+
+                cell4.appendChild(dropdown1);
+
+
+                //--------------------------------------------------------
+
+                const dropdownValue = {};
+
+                dropdown1.addEventListener('change', function () {
+                    dropdownValue[item.DEVICE_NO] = this.value;
+                })
+                // dropdown
+
+                const dropdown = document.createElement('select');
+                dropdown.id = 'myDropdown2';
+
+                // Create and add options to the select element
+                const option1 = document.createElement('option');
+                option1.text = '--SELECT DROPDOWN--';
+                option1.value = '0';
+                dropdown.appendChild(option1);
+
+
+                const option2 = document.createElement('option');
+                option2.text = 'PERSONAL';
+                option2.value = '1';
+                dropdown.appendChild(option2);
+
+                const option3 = document.createElement('option');
+                option3.text = 'OFFICAL';
+                option3.value = '2';
+                dropdown.appendChild(option3);
+
+                cell6.appendChild(dropdown);
+
+                //-----------------------------------------------------------------------------------------------------//
+                //  ;
+                const dropdownValues = {};
+
+                dropdown.addEventListener('change', function () {
+                    dropdownValues[item.DEVICE_NO] = this.value;
+                });
+
+
+
+                // ------------UPDATE BUTTON------------------------
+
+                const button = document.createElement('button');
+                button.textContent = 'UPDATE'; // Set the text content of the button
+
+                button.setAttribute('id', 'updateButton');
+
+
+                cell7.appendChild(button);
+
+                button.addEventListener('click', function () {
+                    // Access the dropdown value for this row
+
+                    const drop1 = dropdown.value;
+                    const drop2 = dropdown1.value;
+                    const rmtext = textField.value;
+
+
+                    const check = validateInputs(drop1, drop2, rmtext);
+
+                    if (check == 111) {
+                        alert("Please fill the data ..");
+
+                    }
+                    else {
+                        const RemarkText = textField.value;   //REMARKS
+
+                        const wStatus = dropdownValue[item.DEVICE_NO];   
+                        const iID = dropdownValues[item.DEVICE_NO];         
+                        const DTYpe = item.DEVICETYPE;
+                        const DNo = item.DEVICE_NO;
+                        const SNo = item.SL_NO;
+
+                        PostData(DTYpe, wStatus, RemarkText, DNo, SNo, iID);
+
+                    }
+
+                });
+
+
+                // Function to validate inputs
+                function validateInputs(drop1, drop2, rmtext) {
+                    ;
+                    // Check if any of the dropdowns have the default value '0'
+                    if (drop1 == '0' || drop2 == '0' || rmtext == null || rmtext == "") {
+                        return 111;
+                    }
+                    else {
+                        return 222;
+                                            }
+                }
+            });
+
+        }
+
+    </script>
+
+    <script>
+        //POST API ----------------------------
+        // number(branch id)~device type~working status~remark~device no~slno~ind id~user id
+        function PostAPI(indata) {
+
+            var _link = '';
+            var result='';
+            if (document.location.hostname == 'localhost') { _link = "/Others/postAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Others/postAPIData"; }
+             
+            indata = 'IND_DEVICE_UPDATION' + '^' + indata;
+         
+            $.ajax({
+                type: "POST",
+                url: _link,
+                data: {datas: indata },
+                async: false,
+                success: function (response) {
+                    result = response;
+                }
+            });
+
+            var access_code = '';
+            var res1 = '';
+            
+            res1 = result;
+            access_code = JSON.parse(res1);
+            res1 = access_code[0].RESPONSE;
+            alert(res1);
+        }
+
+
+        function PostData(DTYpe, wStatus, RemarkText, DNo, SNo, iID)
+        {
+
+            var user = '@ViewData["EmpCode"]';
+            var brid = '@ViewData["BrID"]';
+
+            var baselink = '@ViewData["baseurl"]';
+            const   indata= brid + '~' + DTYpe + '~' + wStatus + '~' + RemarkText + '~' + DNo + '~' + SNo + '~' + user + '~' + user + '~' + iID;
+
+           PostAPI(indata);
+                             
+           reloadFunction();
+        }
+
+    </script>
+    <script>   //----redirect to index page
+
+        function loadIndex() {
+
+            var root = '';
+            var baselink = '@ViewData["baseurl"]';
+            var id = '@ViewData["HeadName"]';
+
+            if (document.location.hostname == 'localhost') {
+                window.location.href = "/Others/Index?datas=" + id;
+            }
+            else {
+                root = '@ViewData["root"]';
+                domainurl = baselink + root;
+                window.location.href = domainurl + "/Others/Index?datas=" + id;
+            }
+         
+        }
+    </script>
+    
+
+</body>
+</html>
+
