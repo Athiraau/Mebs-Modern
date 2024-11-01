@@ -1,0 +1,414 @@
+﻿@{
+    ViewData["Title"] = "cancel_melting_lot";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="~/css/index.css">
+    <script src="~/js/site.js"></script>
+
+    <style>
+        .border {
+            background-color: #f3fdff;
+            width: 782px;
+            height: 776px;
+        }
+
+        .d-flex {
+            background-color: #153846;
+            font-weight: 500;
+            color: white;
+            height: 50px;
+            width: 780px;
+        }
+
+        .row {
+            margin-top: 27px;
+            width: 780px;
+            font-size: 15px
+        }
+
+        .col-md-6 {
+            font-display: auto;
+            font-weight: 500;
+            font-family: Arial;
+            font-size: medium;
+        }
+
+        .form-group {
+            margin-left: 165px;
+            margin-top: 44px;
+            width: 780px;
+            margin-left: 3px;
+            margin-top: 70px;
+        }
+
+        .alert-info {
+            background-color: #d3d3d3;
+            width: 150px;
+        }
+
+        .form-group1 {
+            margin-left: 170px;
+        }
+
+        .btn {
+            /*   background-image: linear-gradient(to right, #7C8363 0%, #31473A 51%, #EDF4F2 100%); */
+            background-color: #153846;
+            text-transform: uppercase;
+            transition: 0.5s;
+            padding: 10px;
+            background-size: 200% auto;
+            color: white;
+            border-radius: 10px;
+            border: none;
+            display: block;
+            width: 70px;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        }
+
+        .subrow {
+            margin-top: 20px;
+            font-size: 13px;
+            font-weight: 800;
+            margin-left: -155px;
+        }
+    </style>
+
+</head>
+
+
+
+<body>
+    <div class="pagecontiner">
+        <div class="border">
+            <div class="d-flex justify-content-center align-items-center">
+                <span class="text-center">CANCEL MELTING LOT </span>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-6  text-center">
+                    <label for="lot">Lot Number :</label>
+                </div>
+                <div class="col-md-3 col-12 text-center">
+                    <select style="font-size: 12px;width: 200px; height:60px;height: 35px;width: 222px;" id="lotidSelect" onchange="getdetails();">
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row" align="center">
+                <span class="col-sm-3 col-form-label form-label">Total gross weight:</span>
+                <div class="col-sm-3">
+                    <input type="text" id="gwt" class="alert-info" readonly="readonly" />
+                </div>
+
+                <span class="col-sm-3 col-form-label form-label">Total stone weight:</span>
+                <div class="col-sm-3">
+                    <input type="text" id="stonewt" class="alert-info" readonly="readonly" />
+                </div>
+
+            </div>
+
+            <div class="form-group row" align="center">
+                <span class="col-sm-3 col-form-label form-label">Total net weight:</span>
+                <div class="col-sm-3">
+                    <input type="text" id="nwt" class="alert-info" readonly="readonly" />
+                </div>
+                <span class="col-sm-3 col-form-label form-label">Total standard weight:</span>
+                <div class="col-sm-3">
+                    <input type="text" id="swt" class="alert-info" readonly="readonly" />
+                </div>
+            </div>
+
+            <div class="form-group row" align="center">
+                <span class="col-sm-3 col-form-label form-label">Total Transfer weight:</span>
+                <div class="col-sm-3">
+                    <input type="text" id="Twt" class="alert-info" readonly="readonly" />
+                </div>
+                <span class="col-sm-3 col-form-label form-label">Total Melted  weight:</span>
+                <div class="col-sm-3">
+                    <input type="text" id="Mwt" class="alert-info" readonly="readonly" />
+                </div>
+
+
+                <div class="form-group row" align="center">
+                    <span class="col-sm-3 col-form-label form-label">Total Weighing Balance weight:</span>
+                    <div class="col-sm-3">
+                        <input type="text" id="Bwt" class="alert-info" readonly="readonly" />
+                    </div>
+
+                    <d class="form-group1 row" align="center">
+                        <span class="col-sm-3 col-form-label form-label" style="margin-left: -72px;">Remarks:</span>
+                        <div class="col-sm-3">
+                            <input type="text" id="remark" class="form-control" />
+                        </div>
+
+
+                        <div class="form-container">
+                            <div class="form-group row">
+                                <div class="col-sm-5" id="data" style="margin-left: -144px;">
+                                    <button class="btn" onclick="callAPIResponse2();">SUBMIT</button>
+                                </div>
+                                <div class="col-sm-5" id="app">
+                                    <button class="btn" onclick="ExitForm();" style="width: 95px;">CANCEL</button>
+                                </div>
+
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.onload = function OnloadFunction() {
+            ActiveLoginCheck();
+            EmpAccess();
+
+        }
+        function ActiveLoginCheck() {
+            var user = '@ViewData["EmpCode"]';
+            if (user == null || user == '') {
+                alert('INACTIVE SESSION');
+                loadIndex();
+            }
+
+        }
+        function EmpAccess() {
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+
+            const EmpCode = '@ViewData["EmpCode"]';
+
+            indata = "Mebs_Auction" + "^" + "cancellotaccess" + "~" + EmpCode;
+
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+                    reqs = response;
+
+
+
+                }
+
+            });
+
+
+            reqs = JSON.parse(reqs);
+            reqs = reqs[0].RESULT;
+
+            if (reqs > 0) {
+                callAPIResponse();
+
+            }
+            else {
+
+                alert("You are not Authorised to do this Job");
+                ExitForm();
+            }
+        }
+        //EXIT
+        function ExitForm() {
+
+            var root = '';
+            var baselink = '@ViewData["baseurl"]';
+            var id = '@ViewData["HeadName"]';
+
+            if (document.location.hostname == 'localhost') {
+                window.location.href = "/Loans/Index?datas=" + id;
+            }
+            else {
+                root = '@ViewData["root"]';
+                domainurl = baselink + root;
+                window.location.href = domainurl + "/Loans/Index?datas=" + id;
+            }
+
+        }
+
+
+        function callAPIResponse() {
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+
+
+
+            //indata = "IND_DEVICE_UPDATION_LOAD" + "^" + "400456";
+            indata = "Mebs_Auction" + "^" + "mload_lotid" + "~" + 1;
+
+            //indata = "mload_lotid" + "^" + 1;
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    const data2 = JSON.parse(response);
+                    LoadDropDown(data2);
+                },
+                error: function (response) {
+                    // alert("failed");
+                }
+            });
+        }
+
+        function LoadDropDown(data) {
+            const options = formatDataAsArray(data);
+            lotidSelect.innerHTML = '';
+            options.forEach(option => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option.value;
+                optionElement.text = option.label;
+                lotidSelect.add(optionElement);
+            });
+        }
+
+        function formatDataAsArray(data) {
+            if (Array.isArray(data) && data.length > 0) {
+                return data.map(item => ({
+                    value: item["ID"],
+                    label: item["LOT"]
+                }));
+            } else {
+                return [];
+            }
+        }
+
+
+        function getdetails(data) {
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+
+            var lotid = document.getElementById("lotidSelect").value;
+            indata = "Mebs_Auction" + "^" + "cancelmelt" + "~" + lotid;
+            // indata = "cancelmelt" + "^" + lotid;
+            var response = '';
+            $.ajax({
+
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+                    const data = JSON.parse(response);
+                    showdetails(data);
+                },
+                error: function (response) {
+                    //alert("failed");
+                }
+            });
+        }
+
+        function showdetails(data) {
+            data.forEach(item => {
+
+                document.getElementById('gwt').value = item.GROSSWT;
+                document.getElementById('stonewt').value = item.STONEWT;
+                document.getElementById('nwt').value = item.NETWT;
+                document.getElementById('swt').value = item.STDWT;
+                document.getElementById('Twt').value = item.TFR;
+                document.getElementById('Mwt').value = item.WB;
+                document.getElementById('Bwt').value = item.MELT_WT;
+
+            });
+        }
+
+        function callAPIResponse2() {
+            Validate();
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/postAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/postAPIData"; }
+
+            var lotid = document.getElementById("lotidSelect").value;
+            const EmpCode = '@ViewData["EmpCode"]';
+            var brid = '@ViewData["BrID"]';
+            var remarks = document.getElementById("remark").value;
+            indata = "submitmelt" + "^" + lotid + "~" + remarks + "~" + 0 + "~" + EmpCode;
+            var response = '';
+            $.ajax({
+                type: "POST",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+                    slno = response;
+                }
+            });
+            slno = slno.replace(/[&\/\\#,+()$~%.'"*?<>{}]/g, ''); //slno.replace("[", "");
+            slno = slno.replace("]", "");
+            slno = slno.replace("[", "");
+            var ArrNames = slno.split(":");
+            var Name1 = ArrNames[0];//alert(Name1);
+            var Name2 = ArrNames[1];//alert(Name2);
+            var Name3 = ArrNames[2];
+            
+            alert(Name3);
+            resetForm();
+
+
+
+        }
+
+
+        function Validate() {
+            var remark = document.getElementById("remark").value;
+            // alert(remark);
+            if (remark == "") {
+                //If the "Please Select" option is selected display error.
+                alert("Please Enter Remarks");
+                document.getElementById("btn").disabled = true;
+                return 0;
+
+
+            }
+            return 1;
+        }
+
+        function resetForm() {
+            var root = '';
+            var baselink = '@ViewData["baseurl"]';
+            var id = '@ViewData["HeadName"]';
+
+            if (document.location.hostname == 'localhost') {
+                window.location.href = "/loans/cancel_melting_lot?datas=" + id;
+            }
+            else {
+                root = '@ViewData["root"]';
+                domainurl = baselink + root;
+                window.location.href = domainurl + "/loans/cancel_melting_lot?datas=" + id;
+            }
+
+
+        }
+
+
+
+
+
+
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

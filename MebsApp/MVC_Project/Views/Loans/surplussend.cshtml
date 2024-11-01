@@ -1,0 +1,478 @@
+﻿
+@{
+    ViewData["Title"] = "surplussend";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="~/css/index.css">
+    <script src="~/js/site.js"></script>
+    <link rel="stylesheet" href="~/css/ProjectStyle.css">
+
+
+
+    <style>
+
+        .completionyear {
+            width: 30%;
+        }
+
+
+        .form-container {
+            border-radius: 8px;
+            padding: 15px;
+            background-color: #ffff;
+            /*box-shadow: 0 2px 5px rgba(17,45,78,1);*/
+        }
+
+        .form-control {
+            height: 30px;
+            font-size: small;
+        }
+
+        .form-label {
+            font-weight: 500;
+            font-size: small;
+            color: #27005D;
+        }
+
+        .label1 {
+            font-size: small;
+            color: #27005D;
+        }
+
+        .btn {
+            display: inline;
+            padding: 6px 10px;
+            font-size: 10px;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            background-color: #006633;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+
+
+            .btn:hover {
+                background-color: #99ff99;
+            }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            margin-top: 12px;
+        }
+
+            .btn-group .btn {
+                margin: 0 50px;
+            }
+
+
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: initial;
+        }
+
+        .img1 {
+            display: none;
+            cursor: pointer;
+        }
+
+        th,
+        td {
+            border: 1px solid white;
+            text-align: left;
+            padding: 8px;
+            font-size: initial;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            font-size: initial;
+        }
+
+        .fs-10 {
+            font-size: 10px;
+        }
+
+    </style>
+
+</head>
+<body>
+
+
+    <div class="pagecontiner">
+        <div class="d-flex justify-content-center align-items-center titleBg";">
+            <span class="text-center">SENDING OF CHEQUE</span>
+        </div>
+        <div class="form-container">
+            <div class="form-group row">
+                <label for="Bank" class="col-sm-3 col-form-label form-label">PAYMENT ID</label>
+                <div class="col-sm-6">
+                    <select id="lotidSelect" onchange="getdetails();" class="form-control"></select>
+                </div>
+            </div>
+
+            <br />
+
+
+
+            <div class="form-group row">
+                <label for="zon" class="col-sm-3 col-form-label form-label">NET SURPLUS TO BE PAID</label>
+                <div class="col-sm-6">
+                    <input type="text" id="surplus" class="form-control" readonly="readonly">
+
+                </div>
+            </div>
+
+
+
+
+            <div class="form-group row">
+                <label for="zon" class="col-sm-3 col-form-label form-label">NET AMOUNT</label>
+                <div class="col-sm-6">
+                    <input type="text" id="netamnt" class="form-control" readonly="readonly">
+
+                </div>
+            </div>
+
+
+
+
+            <div class="form-group row">
+                <label for="zon" class="col-sm-3 col-form-label form-label">CUSTOMER ID</label>
+                <div class="col-sm-6">
+                    <input type="text" id="custid" class="form-control" readonly="readonly">
+
+                </div>
+            </div>
+
+
+            <div class="form-group row">
+                <label for="zon" class="col-sm-3 col-form-label form-label">CUSTOMER NAME</label>
+                <div class="col-sm-6">
+                    <input type="text" id="custnme" class="form-control" readonly="readonly">
+
+                </div>
+            </div>
+
+
+
+
+
+            <div class="form-group row">
+                <label for="zon" class="col-sm-3 col-form-label form-label">BANK NAME</label>
+                <div class="col-sm-6">
+                    <input type="text" id="bnknme" class="form-control" readonly="readonly">
+
+                </div>
+            </div>
+
+
+
+
+            <div class="form-group row">
+                <label for="zone" class="col-sm-3 col-form-label form-label">ENTER CHEQUE NUMBER</label>
+                <div class="col-sm-6">
+
+                    <input type="text" id="chqno" class="form-control" maxlength=7 placeholder="Enter cheque number....." />
+
+                </div>
+
+            </div>
+
+
+            <div class="form-group row">
+                <label for="zone" class="col-sm-3 col-form-label form-label">ENTER R/L NUMBER</label>
+                <div class="col-sm-6">
+
+                    <input type="text" id="txtrl" class="form-control" maxlength=7 placeholder="Enter r/l number....." />
+
+                </div>
+
+            </div>
+
+            <div class="form-group row">
+                <div class="col-sm-3 col-form-label form-label">
+                    <label for="fromDate" style="font-size:12px">ENTER SEND DATE:</label>
+                </div>
+                <div class="col-sm-3 col-form-label form-label">
+                    <input type="text" id="frmDate" value="" name="fromDate" readonly="readonly">
+
+                </div>
+            </div>
+
+            <div class="btn-group  label1">
+                <button class="commonBtn" onclick="ExitForm()">Exit</button>
+                <button class="commonBtn" id="submitBtn" onclick="callAPIResponse2();">Submit</button>
+            </div>
+
+        </div>
+    </div>
+    <script>
+        window.onload = function OnloadFunction() {
+            ActiveLoginCheck();
+            callAPIResponse();
+            // EmpAccess();
+
+        }
+        function ActiveLoginCheck() {
+            var user = '@ViewData["EmpCode"]';
+            if (user == null || user == '') {
+                alert('INACTIVE SESSION');
+                loadIndex();
+            }
+
+        }
+
+        function EmpAccess() {
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+
+            const EmpCode = '@ViewData["EmpCode"]';
+
+            indata = "Mebs_Auction" + "^" + "chequeaccess" + "~" + EmpCode;
+
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+                    reqs = response;
+
+                }
+
+            });
+
+
+            reqs = JSON.parse(reqs);
+            reqs = reqs[0].RESULT;
+
+            if (reqs > 0) {
+                callAPIResponse();
+
+            }
+            else {
+
+                alert("You are not Authorised to do this Job");
+                ExitForm();
+            }
+        }
+
+        function ExitForm() {
+
+            var root = '';
+            var baselink = '@ViewData["baseurl"]';
+            var id = '@ViewData["HeadName"]';
+
+            if (document.location.hostname == 'localhost') {
+                window.location.href = "/Loans/Index?datas=" + id;
+            }
+            else {
+                root = '@ViewData["root"]';
+                domainurl = baselink + root;
+                window.location.href = domainurl + "/Loans/Index?datas=" + id;
+            }
+
+        }
+
+        function callAPIResponse() {
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+
+
+
+            //indata = "IND_DEVICE_UPDATION_LOAD" + "^" + "400456";
+            indata = "Mebs_Auction" + "^" + "Load_payid" + "~" + 1;
+
+            //indata = "mload_lotid" + "^" + 1;
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    const data2 = JSON.parse(response);
+                    LoadDropDown(data2);
+                },
+                error: function (response) {
+                    // alert("failed");
+                }
+            });
+        }
+
+        function LoadDropDown(data) {
+            const options = formatDataAsArray(data);
+            lotidSelect.innerHTML = '';
+            options.forEach(option => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option.value;
+                optionElement.text = option.label;
+                lotidSelect.add(optionElement);
+            });
+        }
+
+        function formatDataAsArray(data) {
+            if (Array.isArray(data) && data.length > 0) {
+                return data.map(item => ({
+                    value: item["DETAILS"],
+                    label: item["DETAILS"]
+                }));
+            } else {
+                return [];
+            }
+        }
+
+
+        function getdetails(data) {
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+
+            var payid = document.getElementById("lotidSelect").value;
+            indata = "Mebs_Auction" + "^" + "Load_data" + "~" + payid;
+            // indata = "cancelmelt" + "^" + lotid;
+            var response = '';
+            $.ajax({
+
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+                    const data = JSON.parse(response);
+                    showdetails(data);
+                },
+                error: function (response) {
+                    //alert("failed");
+                }
+            });
+        }
+
+        function showdetails(data) {
+            data.forEach(item => {
+
+                document.getElementById('surplus').value = item.TOT_SURPLUS;
+                document.getElementById('netamnt').value = item.NET_PAY;
+                document.getElementById('custid').value = item.CUST_ID;
+                document.getElementById('custnme').value = item.CUST_NAME;
+                document.getElementById('bnknme').value = item.DATA;
+                document.getElementById('frmDate').value = item.SEND_DT;
+
+
+            });
+        }
+
+
+        function callAPIResponse2() {
+
+            Validate1();
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/postAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/postAPIData"; }
+            const EmpCode = '@ViewData["EmpCode"]';
+            var brid = '@ViewData["BrID"]';
+
+            var surpluspayid = document.getElementById("lotidSelect").value;
+            var totalsurplus = document.getElementById("surplus").value;
+            var netamount = document.getElementById("netamnt").value;
+            var customerid = document.getElementById("custid").value;
+            var customername = document.getElementById("custnme").value;
+            var bankname = document.getElementById("bnknme").value;
+            var senddate = document.getElementById("frmDate").value;
+            var chequeno = document.getElementById("chqno").value;
+            var rlno = document.getElementById("txtrl").value;
+
+
+            indata = "Mebs_Auction" + "^" + "chequesend_confirm" + "~" + surpluspayid + "*" + totalsurplus + "*" + netamount + "*" + customerid + "*" + customername + "*" + bankname + "*" + senddate + "*" + chequeno + "*" + rlno + "*" + EmpCode;
+            var response = '';
+            $.ajax({
+                type: "POST",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+                    slno = response;
+                }
+            });
+            slno = JSON.parse(slno);
+            slno = slno[0].RESULT;
+            alert(slno);
+            resetForm();
+
+
+
+        }
+
+        function resetForm() {
+            var root = '';
+            var baselink = '@ViewData["baseurl"]';
+            var id = '@ViewData["HeadName"]';
+
+            if (document.location.hostname == 'localhost') {
+                window.location.href = "/loans/surplussend?datas=" + id;
+            }
+            else {
+                root = '@ViewData["root"]';
+                domainurl = baselink + root;
+                window.location.href = domainurl + "/loans/surplussend?datas=" + id;
+            }
+
+
+        }
+
+        function Validate1() {
+
+            var surpluspayid = document.getElementById("lotidSelect").value;
+            var chequeno = document.getElementById("chqno").value;
+            var rlno = document.getElementById("txtrl").value;
+
+
+
+            if (surpluspayid == "0") {
+                alert("Select surplus payid..!")
+                return;
+            }
+            else if (chequeno == "") {
+                alert("Enter cheque no.!")
+                return;
+            }
+            else if (rlno == "") {
+                alert("Enter RL no.!")
+                return;
+            }
+
+        }
+
+
+
+
+
+
+
+    </script>
+
+
+
+
+</body>
+
+
+</html>
+

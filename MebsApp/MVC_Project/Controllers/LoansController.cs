@@ -727,7 +727,6 @@ namespace MVC_Project.Controllers
             return View(model);
         }
 
-
         public IActionResult ddpending_report(string datas)
         {
 
@@ -938,10 +937,6 @@ namespace MVC_Project.Controllers
 
         }
 
-
-
-
-
         public IActionResult Deathcustomerrefundreport(string datas)
         {
 
@@ -993,8 +988,6 @@ namespace MVC_Project.Controllers
             return View(model);
 
         }
-
-
 
         public IActionResult SMS(string datas)
         {
@@ -1123,14 +1116,31 @@ namespace MVC_Project.Controllers
         }
         public IActionResult realization(string datas)
         {
-
             string flag = datas;
             ViewData["baseurl"] = baseurl;
             ViewData["root"] = rootfolder;
             ViewData["HeadName"] = datas;
+            ViewData["user"] = HttpContext.Session.GetString("ecode");
+            var empcode = HttpContext.Session.GetString("ecode");
+            var empname = HttpContext.Session.GetString("EmpName");
+            var branchname = HttpContext.Session.GetString("BrName");
+            var UserId = HttpContext.Session.GetString("UserId");
+            var brID = HttpContext.Session.GetString("BrID");
 
+            ViewData["BrID"] = brID;
+            MenuListModel model = new MenuListModel();
+            model = (MenuListModel)_Grepo.GetMainMenuData(UserId, baseurl, MainHeadID);
 
+            ViewData["EmpCode"] = UserId;
 
+            return View(model);
+        }
+        public IActionResult PLEDGEAPPROVAL(string datas)
+        {
+            string flag = datas;
+            ViewData["baseurl"] = baseurl;
+            ViewData["root"] = rootfolder;
+            ViewData["HeadName"] = datas;
             ViewData["user"] = HttpContext.Session.GetString("ecode");
             var empcode = HttpContext.Session.GetString("ecode");
             var empname = HttpContext.Session.GetString("EmpName");
@@ -1147,6 +1157,143 @@ namespace MVC_Project.Controllers
             return View(model);
         }
 
+        public IActionResult AUCTIONZMMAPPING(string datas)
+        {
+            string flag = datas;
+            ViewData["baseurl"] = baseurl;
+            ViewData["root"] = rootfolder;
+            ViewData["HeadName"] = datas;
+            ViewData["user"] = HttpContext.Session.GetString("ecode");
+            var empcode = HttpContext.Session.GetString("ecode");
+            var empname = HttpContext.Session.GetString("EmpName");
+            var branchname = HttpContext.Session.GetString("BrName");
+            var UserId = HttpContext.Session.GetString("UserId");
+            var brID = HttpContext.Session.GetString("BrID");
+
+            ViewData["BrID"] = brID;
+            MenuListModel model = new MenuListModel();
+            model = (MenuListModel)_Grepo.GetMainMenuData(UserId, baseurl, MainHeadID);
+
+            ViewData["EmpCode"] = UserId;
+
+            return View(model);
+        }
+
+        public IActionResult PLEDGEEXCEPTIONREMARK(string datas)
+        {
+            string flag = datas;
+            ViewData["baseurl"] = baseurl;
+            ViewData["root"] = rootfolder;
+            ViewData["HeadName"] = datas;
+            ViewData["user"] = HttpContext.Session.GetString("ecode");
+            var empcode = HttpContext.Session.GetString("ecode");
+            var empname = HttpContext.Session.GetString("EmpName");
+            var branchname = HttpContext.Session.GetString("BrName");
+            var UserId = HttpContext.Session.GetString("UserId");
+            var brID = HttpContext.Session.GetString("BrID");
+
+            ViewData["BrID"] = brID;
+            MenuListModel model = new MenuListModel();
+            model = (MenuListModel)_Grepo.GetMainMenuData(UserId, baseurl, MainHeadID);
+
+            ViewData["EmpCode"] = UserId;
+
+            return View(model);
+        }
+
+        public IActionResult cancel_melting_lot(string datas)
+        {
+            string flag = datas;
+            ViewData["baseurl"] = baseurl;
+            ViewData["root"] = rootfolder;
+            ViewData["HeadName"] = datas;
+            ViewData["user"] = HttpContext.Session.GetString("ecode");
+            var empcode = HttpContext.Session.GetString("ecode");
+            var empname = HttpContext.Session.GetString("EmpName");
+            var branchname = HttpContext.Session.GetString("BrName");
+            var UserId = HttpContext.Session.GetString("UserId");
+            var brID = HttpContext.Session.GetString("BrID");
+
+            ViewData["BrID"] = brID;
+            MenuListModel model = new MenuListModel();
+            model = (MenuListModel)_Grepo.GetMainMenuData(UserId, baseurl, MainHeadID);
+
+            ViewData["EmpCode"] = UserId;
+
+            return View(model);
+        }
+
+        public IActionResult AUCTIONEERPUNCHAPPROVE(string datas)
+        {
+            string flag = datas;
+            ViewData["baseurl"] = baseurl;
+            ViewData["root"] = rootfolder;
+            ViewData["HeadName"] = datas;
+            ViewData["user"] = HttpContext.Session.GetString("ecode");
+            var empcode = HttpContext.Session.GetString("ecode");
+            var empname = HttpContext.Session.GetString("EmpName");
+            var branchname = HttpContext.Session.GetString("BrName");
+            var UserId = HttpContext.Session.GetString("UserId");
+            var brID = HttpContext.Session.GetString("BrID");
+
+            ViewData["BrID"] = brID;
+            MenuListModel model = new MenuListModel();
+            model = (MenuListModel)_Grepo.GetMainMenuData(UserId, baseurl, MainHeadID);
+
+            ViewData["EmpCode"] = UserId;
+
+            return View(model);
+        }
+
+        public IActionResult AUCTIONEERPUNCHREQUEST(string datas)
+        {
+            string flag = datas;
+            ViewData["baseurl"] = baseurl;
+            ViewData["root"] = rootfolder;
+            ViewData["HeadName"] = datas;
+            ViewData["user"] = HttpContext.Session.GetString("ecode");
+            var empcode = HttpContext.Session.GetString("ecode");
+            var empname = HttpContext.Session.GetString("EmpName");
+            var branchname = HttpContext.Session.GetString("BrName");
+            var UserId = HttpContext.Session.GetString("UserId");
+            var brID = HttpContext.Session.GetString("BrID");
+
+            ViewData["BrID"] = brID;
+            MenuListModel model = new MenuListModel();
+            model = (MenuListModel)_Grepo.GetMainMenuData(UserId, baseurl, MainHeadID);
+
+            ViewData["EmpCode"] = UserId;
+
+            return View(model);
+        }
+
+        public IActionResult surplussend(string datas)
+        {
+            ViewData["baseurl"] = baseurl;
+            ViewData["root"] = rootfolder;
+            ViewData["HeadName"] = datas;
+
+            // string decryptedData = " ";
+            //  decryptedData = Convert.ToString(_repo.DecryptStringAES(datas));
+            //  decryptedData = "18906";
+
+            ViewData["user"] = HttpContext.Session.GetString("ecode");
+            var empcode = HttpContext.Session.GetString("ecode");
+            var empname = HttpContext.Session.GetString("EmpName");
+            var branchname = HttpContext.Session.GetString("BrName");
+            var UserId = HttpContext.Session.GetString("UserId");
+            var brID = HttpContext.Session.GetString("BrID");
+
+            ViewData["BrID"] = brID;
+            MenuListModel model = new MenuListModel();
+            model = (MenuListModel)_Grepo.GetMainMenuData(UserId, baseurl, MainHeadID);
+
+            ViewData["EmpCode"] = UserId;
+
+
+            return View(model);
+
+        }
         // --------------------------------------------------------------------------------------------------------------------------------------//
         public string getAPIData(string datas)
         {
@@ -1160,21 +1307,19 @@ namespace MVC_Project.Controllers
             return resData;
         }
 
-
-        public dynamic DocumentUpload(string datas)     //upload API Response
+        public async Task <dynamic> DocumentUpload(string datas)     //upload API Response
         {
             string[] DataArray = datas.Split('^');
             string ApiPath = "MebsAppModuleApi/api/LoansModuleAPI/LoansDocumentUpload";
 
             string query = DataArray[0];
             string code = DataArray[1];
-            var response = _Prepo.UploadDocument(query, code, baseurl, ApiPath);
+            var response =await _Prepo.UploadDocument(query, code, baseurl, ApiPath);
             return response.ToString();
         }
+                        
+       public async Task<dynamic> postAPIData(string datas)
 
-
-        [HttpPost]
-        public dynamic postAPIData(string datas)
         {
 
             string ApiPath = "MebsAppModuleApi/api/LoansModuleAPI/PostDataLoans";
@@ -1182,11 +1327,11 @@ namespace MVC_Project.Controllers
 
             string flag = DataArray[0];
             string indata = DataArray[1];
-            var response = _Prepo.PostInternalPageData(indata, flag, baseurl, ApiPath);
+            var response = await _Prepo.PostInternalPageData(indata, flag, baseurl, ApiPath);
             return response.ToString();
+           // return Ok(response);
+
         }
-
-
 
         public dynamic OTPHelper(string datas)
         {
@@ -1232,7 +1377,6 @@ namespace MVC_Project.Controllers
             var resData = _Grepo.PANHelper(pan_no, emp, firmid, baseurl, ApiPath);
             return resData;
         }
-
 
         public dynamic EmailPatternValidation(string datas)
         {

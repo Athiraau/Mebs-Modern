@@ -1,0 +1,478 @@
+﻿@{
+    ViewData["Title"] = "PLEDGEEXCEPTIONREMARK";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+
+
+
+    <link rel="stylesheet" href="~/css/index.css">
+    <script src="~/js/site.js"></script>
+
+
+    <style>
+
+        .completionyear {
+            width: 30%;
+        }
+
+
+        .form-container {
+            border-radius: 8px;
+            padding: 15px;
+            background-color: #ebdef0;
+            /*box-shadow: 0 2px 5px rgba(17,45,78,1);*/
+        }
+
+        .form-control {
+            height: 30px;
+            font-size: small;
+        }
+
+        .form-label {
+            font-weight: 500;
+            font-size: small;
+            color: #27005D;
+        }
+
+        .label1 {
+            font-size: small;
+            color: #27005D;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 6px 10px;
+            font-size: 10px;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            background-color: #9b59b6;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+            .btn:hover {
+                background-color: pink;
+            }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            margin-top: 12px;
+        }
+
+            .btn-group .btn {
+                margin: 0 50px;
+            }
+
+        .col-sm-3 {
+            margin-top: 12px;
+        }
+    </style>
+
+</head>
+
+
+
+<body>
+
+
+    <div class="pagecontiner">
+        <div class="d-flex justify-content-center align-items-center" style="background-color: #9b59b6; font-weight: 600; color:white;height:50px">
+            <span class="text-center">PLEDGE EXCEPTION REMOVAL-RECOMMEND</span>
+        </div>
+        <div class="form-container">
+            <div class="form-group row">
+                <label for="Pledgeno" class="col-sm-3 col-form-label form-label">PledgeNo</label>
+                <div class="col-sm-9">
+                    <select id="pled" class="form-control" onchange="callAPIResponse1();">
+                        <option value="SELECT">SELECT</option>
+
+                    </select>
+                </div>
+            </div>
+
+
+            <div id="branch" style="display:block">
+                <div class="form-group row">
+                    <span class="col-sm-3 col-form-label form-label" style="font-size:11px">Own Branch</span>
+                    <div class="col-sm-3">
+                        <input type="text" id="owbr" class="form-control" />
+                    </div>
+
+                    <span class="col-sm-3 col-form-label form-label" style="font-size:11px">Received Branch</span>
+                    <div class="col-sm-3">
+                        <input type="text" id="Recbr" class="form-control" />
+                    </div>
+                </div>
+            </div>
+
+            <div id="weight" style="display:block">
+                <div class="form-group row">
+                    <span class="col-sm-3 col-form-label form-label" style="font-size:11px">Gross Weight</span>
+                    <div class="col-sm-3">
+                        <input type="text" id="grwt" class="form-control" />
+                    </div>
+
+                    <span class="col-sm-3 col-form-label form-label" style="font-size:11px" oninput="validateInput()">Stone Weight</span>
+                    <div class="col-sm-3">
+                        <input type="text" id="stnwt" class="form-control" />
+                    </div>
+                </div>
+            </div>
+
+            <div id="weit" style="display:block">
+                <div class="form-group row">
+                    <span class="col-sm-3 col-form-label form-label" style="font-size:11px">Net Weight</span>
+                    <div class="col-sm-3">
+                        <input type="text" id="ntwt" class="form-control" />
+                    </div>
+
+                    <span class="col-sm-3 col-form-label form-label" style="font-size:11px" oninput="validateInput()">Standard Weight</span>
+                    <div class="col-sm-3">
+                        <input type="text" id="stdwt" class="form-control" />
+                    </div>
+                </div>
+            </div>
+            <br />
+
+            <div class="form-group row">
+                <label for="remark" class="col-sm-3 col-form-label form-label">Requester Remark</label>
+                <div class="col-sm-9">
+                    <input type="text" id="rem" class="form-control" />
+
+
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="remark1" class="col-sm-3 col-form-label form-label">Recommender Remark</label>
+                <div class="col-sm-9">
+                    <input type="text" id="rem1" class="form-control">
+
+
+                </div>
+
+                <div class="m-3 text-center">
+                    <button type="button" class="btn btn-dark mx-1" onclick="SubmitForm()" style="font-size:11px;">Recommend</button>
+                    <button type="button" class="btn btn-dark mx-1" style="font-size:11px;" onclick="loadIndex()">Exit</button>
+
+                </div>
+
+            </div>
+
+
+
+
+        </div>
+    </div>
+
+    <script>
+
+
+
+        function ActiveLoginCheck() {
+            var user = '@ViewData["EmpCode"]';
+            if (user == null || user == '') {
+                alert('INACTIVE SESSION');
+                loadIndex();
+            }
+
+        }
+
+
+        function checkUserAccess() {
+
+            var ecode = '@ViewData["EmpCode"]';
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+
+
+            var indata = 'Mebs_Auction' + '^' + 'plremkaccess' + '~' + ecode;
+
+            const a = "";
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+                    res = response;
+
+
+                },
+                error: function (response) {
+
+
+                }
+            });
+
+            res = JSON.parse(res);
+            res = res[0].RESULT;
+
+            if (res != 1) {
+                alert("You are not authorized to view this page...");
+                loadIndex();
+            }
+            else {
+                callAPIResponse();
+            }
+
+
+        }
+
+
+
+
+
+        function loadIndex() {
+
+            var root = '';
+            var baselink = '@ViewData["baseurl"]';
+            var id = '@ViewData["HeadName"]';
+
+            if (document.location.hostname == 'localhost') {
+                window.location.href = "/loans/Index?datas=" + id;
+            }
+            else {
+                root = '@ViewData["root"]';
+                domainurl = baselink + root;
+                window.location.href = domainurl + "/loans/Index?datas=" + id;
+            }
+
+        }
+
+        window.onload = function OnloadFunction() {
+
+            ActiveLoginCheck();
+            checkUserAccess();
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        function callAPIResponse() {
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+
+
+
+
+            indata = 'Mebs_Auction' + '^' + "load_pledge" + "~" + 1;
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    const data2 = JSON.parse(response);
+                    LoadDropDown(data2);
+                },
+                error: function (response) {
+
+                }
+            });
+        }
+
+
+
+        function LoadDropDown(data) {
+            const options = formatDataAsArray(data);
+            pled.innerHTML = '';
+            options.forEach(option => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option.value;
+                optionElement.text = option.label;
+                pled.add(optionElement);
+            });
+        }
+        function formatDataAsArray(data) {
+            if (Array.isArray(data) && data.length > 0) {
+                return data.map(item => ({
+                    value: item["ID"],
+                    label: item["PLD"]
+                }));
+            } else {
+                return [];
+            }
+        }
+
+
+
+        function callAPIResponse1() {
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+            var pledgeno = document.getElementById("pled").value;
+
+
+
+
+            var dataz;
+            indata = 'Mebs_Auction' + '^' + "pledrecommend" + "~" + pledgeno;
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    const data3 = JSON.parse(response);
+
+
+                    loadDatadd(data3);
+
+                },
+                error: function (response) {
+
+                }
+            });
+
+        }
+
+        function loadDatadd(data) {
+
+
+
+
+            data.forEach(item => {
+                 document.getElementById('owbr').value = item.OWNBR;
+                document.getElementById('Recbr').value = item.RECBR;
+                document.getElementById('grwt').value = item.GROSSWT;
+                document.getElementById('stnwt').value = item.STONEWT;
+                document.getElementById('ntwt').value = item.NETWT;
+                document.getElementById('stdwt').value = item.STDWT;
+                document.getElementById('rem').value = item.REM;
+
+            });
+
+
+        }
+
+
+        function SubmitForm() {
+            var s1 = validate();
+            if (!s1 == 1) {
+                return;
+            }
+
+            var s = Validate1();
+
+            if (!s == 1) {
+                return;
+            }
+            const EmpCode = '@ViewData["EmpCode"]';
+
+            const brID = '@ViewData["BrID"]';
+
+            var pledgeno = document.getElementById("pled").value;
+            var remark = document.getElementById("rem1").value;
+
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/postAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/postAPIData"; }
+
+
+            indata = 'pldexremapprove' + '^' + EmpCode + '~' + brID + '~' + pledgeno + '~' + remark;
+
+            const a = "";
+            $.ajax({
+                type: "POST",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    reqs = response;
+
+
+
+                },
+                error: function (response) {
+
+
+                }
+            });
+            reqs = JSON.parse(reqs);
+            reqs = reqs[0].RESULT;
+
+
+            alert(reqs);
+            resetForm();
+        }
+
+
+
+
+        function resetForm() {
+            var root = '';
+            var baselink = '@ViewData["baseurl"]';
+            var id = '@ViewData["HeadName"]';
+
+            if (document.location.hostname == 'localhost') {
+                window.location.href = "/Loans/PLEDGEEXCEPTIONREMARK?datas=" + id;
+            }
+            else {
+                root = '@ViewData["root"]';
+                domainurl = baselink + root;
+                window.location.href = domainurl + "/Loans/PLEDGEEXCEPTIONREMARK?datas=" + id;
+            }
+
+
+        }
+
+        function Validate1() {
+
+            var input = document.getElementById("rem1");
+
+
+
+            if (input.value === "") {
+
+                alert("Please enter recommendation remark");
+                return 0;
+            }
+            return 1;
+        }
+
+        function validate() {
+            var pledgeno = document.getElementById("pled").value;
+            if (pledgeno === "0") {
+                alert("Please select a Pledgeno.");
+                return 0;
+            }
+
+            return 1;
+        }
+
+    </script>
+</body>
+</html>

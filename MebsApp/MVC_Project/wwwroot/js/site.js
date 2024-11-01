@@ -25,6 +25,13 @@ function MenuPageLoader(pageID) {
 
 }
 
+function ErrorMenuPageLoader(pageID) {
+
+   
+    window.location.href = "../Home/PageNotFound";
+
+}
+
 function encrypt(id) {
 
     var key = CryptoJS.enc.Utf8.parse('8080808080808080');

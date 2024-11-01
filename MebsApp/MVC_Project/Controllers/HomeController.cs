@@ -34,15 +34,14 @@ namespace MVC_Project.Controllers
 
        
 
-        public IActionResult Dashboard(string processid)
+        public IActionResult Dashboard(string session)
         {
-            var session = "";
+            var processid = session;
 
 
             if (string.IsNullOrEmpty(processid))
             {
-                session = HttpContext.Session.GetString("SessionVal");
-                processid = session;
+                processid = HttpContext.Session.GetString("SessionVal");
             }
             HttpContext.Session.SetString("SessionVal", processid);
             String[] resession = processid.ToString().Split("¥");    //¥
@@ -225,6 +224,7 @@ namespace MVC_Project.Controllers
 
         public IActionResult Closer(string datas)
         {
+            HttpContext.Session.Clear();
 
             //string k = "Firefox " + datas + "";
             string k = datas;
@@ -232,6 +232,11 @@ namespace MVC_Project.Controllers
             ViewBag.Url = k;
             return View();
 
+        }
+
+        public IActionResult PageNotFound()
+        {
+            return View();
         }
 
 

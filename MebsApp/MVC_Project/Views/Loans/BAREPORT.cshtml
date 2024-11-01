@@ -514,8 +514,8 @@
             const EmpCode = '@ViewData["EmpCode"]';
 
             var _link = '';
-            if (document.location.hostname == 'localhost') { _link = "/LOANS/getAPIData"; }
-            else { var root = '@ViewData["root"]'; _link = "/" + root + "/LOANS/getAPIData"; }
+            if (document.location.hostname == 'localhost') { _link = "/LOANS/postAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/LOANS/postAPIData"; }
 
             var fromdate = document.getElementById("from");
             var todate = document.getElementById("to");
@@ -526,7 +526,7 @@
             indata = "BAREPORT_LOAD" + "^" + EmpCode + "~" + 2 + "~" + fdate + "~" + tdate;  // 2 - customer
             var response = '';
             $.ajax({
-                type: "GET",
+                type: "POST",
                 url: _link,
                 data: { datas: indata },
                 async: false,

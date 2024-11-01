@@ -1,42 +1,21 @@
-﻿<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    @*<meta http-equiv="refresh" content="8" />*@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor httpContextAccessor
+@{
+    ViewData["Title"] = "ONLINECOURSEAPPLICATION";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
 
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <!-- Boxicons CSS -->
-    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css">
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="~/css/index.css">
+    <script src="~/js/site.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.6/jspdf.plugin.autotable.min.js"></script>
     <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-
-    <link rel="stylesheet" href="~/css/index.css">
-
-   
-        <style>
-        .pagecontiner{
-            background-color:transparent;
-        }
-        .dcontainer1 {
-            width: 65%;
-            height: 70%;
-            margin-left: 20%;
-            padding: 3%;
-            border-radius: 5px;
-            background-color: #cfd8dc;
-            box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-            font-size:10px;
-        }
-
-        h5 {
-            text-align: center;
-            
-        }
+    <style>
 
         .form-group {
             margin-bottom: 10px;
@@ -44,7 +23,7 @@
 
         label {
             display: block;
-            font-size:small;
+            font-size: small;
         }
 
         input[type="date"],
@@ -73,7 +52,8 @@
             border: 1px solid #dddddd;
             text-align: left;
             padding: 8px;
-            font-size: initial;
+            font-size: x-small;
+
         }
 
         th {
@@ -94,7 +74,8 @@
             border-radius: 10px;
             border: none;
             display: block;
-            width:100%;
+            width: 100%;
+            font-size:x-small;
         }
 
 
@@ -107,73 +88,101 @@
         .fs-10 {
             font-size: 10px;
         }
-        </style>
-    </head>
-    <body>
-    <div class="pagecontiner" >
+
+        .titleBg {
+            font-size: small;
+            font-weight: 600;
+            color: white;
+            width: 100%;
+            height: 7vh;
+            background-color: #538392;
+            /*text-align: center;*/
+            border-top-right-radius: 3px;
+            border-top-left-radius: 3px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .contentStyle
+        {
+            font-size:x-small;
+        }
+           
+    </style>
+
+</head>
+
+
+
+<body>
+
+
+    <div class="pagecontiner">
         <div class="dcontainer1">
-            <h5 style="font-size:medium">DOORSTEP PLEDGE REPORT</h5>
-            <form>
-                <div class="form-group">
-                    <div class="row">
-                        <div class="col-lg-6 col-md-12 col-sm-12">
-                            <label for="option">CHOOSE OPTION:</label>
-                        </div>
-                        <div class="col-lg-6 col-md-12 col-sm-12">
-                            <select id="dropdown" name="option" label="Choose Option">
-                                <option value="">---Select---</option>
-                                <option value="-1">All</option>
-                                <option value="1"> PENDING</option>
-                                <option value="2"> CONFIRM</option>
-                                <option value="3"> REJECTED</option>
-                            </select>
-                        </div>
-
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="row">
-                        <div class="col-lg-6 col-md-12 col-sm-12">
-                            <label for="fromDate">FROM DATE:</label>
-                        </div>
-                        <div class="col-lg-6 col-md-12 col-sm-12">
-                            <input type="date" id="fromDate" value="" name="fromDate">
-
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="row">
-                        <div class="col-lg-6 col-md-12 col-sm-12">
-                            <label for="toDate">TO DATE:</label>
-                        </div>
-                        <div class="col-lg-6 col-md-12 col-sm-12">
-                            <input type="date" id="toDate" value="" name="toDate">
-                        </div>
-                    </div>
-                </div>
-                <div class="row" style="margin-top:40px">
-                    <div class="col-lg-3">
-                    </div>
-                    <div class="col-lg-3 col-md-6 col-sm-12 ">
-                        <button type="button" id="fetch-button" class=" btn-grad" onclick=" Validate();showContainer();cleart();">
-                            Proceed
-                        </button>
-                    </div>
-                    <div class="col-lg-3 col-md-6 col-sm-12">
-                        <button type="button" class=" btn-grad" onclick="unshowContainer()">Exit</button>
-                    </div>
-                    <div class="col-lg-3 ">
-                        <img src="~/images/pdf (1).png" class="img1" id="img" onclick="exportPdf()" clas style=" width: 30px; height: 30px;" alt="Download">
-
-                    </div>
-
-                </div>
-            </form>
+            <div class="titleBg"> <h5 style="font-size:medium">DOORSTEP PLEDGE REPORT</h5>
         </div>
 
+        <form>
+            <div class="form-group" style="padding-top:10px; font-size:small;">
+                <div class="row">
+                    <div class="col-lg-6 col-md-12 col-sm-12">
+                        <label for="option">CHOOSE OPTION:</label>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12">
+                        <select id="dropdown" name="option" label="Choose Option">
+                            <option value="">---Select---</option>
+                            <option value="-1">All</option>
+                            <option value="1"> PENDING</option>
+                            <option value="2"> CONFIRM</option>
+                            <option value="3"> REJECTED</option>
+                        </select>
+                    </div>
+
+                </div>
+            </div>
+
+                <div class="form-group" style="padding-top:10px; font-size:small";>
+                <div class="row">
+                    <div class="col-lg-6 col-md-12 col-sm-12">
+                        <label for="fromDate">FROM DATE:</label>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12">
+                        <input type="date" id="fromDate" value="" name="fromDate">
+
+                    </div>
+                </div>
+            </div>
+
+                <div class="form-group" style="padding-top:10px; font-size:small;">
+                <div class="row">
+                    <div class="col-lg-6 col-md-12 col-sm-12">
+                        <label for="toDate">TO DATE:</label>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12">
+                        <input type="date" id="toDate" value="" name="toDate">
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="margin-top:40px">
+                <div class="col-lg-3">
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-12 ">
+                    <button type="button" id="fetch-button" class=" btn-grad" onclick=" Validate();showContainer();cleart();">
+                        Proceed
+                    </button>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-12">
+                    <button type="button" class=" btn-grad" onclick="unshowContainer();loadindex();">Exit</button>
+                </div>
+                <div class="col-lg-3 ">
+                    <img src="~/images/pdf (1).png" class="img1" id="img" onclick="exportPdf()" clas style=" width: 30px; height: 30px;" alt="Download">
+
+                </div>
+
+            </div>
+        </form>
+         </div>
 
         <!-- Table -->
         <div class="mt-5" id="dcontainer2">
@@ -214,7 +223,7 @@
                 </tbody>
             </table>
         </div>
-        </div>
+    </div>
 
     <script>
         function cleart() {
@@ -225,16 +234,14 @@
 
     <script>
         function formatDateForAPI(dateString) {
-            // Split the date string into year, month, and day components
+
+            const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+
             const [year, month, day] = dateString.split("-");
-
-            // Pad the month and day with leading zeros if necessary (optional)
-            const paddedMonth = month.padStart(2, "0");
-            const paddedDay = day.padStart(2, "0");
-
-            // Reassemble the date in the desired format
-            return `${paddedDay}-${paddedMonth}-${year}`;
-        }
+            const formattedMonth = months[parseInt(month, 10) - 1];
+            const formattedDate = `${day}-${formattedMonth}-${year}`;
+            return formattedDate;
+                    }
 
 
     </script>
@@ -254,7 +261,7 @@
                 // Create a new row
                 const row = tableBody.insertRow();
 
-                // Insert cells into the row
+                        // Insert cells into the row
                 const cell1 = row.insertCell();
                 const cell2 = row.insertCell();
                 const cell3 = row.insertCell();
@@ -287,17 +294,27 @@
             });
         }
 
+        function loadIndex() {
+
+            var root = '';
+            var baselink = '@ViewData["baseurl"]';
+            var id = '@ViewData["HeadName"]';
+
+            if (document.location.hostname == 'localhost') {
+                window.location.href = "/Loans/Index?datas=" + id;
+            }
+            else {
+                root = '@ViewData["root"]';
+                domainurl = baselink + root;
+                window.location.href = domainurl + "/Loans/Index?datas=" + id;
+            }
+
+        }
         // Function to fetch data from API
         function fetchData(selectedId, fDate, tDate) {
 
-            var baselink = '@ViewData["baseurl"]';
-
-            const apiUrl = baselink + 'MenuApi/api/MenuApi/GetMenuData/MEBSREPORTS/DOORSTEP_PLEDGE_REPORT~';
-            const url = `${apiUrl}${selectedId}~${fDate}~${tDate}/1`;
-
-           // const indata=""
-
-            callAPIResponse();
+                   
+            callAPIResponse(selectedId, fDate, tDate);
 
             Fdate = document.getElementById("FromDateSpan");
             Tdate = document.getElementById("ToDateSpan");
@@ -307,6 +324,34 @@
 
 
         }
+
+        function callAPIResponse(selectedId, fDate, tDate) {
+
+            var _link = '';
+            if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+
+
+
+            indata = "DOORSTEP_PLEDGE_REPORT" + "^" + selectedId + '~' + fDate + '~' + tDate;
+
+            var response = '';
+            $.ajax({
+                type: "GET",
+                url: _link,
+                data: { datas: indata },
+                async: false,
+                success: function (response) {
+
+                    const data2 = JSON.parse(response);
+                    populateTable(data2);
+                },
+                error: function (response) {
+                    // alert("failed");
+                }
+            });
+        }
+
 
         // Event Listerner For Button Click
 
@@ -410,7 +455,7 @@
                 bodyStyles: { fontSize: 5 },
                 didDrawPage: function (data) {
                     // Header
-                    
+
                     pdf.setFontSize(10);
                     pdf.setTextColor(255); // White text color
                     pdf.setFillColor(0); // Black fill color
@@ -467,7 +512,7 @@
             });
             window.open(URL.createObjectURL(pdf.output("blob")));
         }
-       
+
     </script>
 
     <script>
@@ -484,8 +529,10 @@
 
         setInterval(updateTime, 1000);
     </script>
-
-
+         </div>
 </body>
 
+
 </html>
+
+
