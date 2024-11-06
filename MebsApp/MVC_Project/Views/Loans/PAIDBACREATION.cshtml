@@ -399,7 +399,7 @@
                         </div>
                     </div>
                 </center>
-                </divform>
+                </div>
 
 
             </div>
@@ -428,7 +428,6 @@
 
             var ecode = '@ViewData["EmpCode"]';
 
-           // ecode =65657;   //sample user
 
             var _link = '';
             if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
@@ -602,7 +601,7 @@
 
 
         function submitFunction() {
-            var validation_res = validation();
+            var validation_res =validation();
           var Post_PAIDBA_data_Result='';
           var result_resp='';
          if (validation_res == 1)
@@ -716,14 +715,14 @@
             indata = 'ngl_paidba_add' + '^' + indata;
 
             var _link = '';
-            if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
-            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+            if (document.location.hostname == 'localhost') { _link = "/Loans/postAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/postAPIData"; }
 
             var Post_PAIDBA_data_Result='';
             var result ='';
 
             $.ajax({
-                type: "GET",
+                type: "POST",
                 url: _link,
                 data: { datas: indata },
                 async: false,
@@ -743,7 +742,7 @@
 
             var respo= JSON.parse(result);
 
-          Post_PAIDBA_data_Result = respo[0].RESP;
+          Post_PAIDBA_data_Result = respo[0].RESPONSE;
 
           return Post_PAIDBA_data_Result;
         }
@@ -1210,7 +1209,7 @@
 
             EnableDisable();
 
-            var accessFlag = checkUserAccess();
+            var accessFlag =checkUserAccess();
            if (accessFlag!=1)
          {  alert("You are not authorized to view this page..");
            loadIndex();

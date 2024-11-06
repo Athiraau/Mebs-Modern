@@ -3,10 +3,7 @@
 
 // Write your JavaScript code.
 
-function loadDashBoard1() {
-    let ecode = '@Model.EmpCode';
-    window.location.href = "/Home/Dashboard?empcode=" + ecode;
-}
+
 
 function MenuPageLoader() {
     var id = '@ViewData["empCode"]';

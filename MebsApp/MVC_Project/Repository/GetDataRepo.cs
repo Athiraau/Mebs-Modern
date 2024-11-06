@@ -107,7 +107,7 @@ namespace MVC_Project.Repository
             }
         }
 
-                public string RemoveSpecialCharacters(string str)
+        public string RemoveSpecialCharacters(string str)
                 {
                     //-._~+/
                     //  return Regex.Replace(str, "[^a-zA-Z0-9_~+/-]+", "", RegexOptions.Compiled);

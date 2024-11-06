@@ -95,19 +95,13 @@
 
 
             if (document.location.hostname == 'localhost') {
-                _link = "/Home/Dashboard?processid=";
+                _link = "/Home/Dashboard?session=";
             }
             else {
-                var root = '@ViewData["root"]'; _link = "/" + root + "/Home/Dashboard?processid=";
+                var root = '@ViewData["root"]'; _link = "/" + root + "/Home/Dashboard?session=";
             }
-
-
-
-            let id = @Model.EmpCode;
-            var ecode = encrypt(id);
-            window.location.href = _link ;//+ ecode;
-
-            //  window.location.href = "../Home/Dashboard?empcode=" + ecode;
+                      
+            window.location.href = _link ;
         }
     </script>
     <script>

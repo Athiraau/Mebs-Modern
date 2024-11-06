@@ -12,6 +12,21 @@ function ActiveLoginCheck() {
 
 }
 
+function loadDashBoard1() {
+
+    var _link = '';
+
+
+    if (document.location.hostname == 'localhost') {
+        _link = "/Home/Dashboard?session=";
+    }
+    else {
+        var root = '@ViewData["root"]'; _link = "/" + root + "/Home/Dashboard?session=";
+    }
+
+    window.location.href = _link;
+}
+
 
 
 function MenuPageLoader(pageID) {

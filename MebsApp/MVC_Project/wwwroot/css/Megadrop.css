@@ -101,7 +101,7 @@ body {
 
 .mainmenu-list li:hover .submenu-list {
     display: block;
-    max-height: 200px;
+    max-height: 300px;
     width: 100%;
     font-size: 10px;
 }

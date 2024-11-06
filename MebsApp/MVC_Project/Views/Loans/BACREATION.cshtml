@@ -162,7 +162,7 @@
                         <input type="text" class="form-control cls_test" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '');" id="phone" placeholder="Phone Number" onchange="mobileNumberAvailabilityCheck()">
                     </div>
                     <div class="col-lg-4 col-md-3 col-sm-2">
-                        <input type="text" class="form-control cls_test" id="otp" placeholder="Enter OTP here"  onchange="VerifyOTP();">
+                        <input type="text" class="form-control cls_test" id="otp" placeholder="Enter OTP here" onchange="VerifyOTP();">
                     </div>
                     <div class="col-lg-4 col-md-3 col-sm-2 d-flex p-2">
                         <i style="display:none;" class="fas fa-check" style="color:green;"></i>
@@ -323,7 +323,7 @@
                         </div>
                     </div>
                 </center>
-                </divform>
+                </div>
                 
 
             </div>
@@ -452,17 +452,18 @@
             indata = 'PROC_ADD_NEW_BA' + '^' + indata;
 
             var _link = '';
-            if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
-            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/getAPIData"; }
+            if (document.location.hostname == 'localhost') { _link = "/Loans/postAPIData"; }
+            else { var root = '@ViewData["root"]'; _link = "/" + root + "/Loans/postAPIData"; }
 
             var Post_BA_data_Result='';
 
             $.ajax({
-                type: "GET",
+                type: "POST",
                 url: _link,
                 data: { datas: indata },
                 async: false,
                 success: function (response) {
+
                     result = response;
                     checkFlag = '1';
                       },
@@ -473,10 +474,9 @@
             });
                        
             // Remove html tags and space chars
-            result = result.replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, ''); 
-            result = result.replace("]", " ");
-            result = result.replace("[", " ");
-            Post_BA_data_Result = result.replace("MSG", " ");
+            result = JSON.parse(result);
+            debugger;
+            Post_BA_data_Result = result[0].RESPONSE;
 
           return Post_BA_data_Result;
         }
@@ -932,7 +932,6 @@
 
             var ecode = '@ViewData["EmpCode"]';
 
-       //     ecode = 65657;   //sample user
 
             var _link = '';
             if (document.location.hostname == 'localhost') { _link = "/Loans/getAPIData"; }
@@ -1072,7 +1071,6 @@
            
             callAcctypeApi();
          var accessFlag = checkUserAccess();
-         
            if (accessFlag!=1)
          {  alert("You are not authorized to view this page..");
            loadIndex();

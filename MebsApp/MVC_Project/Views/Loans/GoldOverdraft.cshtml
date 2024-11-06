@@ -173,7 +173,7 @@
                     </button>
                 </div>
                 <div class="col-lg-3 col-md-6 col-sm-12">
-                    <button type="button" class=" btn-grad" onclick="unshowContainer();loadindex();">Exit</button>
+                    <button type="button" class=" btn-grad" onclick="loadindex_();">Exit</button>
                 </div>
                 <div class="col-lg-3 ">
                     <img src="~/images/pdf (1).png" class="img1" id="img" onclick="exportPdf()" clas style=" width: 30px; height: 30px;" alt="Download">
@@ -529,6 +529,25 @@
 
         setInterval(updateTime, 1000);
     </script>
+    <script>
+        function loadindex_()
+        {
+            var root = '';
+            var baselink = '@ViewData["baseurl"]';
+            var id = '@ViewData["HeadName"]';
+
+            if (document.location.hostname == 'localhost') {
+                window.location.href = "/Loans/Index?datas=" + id;
+            }
+            else {
+                root = '@ViewData["root"]';
+                domainurl = baselink + root;
+                window.location.href = domainurl + "/Loans/Index?datas=" + id;
+            }
+        }
+
+    </script>
+
          </div>
 </body>
 

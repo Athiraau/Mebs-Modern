@@ -278,7 +278,6 @@
 
                 var ecode = '@ViewData["EmpCode"]';
 
-       // ecode = '354836';
          var _link = '';
             if (document.location.hostname == 'localhost') { _link = "/HRM/getAPIData"; }
             else { var root = '@ViewData["root"]'; _link = "/" + root + "/HRM/getAPIData"; }
@@ -315,7 +314,6 @@
 
                 function EditEmpCodeinputCheck(res1)
                 {
-                   
                     if (res1 ==0)
 
                     document.getElementById('emp_code').setAttribute('readonly', true);
